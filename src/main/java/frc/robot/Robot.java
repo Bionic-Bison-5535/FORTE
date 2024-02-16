@@ -10,6 +10,11 @@ public class Robot extends TimedRobot {
     private final SendableChooser<String> noteDropdown = new SendableChooser<>();
     private final SendableChooser<String> getMoreDropdown = new SendableChooser<>();
     
+    Wesswerve go = new Wesswerve(14, 15, 16, 17, 20, 21, 22, 23, 10, 11, 12, 13, 0, 0, 0, 0);
+    Controls c1 = new Controls(0, 0.1);
+    Controls c2 = new Controls(1, 0.1);
+    Tim matchTimer = new Tim();
+    
     String noteToGet, getMoreNotes;
 
     @Override
@@ -32,13 +37,16 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         noteToGet = noteDropdown.getSelected();
         getMoreNotes = getMoreDropdown.getSelected();
+        matchTimer.reset();
     }
 
     @Override
     public void autonomousPeriodic() {}
 
     @Override
-    public void teleopInit() {}
+    public void teleopInit() {
+        matchTimer.set(15000);
+    }
 
     @Override
     public void teleopPeriodic() {}
@@ -50,7 +58,9 @@ public class Robot extends TimedRobot {
     public void disabledPeriodic() {}
 
     @Override
-    public void testInit() {}
+    public void testInit() {
+        matchTimer.reset();
+    }
 
     @Override
     public void testPeriodic() {}

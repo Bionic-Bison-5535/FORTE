@@ -17,17 +17,17 @@ public class Tim {
 
     /**
      * Sets the timer's value to a certain number and continues counting up
-     * @param t Time in <b>milliseconds</b> to set the timer to
+     * @param t Time in milliseconds to set the timer to
      */
     public void set(long t) {
         startTim = System.currentTimeMillis() - t;
     }
 
     /**
-     * @return the timer's time in seconds rounded to the nearest 0.001 second.
+     * @return the timer's time in milliseconds.
      */
     public long get() {
-        return (System.currentTimeMillis() - startTim) / 1000;
+        return System.currentTimeMillis() - startTim;
     }
 
 }
