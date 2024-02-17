@@ -21,10 +21,12 @@ public class Robot extends TimedRobot {
     Controls c1 = new Controls(0, 0.1);
     Controls c2 = new Controls(1, 0.1);
     Tim matchTimer = new Tim();
+    Navx navx = new Navx();
     
 
     @Override
     public void robotInit() {
+        navx.reset();
         noteDropdown.setDefaultOption("None", "0");
         noteDropdown.addOption("Left Note", "1");
         noteDropdown.addOption("Center Note", "2");
@@ -68,6 +70,7 @@ public class Robot extends TimedRobot {
                 mode = "smart";
             }
         } else if (mode == "smart") {
+            go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(5), 3), navx.yaw());
             if (c1.get(c1.BACK)) {
                 mode = "raw";
             }
