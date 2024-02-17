@@ -9,7 +9,7 @@ public class Robot extends TimedRobot {
 
     /**
      * Mode for robot during teleop.
-     * Can be "raw", "normal", or "auto".
+     * Can be "raw", "smart", or "auto".
      */
     String mode = "raw";
 
@@ -41,7 +41,9 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void robotPeriodic() {}
+    public void robotPeriodic() {
+        SmartDashboard.putString("Teleop Mode", mode);
+    }
 
     @Override
     public void autonomousInit() {
@@ -62,6 +64,23 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         if (mode == "raw") {
             go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(5), 3), 0);
+            if (c1.get(c1.START)) {
+                mode = "smart";
+            }
+        } else if (mode == "smart") {
+            if (c1.get(c1.BACK)) {
+                mode = "raw";
+            }
+            if (c1.onPress(c1.X)) {
+                mode = "auto";
+            }
+        } else if (mode == "auto") {
+            if (c1.get(c1.BACK)) {
+                mode = "raw";
+            }
+            if (c1.onPress(c1.X)) {
+                mode = "smart";
+            }
         }
     }
 
