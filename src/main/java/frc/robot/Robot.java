@@ -34,6 +34,10 @@ public class Robot extends TimedRobot {
         getMoreDropdown.addOption("No", "n");
         getMoreDropdown.addOption("Only Collect", "c");
         SmartDashboard.putData("Get More Notes?", getMoreDropdown);
+        SmartDashboard.putNumber("↖ Offset", go.A_offset);
+        SmartDashboard.putNumber("↗ Offset", go.B_offset);
+        SmartDashboard.putNumber("↘ Offset", go.C_offset);
+        SmartDashboard.putNumber("↙ Offset", go.D_offset);
     }
 
     @Override
@@ -73,6 +77,13 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void testPeriodic() {}
+    public void testPeriodic() {
+        go.A_offset = SmartDashboard.getNumber("↖ Offset", go.A_offset);
+        go.B_offset = SmartDashboard.getNumber("↗ Offset", go.B_offset);
+        go.C_offset = SmartDashboard.getNumber("↘ Offset", go.C_offset);
+        go.D_offset = SmartDashboard.getNumber("↙ Offset", go.D_offset);
+        go.setAngles(0, 0, 0, 0);
+        go.update();
+    }
 
 }
