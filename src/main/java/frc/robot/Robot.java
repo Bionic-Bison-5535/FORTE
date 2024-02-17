@@ -57,7 +57,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         if (mode == "raw") {
-            go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(), 3), 0);
+            go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(5), 3), 0);
         }
     }
 
