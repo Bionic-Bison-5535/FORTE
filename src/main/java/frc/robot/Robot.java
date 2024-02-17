@@ -1,5 +1,6 @@
 package frc.robot;
 
+import java.lang.Math;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -66,22 +67,22 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         if (mode == "raw") {
             go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(5), 3), 0);
-            if (c1.get(c1.START)) {
+            if (c1.start() || c2.start()) {
                 mode = "smart";
             }
         } else if (mode == "smart") {
             go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(5), 3), navx.yaw());
-            if (c1.get(c1.BACK)) {
+            if (c1.back() || c2.back()) {
                 mode = "raw";
             }
-            if (c1.onPress(c1.X)) {
+            if (c1.onPress(Controls.X)) {
                 mode = "auto";
             }
         } else if (mode == "auto") {
-            if (c1.get(c1.BACK)) {
+            if (c1.back() || c2.back()) {
                 mode = "raw";
             }
-            if (c1.onPress(c1.X)) {
+            if (c1.onPress(Controls.X) || c2.onPress(Controls.X)) {
                 mode = "smart";
             }
         }
