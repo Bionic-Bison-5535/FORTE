@@ -1,6 +1,8 @@
 package frc.robot;
 
 import java.lang.Math;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,6 +25,7 @@ public class Robot extends TimedRobot {
     Controls c2 = new Controls(1, 0.1);
     Tim matchTimer = new Tim();
     Navx navx = new Navx();
+    Lights leds = new Lights(30);
     
 
     @Override
@@ -53,6 +56,7 @@ public class Robot extends TimedRobot {
         noteToGet = noteDropdown.getSelected();
         getMoreNotes = getMoreDropdown.getSelected();
         matchTimer.reset();
+        leds.orange();
     }
 
     @Override
@@ -75,7 +79,7 @@ public class Robot extends TimedRobot {
             if (c1.back() || c2.back()) {
                 mode = "raw";
             }
-            if (c1.onPress(Controls.X)) {
+            if (c1.onPress(Controls.X) || c2.onPress(Controls.X)) {
                 mode = "auto";
             }
         } else if (mode == "auto") {
@@ -86,10 +90,21 @@ public class Robot extends TimedRobot {
                 mode = "smart";
             }
         }
+        if (mode == "auto") {
+            leds.orange();
+        } else if (DriverStation.getMatchTime() < 20) {
+            leds.turquoise();
+        } else if (/*intaking note*/false) {
+            leds.yellow();
+        } else {
+            leds.allianceColor();
+        }
     }
 
     @Override
-    public void disabledInit() {}
+    public void disabledInit() {
+        leds.green();
+    }
 
     @Override
     public void disabledPeriodic() {}
@@ -97,6 +112,7 @@ public class Robot extends TimedRobot {
     @Override
     public void testInit() {
         matchTimer.reset();
+        leds.white();
     }
 
     @Override
