@@ -20,7 +20,7 @@ public class Launch {
         feed = FeedMotor;
         aimMotor = AimMotor;
         aimCoder = new CANcoder(aimCoderID);
-        aimMotor.setRotations(aimCoder.getPosition().getValue()*/* gear ratio */1);
+        aimMotor.setEnc(aimCoder.getPosition().getValue()*182);
 	}
 
     public double aimPos() {
