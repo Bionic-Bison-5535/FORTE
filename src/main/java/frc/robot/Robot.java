@@ -83,6 +83,9 @@ public class Robot extends TimedRobot {
             if (c1.onPress(Controls.X) || c2.onPress(Controls.X)) {
                 mode = "auto";
             }
+            if (c1.right_stick()) {
+                navx.zeroYaw();
+            }
         } else if (mode == "auto") {
             if (c1.back() || c2.back()) {
                 mode = "raw";
