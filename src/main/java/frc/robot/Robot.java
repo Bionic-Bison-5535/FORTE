@@ -26,6 +26,11 @@ public class Robot extends TimedRobot {
     Tim matchTimer = new Tim();
     Navx navx = new Navx();
     Lights leds = new Lights(30);
+    Motor intakeMotor = new Motor(5, true, false, 1);
+    Motor aimMotor = new Motor(24, true, false, 0.5);
+    Motor rightThruster = new Motor(7, false, false, 1);
+    Motor leftThruster = new Motor(8, false, true, 1);
+    Motor feedMotor = new Motor(9, false, false, 1);
 
     @Override
     public void robotInit() {
