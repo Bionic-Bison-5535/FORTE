@@ -24,7 +24,7 @@ public class Launch {
 	}
 
     public double aimPos() {
-        return aimCoder.getPosition().getValue();
+        return aimMotor.getEnc();
     }
 
     public boolean iseenote() {
@@ -34,6 +34,7 @@ public class Launch {
     public void intake() {
         if (intakeStage == 0) {
 			intakeStage = 1;
+            aimMotor.goTo(21.5);
 		}
     }
 
@@ -71,64 +72,58 @@ public class Launch {
     /** Call periodically to run this system */
     public void update() {
 
+        aimMotor.update();
+
         // Intake System:
-        if (!holdingNote) {
-            if (intakeStage == 1) { // Intake note until detected
-                feed.set(0.15);
-                if (iseenote()) {
-                    feed.set(0);
-                    intakeStage = 2;
-                }
-            } else if (intakeStage == 2) { // If note went out of range, bring back into view
-                if (iseenote()) {
-                    intakeStage = 3;
-                } else {
-                    leftThruster.set(-0.05);
-                    rightThruster.set(-0.05);
-                    feed.set(-0.04);
-                }
+        if (intakeStage == 1) { // Intake note until detected
+            feed.set(0.15);
+            if (iseenote()) {
+                feed.set(0);
+                intakeStage = 2;
             }
-            if (intakeStage == 3) { // Bring note to exact launch position
-                feed.set(-0.035);
-                if (!iseenote()) {
-                    feed.set(0);
-                    intakeStage = 0;
-                    holdingNote = true;
-                }
+        } else if (intakeStage == 2) { // If note went out of range, bring back into view
+            if (iseenote()) {
+                intakeStage = 3;
+            } else {
+                leftThruster.set(-0.05);
+                rightThruster.set(-0.05);
+                feed.set(-0.04);
             }
-        } else {
-            intakeStage = 0;
+        }
+        if (intakeStage == 3) { // Bring note to exact launch position
+            feed.set(-0.035);
+            if (!iseenote()) {
+                feed.set(0);
+                intakeStage = 0;
+                holdingNote = true;
+            }
         }
 
         // Launch System:
-        if (holdingNote) {
-            if (launchStage == 1) { // Fire up thrusters
-                if (launchTimer.get() > 0.5) {
-                    launchTimer.reset();
-                    launchStage = 2;
-                }
-                leftThruster.set(2);
-                rightThruster.set(2);
+        if (launchStage == 1) { // Fire up thrusters
+            if (launchTimer.get() > 0.5) {
+                launchTimer.reset();
+                launchStage = 2;
             }
-            if (launchStage == 2) { // Push note into thrusters
-                leftThruster.set(2);
-                rightThruster.set(2);
-                feed.set(2);
-                if (launchTimer.get() > 0.3) { // Stop launcher
-                    feed.set(0);
-                    leftThruster.set(0);
-                    rightThruster.set(0);
-                    launchStage = 0;
-                    holdingNote = false;
-                }
+            leftThruster.set(2);
+            rightThruster.set(2);
+        }
+        if (launchStage == 2) { // Push note into thrusters
+            leftThruster.set(2);
+            rightThruster.set(2);
+            feed.set(2);
+            if (launchTimer.get() > 0.3) { // Stop launcher
+                feed.set(0);
+                leftThruster.set(0);
+                rightThruster.set(0);
+                launchStage = 0;
+                holdingNote = false;
             }
-            if (launchStage == 3) { // Launch into amp
-                leftThruster.set(0.15);
-                rightThruster.set(0.15);
-                feed.set(0.4);
-            }
-        } else {
-            launchStage = 0;
+        }
+        if (launchStage == 3) { // Launch into amp
+            leftThruster.set(0.15);
+            rightThruster.set(0.15);
+            feed.set(0.4);
         }
 
     }
