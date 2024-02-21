@@ -1,4 +1,4 @@
-/*  Wesswerve for Trapezoid Swerve Robot with CANcoder Angle Detection and Either Talon SRX or CANSparkMax motor controllers.
+/*  Wesswerve for Trapezoid Swerve Robot with CANcoder Angle Detection and Either Talon FX or CANSparkMax motor controllers.
 	Program written by Wesley McGinn {wesleymcginn1@gmail.com} for Team 5535 (The Bionic Bison, New Buffalo, Michigan)
 	Version 4.4 Beta
 */
@@ -6,10 +6,7 @@
 package frc.robot.systems;
 
 import java.lang.Math;
-import edu.wpi.first.wpilibj.Timer;
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix6.hardware.*;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -17,7 +14,7 @@ public class Wesswerve {
 
 	private boolean usingTalons = true; // Set to false to use CANSparkMaxs, set to true to use Talons.
 	
-	public TalonSRX frontLeftSteer, frontRightSteer, backRightSteer, backLeftSteer, frontLeftDrive, frontRightDrive, backRightDrive, backLeftDrive;
+	public TalonFX frontLeftSteer, frontRightSteer, backRightSteer, backLeftSteer, frontLeftDrive, frontRightDrive, backRightDrive, backLeftDrive;
 	public CANSparkMax frontLeftSteer_sm, frontRightSteer_sm, backRightSteer_sm, backLeftSteer_sm, frontLeftDrive_sm, frontRightDrive_sm, backRightDrive_sm, backLeftDrive_sm;
 	public CANcoder frontLeft, frontRight, backRight, backLeft;
 	public double angle0, angle1, angle2, angle3;
@@ -29,7 +26,7 @@ public class Wesswerve {
 	public double default_speed = 0.9;
 	public double speed = default_speed;
 	public double steeringAmplifier = 0.5;
-	private final double wheelAngleErrorRange = 1.2;
+	private final double wheelAngleErrorRange = 1;
 	private final double dist1 = 0.5;
 	private final double dist2 = 0.5;
 	public double x;
@@ -41,24 +38,16 @@ public class Wesswerve {
 	public Wesswerve(int front_left_steer_canID, int front_right_steer_canID, int back_right_steer_canID, int back_left_steer_canID, int front_left_drive_canID, int front_right_drive_canID, int back_right_drive_canID, int back_left_drive_canID, int front_left_canCoder_canID, int front_right_canCoder_canID, int back_right_canCoder_canID, int back_left_canCoder_canID, int front_left_angle_offset, int front_right_angle_offset, int back_right_angle_offset, int back_left_angle_offset) {
 		if (usingTalons) {
 			// Steering Motors:
-			frontLeftSteer = new TalonSRX(front_left_steer_canID);
-			frontRightSteer = new TalonSRX(front_right_steer_canID);
-			backRightSteer = new TalonSRX(back_right_steer_canID);
-			backLeftSteer = new TalonSRX(back_left_steer_canID);
+			frontLeftSteer = new TalonFX(front_left_steer_canID);
+			frontRightSteer = new TalonFX(front_right_steer_canID);
+			backRightSteer = new TalonFX(back_right_steer_canID);
+			backLeftSteer = new TalonFX(back_left_steer_canID);
 			// Driving Motors:
-			frontLeftDrive = new TalonSRX(front_left_drive_canID);
-			frontRightDrive = new TalonSRX(front_right_drive_canID);
-			backRightDrive = new TalonSRX(back_right_drive_canID);
-			backLeftDrive = new TalonSRX(back_left_drive_canID);
+			frontLeftDrive = new TalonFX(front_left_drive_canID);
+			frontRightDrive = new TalonFX(front_right_drive_canID);
+			backRightDrive = new TalonFX(back_right_drive_canID);
+			backLeftDrive = new TalonFX(back_left_drive_canID);
 			// Motor Configuration:
-			frontLeftSteer.configOpenloopRamp(0);
-			frontRightSteer.configOpenloopRamp(0);
-			backRightSteer.configOpenloopRamp(0);
-			backLeftSteer.configOpenloopRamp(0);
-			frontLeftDrive.configOpenloopRamp(0.5);
-			frontRightDrive.configOpenloopRamp(0.5);
-			backRightDrive.configOpenloopRamp(0.5);
-			backLeftDrive.configOpenloopRamp(0.5);
 			frontLeftSteer.setInverted(false);
 			frontRightSteer.setInverted(false);
 			backRightSteer.setInverted(false);
@@ -110,10 +99,10 @@ public class Wesswerve {
 	public void setVelocities(double V0, double V1, double V2, double V3) { // Sets velocities of all wheels
 		if (move) {
 			if (usingTalons) {
-				if (negation0) { frontLeftDrive.set(ControlMode.PercentOutput, -V0); } else { frontLeftDrive.set(ControlMode.PercentOutput, V0); }
-				if (negation1) { frontRightDrive.set(ControlMode.PercentOutput, -V1); } else { frontRightDrive.set(ControlMode.PercentOutput, V1); }
-				if (negation2) { backRightDrive.set(ControlMode.PercentOutput, -V2); } else { backRightDrive.set(ControlMode.PercentOutput, V2); }
-				if (negation3) { backLeftDrive.set(ControlMode.PercentOutput, -V3); } else { backLeftDrive.set(ControlMode.PercentOutput, V3); }
+				if (negation0) { frontLeftDrive.set(-V0); } else { frontLeftDrive.set(V0); }
+				if (negation1) { frontRightDrive.set(-V1); } else { frontRightDrive.set(V1); }
+				if (negation2) { backRightDrive.set(-V2); } else { backRightDrive.set(V2); }
+				if (negation3) { backLeftDrive.set(-V3); } else { backLeftDrive.set(V3); }
 			} else {
 				if (negation0) { frontLeftDrive_sm.set(V0); } else { frontLeftDrive_sm.set(-V0); }
 				if (negation1) { frontRightDrive_sm.set(V1); } else { frontRightDrive_sm.set(-V1); }
@@ -122,10 +111,10 @@ public class Wesswerve {
 			}
 		} else {
 			if (usingTalons) {
-				frontLeftDrive.set(ControlMode.PercentOutput, 0);
-				frontRightDrive.set(ControlMode.PercentOutput, 0);
-				backRightDrive.set(ControlMode.PercentOutput, 0);
-				backLeftDrive.set(ControlMode.PercentOutput, 0);
+				frontLeftDrive.set(0);
+				frontRightDrive.set(0);
+				backRightDrive.set(0);
+				backLeftDrive.set(0);
 			} else {
 				frontLeftDrive_sm.set(0);
 				frontRightDrive_sm.set(0);
@@ -135,7 +124,7 @@ public class Wesswerve {
 		}
 	}
 
-	public boolean motorToAngle(TalonSRX Output, CANcoder Input, double angle, boolean smartAngle) { // Called periodically by update() function - adjusts wheel-rotating motor speeds to get to desired angle - if smart angle enabled, returns whether or not the wheel should have a negated velocity (true=negate) - if smart angle disabled, returns whether or not the wheel has reached te desired angle
+	public boolean motorToAngle(TalonFX Output, CANcoder Input, double angle, boolean smartAngle) { // Called periodically by update() function - adjusts wheel-rotating motor speeds to get to desired angle - if smart angle enabled, returns whether or not the wheel should have a negated velocity (true=negate) - if smart angle disabled, returns whether or not the wheel has reached te desired angle
 		newAngle = angle;
 		negation = false;
 		if (smartAngle) {
@@ -145,18 +134,10 @@ public class Wesswerve {
 			if (newAngle > Input.getPosition().getValue()*360+90) { newAngle -= 180; negation = true; }
 		}
 		if (move) {
-			if (Math.round(Input.getPosition().getValue()*360-wheelAngleErrorRange) > newAngle) {
-				Output.set(ControlMode.PercentOutput, -0.007*(Input.getPosition().getValue()*360 - newAngle) - 0.05);
-			} else {
-				if (Math.round(Input.getPosition().getValue()*360+wheelAngleErrorRange) < newAngle) {
-					Output.set(ControlMode.PercentOutput, -0.007*(Input.getPosition().getValue()*360 - newAngle) + 0.05);
-				} else {
-					Output.set(ControlMode.PercentOutput, 0);
-					if (!smartAngle) { negation = true; }
-				}
-			}
+			Output.set(-0.007*(Input.getPosition().getValue()*360 - newAngle));
+			if (!smartAngle) { negation = true; }
 		} else {
-			Output.set(ControlMode.PercentOutput, 0);
+			Output.set(0);
 		}
 		return negation;
 	}
@@ -203,18 +184,6 @@ public class Wesswerve {
 
 	public double cosine(double cosine_input) { // Cosine function for degrees
 		return Math.cos(cosine_input * (Math.PI / 180));
-	}
-
-	public void tone() { // Plays chord from driving motors (C5, E5, G5, C6)
-		if (usingTalons) {
-			frontLeftDrive.set(ControlMode.MusicTone, 523.25);
-			Timer.delay(1);
-			frontRightDrive.set(ControlMode.MusicTone, 659.25);
-			Timer.delay(1);
-			backRightDrive.set(ControlMode.MusicTone, 783.99);
-			Timer.delay(1);
-			backLeftDrive.set(ControlMode.MusicTone, 1046.5);
-		}
 	}
 
 	public boolean resetMotors() { // Resets motors to their original position while ignoring coterminal values - returns true if motors are ready - must be called periodically to work - update() may not run at the same time
