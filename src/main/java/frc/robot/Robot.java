@@ -19,7 +19,7 @@ public class Robot extends TimedRobot {
     private final SendableChooser<String> getMoreDropdown = new SendableChooser<>();
     String noteToGet, getMoreNotes;
     
-    Wesswerve go = new Wesswerve(14, 15, 16, 17, 20, 21, 22, 23, 10, 11, 12, 13, 44, 182, 204, 335);
+    Wesswerve go = new Wesswerve(14, 15, 16, 17, 20, 21, 22, 23, 10, 11, 12, 13, 358, 225, 159, 250);
     Controls c1 = new Controls(0, 0.1);
     Controls c2 = new Controls(1, 0.1);
     Tim matchTimer = new Tim();
@@ -76,17 +76,20 @@ public class Robot extends TimedRobot {
 
         // Main Code:
         if (mode == "raw") {
-            go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(5), 3), 0);
+            go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(4), 3), 0);
             if (c1.start() || c2.start()) {
                 mode = "smart";
             }
         } else if (mode == "smart") {
-            go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(5), 3), navx.yaw());
+            go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(4), 3), navx.yaw());
             if (c1.back() || c2.back()) {
                 mode = "raw";
             }
             if (c1.onPress(Controls.X) || c2.onPress(Controls.X)) {
                 mode = "auto";
+            }
+            if (c1.right_stick()) {
+                navx.zeroYaw();
             }
         } else if (mode == "auto") {
             if (c1.back() || c2.back()) {

@@ -8,12 +8,12 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 /**  Wesswerve for Square Swerve Robot with CANcoder Angle Detection and Either Talon FX or CANSparkMax motor controllers.
 	Program written by Wesley McGinn {wesleymcginn1@gmail.com} for Team 5535 (The Bionic Bison, New Buffalo, Michigan)
-	@version 4.5 Beta
+	@version 4.6 Beta
 */
 public class Wesswerve {
 
 	private boolean usingTalons = true; // Set to false to use CANSparkMaxs, set to true to use Talons.
-	private boolean kraken = false; // Set to true if you are using the "Kraken" Talon FX motors.
+	private boolean kraken = true; // Set to true if you are using the "Kraken" Talon FX motors.
 	
 	public TalonFX frontLeftSteer, frontRightSteer, backRightSteer, backLeftSteer, frontLeftDrive, frontRightDrive, backRightDrive, backLeftDrive;
 	public CANSparkMax frontLeftSteer_sm, frontRightSteer_sm, backRightSteer_sm, backLeftSteer_sm, frontLeftDrive_sm, frontRightDrive_sm, backRightDrive_sm, backLeftDrive_sm;
@@ -136,7 +136,7 @@ public class Wesswerve {
 		}
 		if (move) {
 			if (kraken) {
-				Output.set(-0.007*(Input.getPosition().getValue()*360 - newAngle));
+				Output.set(-0.012*(Input.getPosition().getValue()*360 - newAngle));
 				if (!smartAngle) { negation = true; }
 			} else {
 				if (Math.round(Input.getPosition().getValue()*360-wheelAngleErrorRange) > newAngle) {
