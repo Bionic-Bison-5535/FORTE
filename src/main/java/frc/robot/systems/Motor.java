@@ -78,6 +78,10 @@ public class Motor {
         return (getEnc() / rotationValue());
     }
 
+    public void setRotations(double rotations) {
+        setEnc(rotations * rotationValue());
+    }
+
     public void setEnc(double newEncValue) {
         if (usingTalon) {
             talonMotor.setSelectedSensorPosition(newEncValue);
