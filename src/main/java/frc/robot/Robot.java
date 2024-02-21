@@ -20,7 +20,7 @@ public class Robot extends TimedRobot {
     private final SendableChooser<String> getMoreDropdown = new SendableChooser<>();
     String noteToGet, getMoreNotes;
     
-    Wesswerve go = new Wesswerve(14, 15, 16, 17, 20, 21, 22, 23, 10, 11, 12, 13, 0, 0, 0, 0);
+    Wesswerve go = new Wesswerve(14, 15, 16, 17, 20, 21, 22, 23, 10, 11, 12, 13, -316, 542, 564, 695);
     Controls c1 = new Controls(0, 0.1);
     Controls c2 = new Controls(1, 0.1);
     Tim matchTimer = new Tim();
@@ -116,12 +116,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testPeriodic() {
-        go.A_offset = SmartDashboard.getNumber("↖ Offset", go.A_offset);
-        go.B_offset = SmartDashboard.getNumber("↗ Offset", go.B_offset);
-        go.C_offset = SmartDashboard.getNumber("↘ Offset", go.C_offset);
-        go.D_offset = SmartDashboard.getNumber("↙ Offset", go.D_offset);
-        go.setAngles(0, 0, 0, 0);
-        go.update();
+        SmartDashboard.putNumber("A Offset", go.frontLeft.getPosition().getValue()*360);
+        SmartDashboard.putNumber("B Offset", go.frontRight.getPosition().getValue()*360);
+        SmartDashboard.putNumber("C Offset", go.backRight.getPosition().getValue()*360);
+        SmartDashboard.putNumber("D Offset", go.backLeft.getPosition().getValue()*360);
     }
 
 }
