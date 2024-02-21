@@ -13,7 +13,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 public class Wesswerve {
 
 	private boolean usingTalons = true; // Set to false to use CANSparkMaxs, set to true to use Talons.
-	private boolean kraken = false; // Set to true if you are using the "Kraken" Talon FX motors.
+	private boolean kraken = true; // Set to true if you are using the "Kraken" Talon FX motors.
 	
 	public TalonFX frontLeftSteer, frontRightSteer, backRightSteer, backLeftSteer, frontLeftDrive, frontRightDrive, backRightDrive, backLeftDrive;
 	public CANSparkMax frontLeftSteer_sm, frontRightSteer_sm, backRightSteer_sm, backLeftSteer_sm, frontLeftDrive_sm, frontRightDrive_sm, backRightDrive_sm, backLeftDrive_sm;
