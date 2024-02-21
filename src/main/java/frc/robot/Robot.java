@@ -71,12 +71,12 @@ public class Robot extends TimedRobot {
 
         // Main Code:
         if (mode == "raw") {
-            go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(5), 3), 0);
+            go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(4), 3), 0);
             if (c1.start() || c2.start()) {
                 mode = "smart";
             }
         } else if (mode == "smart") {
-            go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(5), 3), navx.yaw());
+            go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(4), 3), navx.yaw());
             if (c1.back() || c2.back()) {
                 mode = "raw";
             }
