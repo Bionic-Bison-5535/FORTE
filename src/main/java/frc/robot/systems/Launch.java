@@ -1,22 +1,31 @@
 package frc.robot.systems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import com.ctre.phoenix6.hardware.*;
 
 public class Launch {
 
-    private Motor leftThruster, rightThruster, feed;
+    private Motor leftThruster, rightThruster, feed, aimMotor;
+    public CANcoder aimCoder;
     private DigitalInput note;
     private Tim launchTimer = new Tim();
     public int intakeStage = 0;
     public int launchStage = 0;
     public boolean holdingNote = true;
 
-	public Launch(Motor LaunchLeftMotor, Motor LaunchRightMotor, Motor FeedMotor, int sensorPin) {
+	public Launch(Motor LaunchLeftMotor, Motor LaunchRightMotor, Motor FeedMotor, Motor AimMotor, int aimCoderID, int sensorPin) {
+        note = new DigitalInput(sensorPin);
 		leftThruster = LaunchLeftMotor;
         rightThruster = LaunchRightMotor;
         feed = FeedMotor;
-        note = new DigitalInput(sensorPin);
+        aimMotor = AimMotor;
+        aimCoder = new CANcoder(aimCoderID);
+        aimMotor.setRotations(aimCoder.getPosition().getValue()*/* gear ratio */1);
 	}
+
+    public double aimPos() {
+        return aimCoder.getPosition().getValue();
+    }
 
     public boolean iseenote() {
         return !note.get();
@@ -35,26 +44,31 @@ public class Launch {
         rightThruster.set(0);
     }
 
-    public void LAUNCHprep() { // Fires up thrusters while running
+    /** Fires up thrusters while function called */
+    public void LAUNCHprep() {
         leftThruster.set(2);
         rightThruster.set(2);
     }
 
-    public void LAUNCHstart() { // Starts automatic launch sequence
+    /** Starts automatic launch sequence */
+    public void LAUNCHstart() {
         launchTimer.reset();
         launchStage = 1;
     }
 
-    public void LAUNCH() { // LAUNCH (officially)
+    /** LAUNCH (officially) */
+    public void LAUNCH() {
         launchTimer.reset();
         launchStage = 2;
     }
 
-    public void amp() { // Launch at low speed
+    /** Launch at low-ish speed */
+    public void amp() {
         launchTimer.reset();
         launchStage = 3;
     }
 
+    /** Call periodically to run this system */
     public void update() {
 
         // Intake System:

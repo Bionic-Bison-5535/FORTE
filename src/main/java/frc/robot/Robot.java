@@ -1,7 +1,6 @@
 package frc.robot;
 
 import java.lang.Math;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -31,6 +30,7 @@ public class Robot extends TimedRobot {
     Motor rightThruster = new Motor(7, false, false, 1);
     Motor leftThruster = new Motor(8, false, true, 1);
     Motor feedMotor = new Motor(9, false, false, 1);
+    Launch launcher = new Launch(leftThruster, rightThruster, feedMotor, aimMotor, 25, 1);
 
     @Override
     public void robotInit() {
@@ -44,10 +44,10 @@ public class Robot extends TimedRobot {
         getMoreDropdown.addOption("No", "n");
         getMoreDropdown.addOption("Only Collect", "c");
         SmartDashboard.putData("Get More Notes?", getMoreDropdown);
-        SmartDashboard.putNumber("↖ Offset", go.A_offset);
-        SmartDashboard.putNumber("↗ Offset", go.B_offset);
-        SmartDashboard.putNumber("↘ Offset", go.C_offset);
-        SmartDashboard.putNumber("↙ Offset", go.D_offset);
+        SmartDashboard.putNumber("A Offset", go.A_offset);
+        SmartDashboard.putNumber("B Offset", go.B_offset);
+        SmartDashboard.putNumber("C Offset", go.C_offset);
+        SmartDashboard.putNumber("D Offset", go.D_offset);
     }
 
     @Override
@@ -110,6 +110,7 @@ public class Robot extends TimedRobot {
 
         // Update Systems:
         go.update();
+        launcher.update();
         
     }
 
@@ -129,10 +130,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testPeriodic() {
-        SmartDashboard.putNumber("A Offset", go.frontLeft.getPosition().getValue()*360);
-        SmartDashboard.putNumber("B Offset", go.frontRight.getPosition().getValue()*360);
-        SmartDashboard.putNumber("C Offset", go.backRight.getPosition().getValue()*360);
-        SmartDashboard.putNumber("D Offset", go.backLeft.getPosition().getValue()*360);
+        SmartDashboard.putNumber("Aim Value", launcher.aimPos());
+        aimMotor.set(c1.stick(1) + c2.stick(1));
     }
 
 }
