@@ -187,7 +187,7 @@ public class Robot extends TimedRobot {
         go.update();
         launcher.update();
         if (intaking) {
-            in.set(0.7);
+            in.set(0.4);
         } else {
             in.set(0);
         }
