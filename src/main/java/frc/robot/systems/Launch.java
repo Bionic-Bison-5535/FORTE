@@ -36,6 +36,10 @@ public class Launch {
         return aimMotor.getEnc();
     }
 
+    public void aim(double encValue) {
+        aimMotor.goTo(encValue);
+    }
+
     public boolean iseenote() {
         return !note.get();
     }
