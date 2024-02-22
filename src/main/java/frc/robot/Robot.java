@@ -206,15 +206,11 @@ public class Robot extends TimedRobot {
     public void testInit() {
         matchTimer.reset();
         leds.white();
-
-        aimMotor.posMode = true;
     }
 
     @Override
     public void testPeriodic() {
-        aimMotor.goToPos -= c1.stick(5);
-        aimMotor.update();
-        SmartDashboard.putNumber("Aim Value", launcher.aimPos());
+        feedMotor.set(c1.stick(5));
     }
 
 }
