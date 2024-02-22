@@ -13,7 +13,7 @@ public class Robot extends TimedRobot {
      * Mode for robot during teleop.
      * Can be "raw", "smart", or "auto".
      */
-    String mode = "raw";
+    String mode = "smart";
 
     private final SendableChooser<String> noteDropdown = new SendableChooser<>();
     private final SendableChooser<String> getMoreDropdown = new SendableChooser<>();
