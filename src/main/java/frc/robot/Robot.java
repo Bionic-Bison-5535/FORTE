@@ -127,17 +127,18 @@ public class Robot extends TimedRobot {
             if (c1.back() || c2.back()) {
                 mode = "raw";
             }
-            if (c1.onPress(Controls.X) || c2.onPress(Controls.X)) {
+            if (c1.onPress(Controls.X) || c2.onPress(Controls.X) || c1.active() || c2.active()) {
                 mode = "smart";
             }
+            autonomousPeriodic();
         }
 
         // LED Strip Color:
         if (mode == "auto") {
             leds.orange();
-        } else if (DriverStation.getMatchTime() < 20) {
+        } else if (DriverStation.getMatchTime() < 20) { // Final Countdown
             leds.turquoise();
-        } else if (launcher.iseenote()) {
+        } else if (launcher.stage > 0 && launcher.stage < 10) { // Intaking Note
             leds.yellow();
         } else {
             leds.allianceColor();
@@ -151,7 +152,7 @@ public class Robot extends TimedRobot {
         } else {
             in.set(0);
         }
-        
+
     }
 
     @Override
