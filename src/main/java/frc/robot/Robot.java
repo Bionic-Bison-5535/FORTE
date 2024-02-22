@@ -55,6 +55,13 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         SmartDashboard.putString("Teleop Mode", mode);
+        SmartDashboard.putNumber("Aim Pos", launcher.aimPos());
+        SmartDashboard.putNumber("Timer", matchTimer.get());
+        SmartDashboard.putNumber("Internal Robot Celsius Temeprature", navx.celsius());
+        SmartDashboard.putNumber("Yaw Angle", navx.coterminalYaw());
+        SmartDashboard.putNumber("Speed", navx.velocity());
+        SmartDashboard.putBoolean("I See Note", false);
+        SmartDashboard.putBoolean("Note in Launcher Detected", launcher.iseenote());
     }
 
     @Override
