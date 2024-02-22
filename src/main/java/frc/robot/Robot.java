@@ -72,6 +72,8 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         matchTimer.set(15000);
+        c1.refreshController();
+        c2.refreshController();
     }
 
     @Override

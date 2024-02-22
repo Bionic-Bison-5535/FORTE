@@ -60,6 +60,14 @@ public class Controls {
         return in.getRawButtonReleased(buttonNumber);
     }
 
+    /** Clears previous instances of presses and releases of buttons */
+    public void refreshController() {
+        for (int i=1; i<=10; i++) {
+            in.getRawButtonPressed(i);
+            in.getRawButtonReleased(i);
+        }
+    }
+
     public boolean a() {
         return in.getRawButton(A);
     }
