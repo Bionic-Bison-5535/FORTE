@@ -96,6 +96,16 @@ public class Wesswerve {
 		angle3 = Angle3;
 	}
 
+	public void lock() {
+		setVelocities(0, 0, 0, 0);
+		setAngles(45, -45, 45, -45);
+		move = false;
+	}
+
+	public void unlock() {
+		move = true;
+	}
+
 	public void setVelocities(double V0, double V1, double V2, double V3) { // Sets velocities of all wheels
 		if (move) {
 			if (usingTalons) {
