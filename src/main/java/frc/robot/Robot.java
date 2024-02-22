@@ -26,7 +26,7 @@ public class Robot extends TimedRobot {
     Navx navx = new Navx();
     Lights leds = new Lights(30);
     Motor in = new Motor(5, true, true, 1);
-    Motor aimMotor = new Motor(24, false, false, 0.5);
+    Motor aimMotor = new Motor(24, false, false, 1);
     Motor rightThruster = new Motor(7, false, false, 1);
     Motor leftThruster = new Motor(8, false, true, 1);
     Motor feedMotor = new Motor(9, false, false, 1);
