@@ -84,18 +84,32 @@ public class Robot extends TimedRobot {
             if (c1.start() || c2.start()) {
                 mode = "smart";
             }
-            if (c1.a() || c2.a()) {
-                intaking = true;
-                launcher.intake();
-            }
             aimMotor.goToPos += 3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), 3);
             if (c1.b() || c2.b()) {
                 intaking = false;
                 launcher.stopIntake();
             }
-            if (launcher.intakeStage == 0) {
-                if (c1.onPress(Controls.LEFT)) {
+            if (launcher.stage == 0) {
+                go.unlock();
+                if (c1.onPress(Controls.A) || c2.onPress(Controls.A)) {
+                    intaking = true;
+                    launcher.intake();
+                }
+                if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) {
+                    go.lock();
                     launcher.LAUNCHstart();
+                }
+                if (c1.right() || c2.right()) {
+                    launcher.LAUNCHprep();
+                }
+                if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) {
+                    launcher.LAUNCH();
+                }
+                if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) {
+                    launcher.amp();
+                }
+                if (c1.onPress(Controls.X) || c2.onPress(Controls.X)) {
+                    launcher.aim(Launch.pos.closeup);
                 }
             }
         } else if (mode == "smart") {
