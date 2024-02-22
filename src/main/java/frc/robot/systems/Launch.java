@@ -93,17 +93,8 @@ public class Launch {
                 feed.set(0);
                 stage = 2;
             }
-        } else if (stage == 2) { // If note went out of range, bring back into view
-            if (iseenote()) {
-                stage = 3;
-            } else {
-                leftThruster.set(-0.05);
-                rightThruster.set(-0.05);
-                feed.set(-0.04);
-            }
-        }
-        if (stage == 3) { // Bring note to exact launch position
-            feed.set(-0.035);
+        } else if (stage == 2) { // Bring note to exact launch position
+            feed.set(0.035);
             if (!iseenote()) { // Stop intake (finish process)
                 feed.set(0);
                 stage = 0;
@@ -148,15 +139,6 @@ public class Launch {
                 rightThruster.set(0);
                 feed.set(0);
                 stage = 0;
-            }
-        }
-
-        // Keep note from slipping down into intake:
-        if (stage == 0) {
-            if (iseenote()) {
-                feed.set(0.04);
-            } else {
-                feed.set(0);
             }
         }
 
