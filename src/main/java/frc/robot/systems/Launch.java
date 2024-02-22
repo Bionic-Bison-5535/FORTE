@@ -9,9 +9,17 @@ public class Launch {
     public CANcoder aimCoder;
     private DigitalInput note;
     private Tim launchTimer = new Tim();
-    public int intakeStage = 0;
-    public int launchStage = 0;
-    public boolean holdingNote = true;
+    public int stage = 0;
+
+    /** Encoder-based positions for launcher to go to */
+    public class pos {
+        /** Intake position */
+        public static double intake = 21.5;
+        /** Position for scoring in amp */
+        public static double amp = 120;
+        /** Position for scoring in speaker while pressed up against subwoofer */
+        public static double closeup = 15;
+    }
 
 	public Launch(Motor LaunchLeftMotor, Motor LaunchRightMotor, Motor FeedMotor, Motor AimMotor, int aimCoderID, int sensorPin) {
         note = new DigitalInput(sensorPin);
@@ -21,6 +29,7 @@ public class Launch {
         aimMotor = AimMotor;
         aimCoder = new CANcoder(aimCoderID);
         aimMotor.setEnc(aimCoder.getPosition().getValue()*182);
+        aimMotor.goTo(pos.intake);
 	}
 
     public double aimPos() {
@@ -32,14 +41,14 @@ public class Launch {
     }
 
     public void intake() {
-        if (intakeStage == 0) {
-			intakeStage = 1;
-            aimMotor.goTo(21.5);
+        if (stage == 0) {
+			stage = 1;
+            aimMotor.goTo(pos.intake);
 		}
     }
 
     public void stopIntake() {
-        intakeStage = 0;
+        stage = 0;
         feed.set(0);
         leftThruster.set(0);
         rightThruster.set(0);
@@ -48,25 +57,24 @@ public class Launch {
     /** Fires up thrusters while function called */
     public void LAUNCHprep() {
         leftThruster.set(2);
-        rightThruster.set(2);
+        rightThruster.set(0.8);
     }
 
     /** Starts automatic launch sequence */
     public void LAUNCHstart() {
         launchTimer.reset();
-        launchStage = 1;
+        stage = 11;
     }
 
     /** LAUNCH (officially) */
     public void LAUNCH() {
         launchTimer.reset();
-        launchStage = 2;
+        stage = 12;
     }
 
-    /** Launch at low-ish speed */
+    /** Launch at low-ish speed at downward angle */
     public void amp() {
-        launchTimer.reset();
-        launchStage = 3;
+        stage = 21;
     }
 
     /** Call periodically to run this system */
@@ -75,55 +83,77 @@ public class Launch {
         aimMotor.update();
 
         // Intake System:
-        if (intakeStage == 1) { // Intake note until detected
+        if (stage == 1) { // Intake note until detected
             feed.set(0.15);
             if (iseenote()) {
                 feed.set(0);
-                intakeStage = 2;
+                stage = 2;
             }
-        } else if (intakeStage == 2) { // If note went out of range, bring back into view
+        } else if (stage == 2) { // If note went out of range, bring back into view
             if (iseenote()) {
-                intakeStage = 3;
+                stage = 3;
             } else {
                 leftThruster.set(-0.05);
                 rightThruster.set(-0.05);
                 feed.set(-0.04);
             }
         }
-        if (intakeStage == 3) { // Bring note to exact launch position
+        if (stage == 3) { // Bring note to exact launch position
             feed.set(-0.035);
-            if (!iseenote()) {
+            if (!iseenote()) { // Stop intake (finish process)
                 feed.set(0);
-                intakeStage = 0;
-                holdingNote = true;
+                stage = 0;
             }
         }
 
         // Launch System:
-        if (launchStage == 1) { // Fire up thrusters
-            if (launchTimer.get() > 0.5) {
+        if (stage == 11) { // Fire up thrusters
+            leftThruster.set(2);
+            rightThruster.set(0.8);
+            if (launchTimer.get() > 700) {
                 launchTimer.reset();
-                launchStage = 2;
+                stage = 12;
             }
-            leftThruster.set(2);
-            rightThruster.set(2);
         }
-        if (launchStage == 2) { // Push note into thrusters
+        if (stage == 12) { // Push note into thrusters
             leftThruster.set(2);
-            rightThruster.set(2);
+            rightThruster.set(0.8);
             feed.set(2);
-            if (launchTimer.get() > 0.3) { // Stop launcher
+            if (launchTimer.get() > 300) { // Stop launcher (finish process)
                 feed.set(0);
                 leftThruster.set(0);
                 rightThruster.set(0);
-                launchStage = 0;
-                holdingNote = false;
+                stage = 0;
             }
         }
-        if (launchStage == 3) { // Launch into amp
-            leftThruster.set(0.15);
-            rightThruster.set(0.15);
+
+        // Amp Launch:
+        if (stage == 21) { // Angle to amp score position
+            aimMotor.goTo(pos.amp);
+            if (aimMotor.almost()) {
+                stage = 22;
+                launchTimer.reset();
+            }
+        }
+        if (stage == 22) { // Discard note at low speed
+            leftThruster.set(0.2);
+            rightThruster.set(0.2);
             feed.set(0.4);
+            if (launchTimer.get() > 1000) { // Stop launcher (finish process)
+                leftThruster.set(0);
+                rightThruster.set(0);
+                feed.set(0);
+                stage = 0;
+            }
+        }
+
+        // Keep note from slipping down into intake:
+        if (stage == 0) {
+            if (iseenote()) {
+                feed.set(0.04);
+            } else {
+                feed.set(0);
+            }
         }
 
     }
