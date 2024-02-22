@@ -14,7 +14,7 @@ public class Launch {
     /** Encoder-based positions for launcher to go to */
     public class pos {
         /** Intake position */
-        public static double intake = 21.5;
+        public static double intake = 19.5;
         /** Position for scoring in amp */
         public static double amp = 120;
         /** Position for scoring in speaker while pressed up against subwoofer */
