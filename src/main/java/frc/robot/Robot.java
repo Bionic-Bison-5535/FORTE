@@ -104,6 +104,7 @@ public class Robot extends TimedRobot {
                 }
                 if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) {
                     go.lock();
+                    go.update();
                     launcher.LAUNCHstart();
                 }
                 if (c1.right() || c2.right()) {
