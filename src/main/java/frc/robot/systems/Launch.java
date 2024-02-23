@@ -94,7 +94,7 @@ public class Launch {
                 stage = 2;
             }
         } else if (stage == 2) { // Bring note to exact launch position
-            feed.set(0.035);
+            feed.set(0.07);
             if (!iseenote()) { // Stop intake (finish process)
                 feed.set(0);
                 stage = 0;

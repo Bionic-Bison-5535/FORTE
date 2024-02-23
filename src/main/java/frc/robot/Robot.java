@@ -1,6 +1,8 @@
 package frc.robot;
 
 import java.lang.Math;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -31,6 +33,7 @@ public class Robot extends TimedRobot {
     Motor leftThruster = new Motor(8, false, true, 1);
     Motor feedMotor = new Motor(9, false, false, 1);
     Launch launcher = new Launch(leftThruster, rightThruster, feedMotor, aimMotor, 25, 1);
+    DigitalInput iseenote = new DigitalInput(2);
 
     boolean intaking = false;
 
@@ -60,8 +63,9 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Internal Robot Celsius Temeprature", navx.celsius());
         SmartDashboard.putNumber("Yaw Angle", navx.coterminalYaw());
         SmartDashboard.putNumber("Speed", navx.velocity());
-        SmartDashboard.putBoolean("I See Note", false);
+        SmartDashboard.putBoolean("I See Note", !iseenote.get());
         SmartDashboard.putBoolean("Note in Launcher Detected", launcher.iseenote());
+        SmartDashboard.putNumber("Launcher Stage", launcher.stage);
     }
 
     @Override
@@ -98,6 +102,7 @@ public class Robot extends TimedRobot {
             }
             if (launcher.stage == 0) {
                 go.unlock();
+                intaking = false;
                 if (c1.onPress(Controls.A) || c2.onPress(Controls.A)) {
                     intaking = true;
                     launcher.intake();
@@ -139,7 +144,8 @@ public class Robot extends TimedRobot {
             }
             if (launcher.stage == 0) {
                 go.unlock();
-                if (c1.onPress(Controls.A) || c2.onPress(Controls.A)) {
+                intaking = false;
+                if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || !iseenote.get()) {
                     intaking = true;
                     launcher.intake();
                 }
