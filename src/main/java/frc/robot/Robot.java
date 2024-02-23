@@ -37,7 +37,10 @@ public class Robot extends TimedRobot {
     Limelight speaker, speaker2, ampCam;
     Limelight posCam = new Limelight(1);
 
+    /** Whether or not the intake is running */
     boolean intaking = false;
+    /** The desired yaw angle of the robot */
+    double dir = 0;
 
     @Override
     public void robotInit() {
@@ -85,6 +88,7 @@ public class Robot extends TimedRobot {
         getMoreNotes = getMoreDropdown.getSelected();
         matchTimer.reset();
         leds.orange();
+        dir = navx.yaw();
     }
 
     @Override
@@ -141,7 +145,13 @@ public class Robot extends TimedRobot {
                 go.lock();
             } else {
                 go.unlock();
-                go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(4), 3), navx.yaw());
+                dir += 4 * (Math.pow(c1.stick(4), 3) + Math.pow(c2.stick(4), 3));
+                go.swerve(
+                    Math.pow(c1.stick(1), 3) + Math.pow(c2.stick(1), 3),
+                    Math.pow(c1.stick(0), 3) + Math.pow(c2.stick(0), 3),
+                    -0.02*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1),
+                    navx.yaw()
+                );
             }
             if (c1.back() || c2.back()) {
                 mode = "raw";
@@ -151,6 +161,7 @@ public class Robot extends TimedRobot {
             }
             if ((c1.right_stick() && c1.start()) || (c2.right_stick() && c2.start())) {
                 navx.zeroYaw();
+                dir = 0;
             }
             if (c1.b() || c2.b()) {
                 intaking = false;
