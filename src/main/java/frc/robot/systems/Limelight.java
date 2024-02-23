@@ -28,6 +28,20 @@ public class Limelight {
 		PortForwarder.add(5807, "limelight.local", 5807);
 	}
 
+	/**
+	 * Activates correct pipeline
+	 * @return True if camera is immediately ready (on the correct pipeline)
+	 */
+	public boolean activate() {
+		table.getEntry("pipeline").setNumber(pipeline);
+		return pipelineActivated();
+	}
+
+	/** @return True if camera is set to correct pipeline */
+	public boolean pipelineActivated() {
+		return (int)table.getEntry("pipeline").getNumber(-1) == pipeline;
+	}
+
 	/** @return X position of centre of object of focus */
 	public double X() {
 		table.getEntry("pipeline").setNumber(pipeline);
@@ -138,6 +152,11 @@ public class Limelight {
 	public double robot_yaw() {
 		table.getEntry("pipeline").setNumber(pipeline);
 		return table.getEntry("botpose").getDoubleArray(getData)[5];
+	}
+
+	public double[] allPosData() {
+		table.getEntry("pipeline").setNumber(pipeline);
+		return table.getEntry("botpose").getDoubleArray(getData);
 	}
 
 	public static boolean inRange(double value, double setting, double errorRange) {
