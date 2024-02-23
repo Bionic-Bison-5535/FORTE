@@ -137,7 +137,12 @@ public class Robot extends TimedRobot {
                 }
             }
         } else if (mode == "smart") {
-            go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(4), 3), navx.yaw());
+            if (c1.left_stick() || c2.left_stick()) {
+                go.lock();
+            } else {
+                go.unlock();
+                go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(4), 3), navx.yaw());
+            }
             if (c1.back() || c2.back()) {
                 mode = "raw";
             }
