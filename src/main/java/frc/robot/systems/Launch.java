@@ -16,7 +16,7 @@ public class Launch {
         /** Intake position */
         public static double intake = 19.5;
         /** Position for scoring in amp */
-        public static double amp = 85.5;
+        public static double amp = 88.14;
         /** Position for scoring in speaker while pressed up against subwoofer */
         public static double closeup = 15;
     }
@@ -126,19 +126,8 @@ public class Launch {
         if (stage == 21) { // Angle to amp score position
             aimMotor.goTo(pos.amp);
             if (aimMotor.almost()) {
-                stage = 22;
+                stage = 11;
                 launchTimer.reset();
-            }
-        }
-        if (stage == 22) { // Discard note
-            leftThruster.set(1);
-            rightThruster.set(1);
-            feed.set(1);
-            if (launchTimer.get() > 1000) { // Stop launcher (finish process)
-                leftThruster.set(0);
-                rightThruster.set(0);
-                feed.set(0);
-                stage = 0;
             }
         }
 
