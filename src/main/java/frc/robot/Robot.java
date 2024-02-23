@@ -41,9 +41,9 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         navx.reset();
         noteDropdown.setDefaultOption("None", "0");
-        noteDropdown.addOption("Left Note", "1");
-        noteDropdown.addOption("Center Note", "2");
-        noteDropdown.addOption("Right Note", "3");
+        noteDropdown.addOption("Left", "1");
+        noteDropdown.addOption("Center", "2");
+        noteDropdown.addOption("Right", "3");
         SmartDashboard.putData("Which Note To Get?", noteDropdown);
         getMoreDropdown.setDefaultOption("Yes", "y");
         getMoreDropdown.addOption("No", "n");
@@ -66,6 +66,10 @@ public class Robot extends TimedRobot {
         SmartDashboard.putBoolean("I See Note", !iseenote.get());
         SmartDashboard.putBoolean("Note in Launcher Detected", launcher.iseenote());
         SmartDashboard.putNumber("Launcher Stage", launcher.stage);
+        go.A_offset = SmartDashboard.getNumber("A Offset", go.A_offset);
+        go.B_offset = SmartDashboard.getNumber("B Offset", go.B_offset);
+        go.C_offset = SmartDashboard.getNumber("C Offset", go.C_offset);
+        go.D_offset = SmartDashboard.getNumber("D Offset", go.D_offset);
     }
 
     @Override
