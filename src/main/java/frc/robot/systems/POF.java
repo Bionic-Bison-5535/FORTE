@@ -12,10 +12,12 @@ public class POF {
     }
 
     public void update() {
-        posData = cam.allPosData();
-        x = posData[0];
-        y = posData[1];
-        yaw = posData[5];
+        if (cam.pipelineActivated()) {
+            posData = cam.allPosData();
+            x = posData[0];
+            y = posData[1];
+            yaw = posData[5];
+        }
     }
 
 }
