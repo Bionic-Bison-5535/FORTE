@@ -1,12 +1,11 @@
 package frc.robot;
 
 import java.lang.Math;
-
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.systems.*;
 
 public class Robot extends TimedRobot {
@@ -16,6 +15,7 @@ public class Robot extends TimedRobot {
      * Can be "raw", "smart", or "auto".
      */
     String mode = "smart";
+    boolean intaking = false;
 
     private final SendableChooser<String> noteDropdown = new SendableChooser<>();
     private final SendableChooser<String> getMoreDropdown = new SendableChooser<>();
@@ -36,8 +36,6 @@ public class Robot extends TimedRobot {
     DigitalInput iseenote = new DigitalInput(2);
     Limelight speaker, speaker2, ampCam;
     Limelight posCam = new Limelight(1);
-
-    boolean intaking = false;
 
     @Override
     public void robotInit() {
