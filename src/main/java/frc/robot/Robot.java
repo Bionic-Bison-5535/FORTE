@@ -109,6 +109,7 @@ public class Robot extends TimedRobot {
             go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(4), 3), 0);
             if (c1.start() || c2.start()) {
                 mode = "smart";
+                dir = navx.yaw();
             }
             aimMotor.goToPos += 3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), 3);
             if (c1.b() || c2.b()) {
