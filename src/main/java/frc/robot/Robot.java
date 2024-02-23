@@ -41,6 +41,8 @@ public class Robot extends TimedRobot {
     boolean intaking = false;
     /** The desired yaw angle of the robot */
     double dir = 0;
+    /** To be used for finding the nearest coterminal angle when a POV button is pressed */
+    double newAngle;
 
     @Override
     public void robotInit() {
@@ -146,6 +148,17 @@ public class Robot extends TimedRobot {
                 go.lock();
             } else {
                 go.unlock();
+                if (c1.pov() != -1) {
+                    newAngle = (double)(c1.pov() + 180);
+                    while (newAngle > dir+180) { newAngle -= 360; }
+                    while (newAngle < dir-180) { newAngle += 360; }
+                    dir = newAngle;
+                } else if (c2.pov() != -1) {
+                    newAngle = (double)(c2.pov() + 180);
+                    while (newAngle > dir+180) { newAngle -= 360; }
+                    while (newAngle < dir-180) { newAngle += 360; }
+                    dir = newAngle;
+                }
                 dir += 4 * (Math.pow(c1.stick(4), 3) + Math.pow(c2.stick(4), 3));
                 go.swerve(
                     Math.pow(c1.stick(1), 3) + Math.pow(c2.stick(1), 3),
