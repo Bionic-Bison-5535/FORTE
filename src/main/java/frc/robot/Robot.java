@@ -41,6 +41,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
+        Limelight.enableLimelightUSB();
         navx.reset();
         noteDropdown.setDefaultOption("None", "0");
         noteDropdown.addOption("Left Note", "1");
