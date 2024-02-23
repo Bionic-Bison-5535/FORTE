@@ -8,7 +8,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 /**  Wesswerve for Square Swerve Robot with CANcoder Angle Detection and Either Talon FX or CANSparkMax motor controllers.
 	Program written by Wesley McGinn {wesleymcginn1@gmail.com} for Team 5535 (The Bionic Bison, New Buffalo, Michigan)
-	@version 4.6 Beta
+	@version 4.7 Beta
 */
 public class Wesswerve {
 
@@ -24,12 +24,11 @@ public class Wesswerve {
 	private boolean negation;
 	public boolean SmartAngle = true;
 	public double theta = 0;
-	public double default_speed = 0.9;
+	public double default_speed = 1.2;
 	public double speed = default_speed;
 	public double steeringAmplifier = 0.5;
 	private final double wheelAngleErrorRange = 1;
-	private final double dist1 = 0.5;
-	private final double dist2 = 0.5;
+	private final double dist = 0.5;
 	public double x;
 	public double y;
 	public double a, b, c, d;
@@ -95,6 +94,16 @@ public class Wesswerve {
 		angle1 = Angle1;
 		angle2 = Angle2;
 		angle3 = Angle3;
+	}
+
+	public void lock() {
+		setVelocities(0, 0, 0, 0);
+		setAngles(45, -45, 45, -45);
+		move = false;
+	}
+
+	public void unlock() {
+		move = true;
 	}
 
 	public void setVelocities(double V0, double V1, double V2, double V3) { // Sets velocities of all wheels
@@ -239,20 +248,20 @@ public class Wesswerve {
 					setVelocities(a*(y+0.4*(-rotationalInput))*speed, -b*(y+0.4*(-rotationalInput))*speed, -c*(y+0.4*(-rotationalInput))*speed, -d*(y+0.4*(-rotationalInput))*speed);
 				} else {
 					if (x < 0) {
-						angle0 = -arctan((dist1*sine(-theta + 135)),(2*x-dist1*cosine(-theta + 135)))+theta+180;
-						angle1 = -arctan((dist1*sine(-theta + 45)),(2*x-dist1*cosine(-theta + 45)))+theta+180;
-						angle2 = -arctan((dist2*sine(-theta - 45)),(2*x-dist2*cosine(-theta - 45)))+theta+180;
-						angle3 = -arctan((dist2*sine(-theta - 135)),(2*x-dist2*cosine(-theta - 135)))+theta+180;
+						angle0 = -arctan((dist*sine(-theta + 135)),(2*x-dist*cosine(-theta + 135)))+theta+180;
+						angle1 = -arctan((dist*sine(-theta + 45)),(2*x-dist*cosine(-theta + 45)))+theta+180;
+						angle2 = -arctan((dist*sine(-theta - 45)),(2*x-dist*cosine(-theta - 45)))+theta+180;
+						angle3 = -arctan((dist*sine(-theta - 135)),(2*x-dist*cosine(-theta - 135)))+theta+180;
 					} else {
-						angle0 = -arctan((dist1*sine(-theta + 135)),(2*x-dist1*cosine(-theta + 135)))+theta;
-						angle1 = -arctan((dist1*sine(-theta + 45)),(2*x-dist1*cosine(-theta + 45)))+theta;
-						angle2 = -arctan((dist2*sine(-theta - 45)),(2*x-dist2*cosine(-theta - 45)))+theta;
-						angle3 = -arctan((dist2*sine(-theta - 135)),(2*x-dist2*cosine(-theta - 135)))+theta;
+						angle0 = -arctan((dist*sine(-theta + 135)),(2*x-dist*cosine(-theta + 135)))+theta;
+						angle1 = -arctan((dist*sine(-theta + 45)),(2*x-dist*cosine(-theta + 45)))+theta;
+						angle2 = -arctan((dist*sine(-theta - 45)),(2*x-dist*cosine(-theta - 45)))+theta;
+						angle3 = -arctan((dist*sine(-theta - 135)),(2*x-dist*cosine(-theta - 135)))+theta;
 					}
-					a = Math.abs(Math.sqrt((x*x)+(x*dist1*cosine(-theta + 135))+(0.5))/x);
-					b = Math.abs(Math.sqrt((x*x)+(x*dist1*cosine(-theta + 45))+(0.5))/x);
-					c = Math.abs(Math.sqrt((x*x)+(x*dist2*cosine(-theta - 45))+(0.5))/x);
-					d = Math.abs(Math.sqrt((x*x)+(x*dist2*cosine(-theta - 135))+(0.5))/x);
+					a = Math.abs(Math.sqrt((x*x)+(x*dist*cosine(-theta + 135))+(0.5))/x);
+					b = Math.abs(Math.sqrt((x*x)+(x*dist*cosine(-theta + 45))+(0.5))/x);
+					c = Math.abs(Math.sqrt((x*x)+(x*dist*cosine(-theta - 45))+(0.5))/x);
+					d = Math.abs(Math.sqrt((x*x)+(x*dist*cosine(-theta - 135))+(0.5))/x);
 					setVelocities(a*(y+0.4*Math.abs(rotationalInput))*speed, -b*(y+0.4*Math.abs(rotationalInput))*speed, -c*(y+0.4*Math.abs(rotationalInput))*speed, -d*(y+0.4*Math.abs(rotationalInput))*speed);
 				}
 			}

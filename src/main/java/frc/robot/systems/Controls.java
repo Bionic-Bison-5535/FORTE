@@ -40,7 +40,7 @@ public class Controls {
     }
     
     public boolean active() {
-        return (stick(0) != 0 || stick(1) != 0);
+        return (stick(0) != 0 || stick(1) != 0 || stick(4) != 0 || stick(5) != 0 || pov() != -1);
     }
     
     /**
@@ -58,6 +58,14 @@ public class Controls {
     
     public boolean onRelease(int buttonNumber) {
         return in.getRawButtonReleased(buttonNumber);
+    }
+
+    /** Clears previous instances of presses and releases of buttons */
+    public void refreshController() {
+        for (int i=1; i<=10; i++) {
+            in.getRawButtonPressed(i);
+            in.getRawButtonReleased(i);
+        }
     }
 
     public boolean a() {

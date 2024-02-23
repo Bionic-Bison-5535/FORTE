@@ -16,7 +16,7 @@ public class Motor {
     private boolean invertThisMotor = false;
     public double goToPos = 0;
     public boolean usingTalon;
-    public double db = 0.15;
+    public double db = 0.01;
     public boolean posMode = false;
     public double maxSpeed = 1;
 
@@ -78,6 +78,10 @@ public class Motor {
         return (getEnc() / rotationValue());
     }
 
+    public void setRotations(double rotations) {
+        setEnc(rotations * rotationValue());
+    }
+
     public void setEnc(double newEncValue) {
         if (usingTalon) {
             talonMotor.setSelectedSensorPosition(newEncValue);
@@ -117,16 +121,20 @@ public class Motor {
         }
     }
 
+    private double keepInRange(double number, double floor, double ceiling) {
+        if (number >= floor && number <= ceiling) {
+            return number;
+        } else if (number < floor) {
+            return floor;
+        } else {
+            return ceiling;
+        }
+    }
+
     public void update() {
         if (posMode) {
             if (!there()) {
-                if (0.3*((goToPos/rotationValue())-getRotations()) <= maxSpeed && 0.3*((goToPos/rotationValue())-getRotations()) >= -maxSpeed) {
-                    set(0.3*((goToPos/rotationValue())-getRotations()));
-                } else if (0.3*((goToPos/rotationValue())-getRotations()) > 0) {
-                    set(maxSpeed);
-                } else {
-                    set(-maxSpeed);
-                }
+                set(keepInRange(0.5*((goToPos/rotationValue())-getRotations()), -maxSpeed, maxSpeed));
             } else {
                 set(0);
             }
