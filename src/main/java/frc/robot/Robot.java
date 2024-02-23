@@ -224,7 +224,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testPeriodic() {
-        feedMotor.set(c1.stick(5));
+        aimMotor.goTo(SmartDashboard.getNumber("Aim Pos", aimMotor.goToPos));
+        SmartDashboard.putNumber("Area_April", posCam.area());
+        SmartDashboard.putNumber("Yaw_April", posCam.yaw());
     }
 
 }
