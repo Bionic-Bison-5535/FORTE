@@ -105,7 +105,7 @@ public class Launch {
         if (stage == 11) { // Fire up thrusters
             leftThruster.set(2);
             rightThruster.set(0.8);
-            if (launchTimer.get() > 700) {
+            if (launchTimer.get() > 1000) {
                 launchTimer.reset();
                 stage = 12;
             }
