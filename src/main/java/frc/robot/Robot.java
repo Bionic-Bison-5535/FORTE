@@ -34,6 +34,8 @@ public class Robot extends TimedRobot {
     Motor feedMotor = new Motor(9, false, false, 1);
     Launch launcher = new Launch(leftThruster, rightThruster, feedMotor, aimMotor, 25, 1);
     DigitalInput iseenote = new DigitalInput(2);
+    Limelight speaker, speaker2, ampCam;
+    Limelight posCam = new Limelight(1);
 
     boolean intaking = false;
 
@@ -53,6 +55,15 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("B Offset", go.B_offset);
         SmartDashboard.putNumber("C Offset", go.C_offset);
         SmartDashboard.putNumber("D Offset", go.D_offset);
+        if (leds.blueAlliance) {
+            speaker = new Limelight(3);
+            speaker2 = new Limelight(5);
+            ampCam = new Limelight(7);
+        } else {
+            speaker = new Limelight(4);
+            speaker2 = new Limelight(6);
+            ampCam = new Limelight(8);
+        }
     }
 
     @Override
