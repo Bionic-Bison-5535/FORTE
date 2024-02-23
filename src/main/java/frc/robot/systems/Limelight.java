@@ -5,11 +5,12 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.net.PortForwarder;
 
 public class Limelight {
-    
+
     private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
 	private int pipeline = 0;
 	private double invalidArea = 0.04;
-	
+	private double[] getData = new double[6];
+
 	public Limelight(int Pipline) {
 		if (Pipline >= 0 && Pipline < 10) {
 			pipeline = Pipline;
@@ -61,7 +62,67 @@ public class Limelight {
 		}
 	}
 
-	public boolean inRange(double value, double setting, double errorRange) {
+	public double x_pos() {
+		table.getEntry("pipeline").setNumber(pipeline);
+		return table.getEntry("targetpose_cameraspace").getDoubleArray(getData)[0];
+	}
+
+	public double y_pos() {
+		table.getEntry("pipeline").setNumber(pipeline);
+		return table.getEntry("targetpose_cameraspace").getDoubleArray(getData)[1];
+	}
+
+	public double z_pos() {
+		table.getEntry("pipeline").setNumber(pipeline);
+		return table.getEntry("targetpose_cameraspace").getDoubleArray(getData)[2];
+	}
+
+	public double roll() {
+		table.getEntry("pipeline").setNumber(pipeline);
+		return table.getEntry("targetpose_cameraspace").getDoubleArray(getData)[3];
+	}
+
+	public double pitch() {
+		table.getEntry("pipeline").setNumber(pipeline);
+		return table.getEntry("targetpose_cameraspace").getDoubleArray(getData)[4];
+	}
+
+	public double yaw() {
+		table.getEntry("pipeline").setNumber(pipeline);
+		return table.getEntry("targetpose_cameraspace").getDoubleArray(getData)[5];
+	}
+
+	public double robot_x() {
+		table.getEntry("pipeline").setNumber(pipeline);
+		return table.getEntry("botpose").getDoubleArray(getData)[0];
+	}
+
+	public double robot_y() {
+		table.getEntry("pipeline").setNumber(pipeline);
+		return table.getEntry("botpose").getDoubleArray(getData)[1];
+	}
+
+	public double robot_z() {
+		table.getEntry("pipeline").setNumber(pipeline);
+		return table.getEntry("botpose").getDoubleArray(getData)[2];
+	}
+
+	public double robot_roll() {
+		table.getEntry("pipeline").setNumber(pipeline);
+		return table.getEntry("botpose").getDoubleArray(getData)[3];
+	}
+
+	public double robot_pitch() {
+		table.getEntry("pipeline").setNumber(pipeline);
+		return table.getEntry("botpose").getDoubleArray(getData)[4];
+	}
+
+	public double robot_yaw() {
+		table.getEntry("pipeline").setNumber(pipeline);
+		return table.getEntry("botpose").getDoubleArray(getData)[5];
+	}
+
+	public static boolean inRange(double value, double setting, double errorRange) {
 		return ((value >= setting - errorRange) && (value <= setting + errorRange));
 	}
 
