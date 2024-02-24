@@ -106,6 +106,7 @@ public class Robot extends TimedRobot {
         c2.refreshController();
     }
 
+    double temporary = 0;
     @Override
     public void teleopPeriodic() {
 
@@ -115,7 +116,12 @@ public class Robot extends TimedRobot {
             if (c1.start() || c2.start()) {
                 mode = "smart";
             }
-            launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), 3));
+            if (c1.stick(2) + c1.stick(3) != 0) {
+                launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), 3));
+                temporary = launcher.aimPos();
+            }
+            SmartDashboard.putNumber("Tag Y", speaker.Y());
+            SmartDashboard.putNumber("Aim Set", temporary);
             if (c1.b() || c2.b()) {
                 intaking = false;
                 launcher.stopIntake();
