@@ -119,8 +119,12 @@ public class Launch {
         // Intake System:
         if (stage == 1) { // Intake note until detected
             feed.set(0.15);
+            leftThruster.set(-0.05);
+            rightThruster.set(-0.05);
             if (iseenote()) {
                 feed.set(0);
+                leftThruster.set(0);
+                rightThruster.set(0);
                 stage = 2;
             }
         } else if (stage == 2) { // Bring note to exact launch position
