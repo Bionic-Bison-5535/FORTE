@@ -55,6 +55,9 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("B Offset", go.B_offset);
         SmartDashboard.putNumber("C Offset", go.C_offset);
         SmartDashboard.putNumber("D Offset", go.D_offset);
+        SmartDashboard.putBoolean("Alliance", leds.blueAlliance);
+        SmartDashboard.putString("Event", DriverStation.getEventName());
+        SmartDashboard.putNumber("Match", DriverStation.getMatchNumber());
         if (leds.blueAlliance) {
             speaker = new Limelight(3);
             speaker2 = new Limelight(5);
