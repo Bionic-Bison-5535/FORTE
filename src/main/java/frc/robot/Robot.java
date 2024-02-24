@@ -202,10 +202,13 @@ public class Robot extends TimedRobot {
                     launcher.intake();
                 }
                 if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) {
-                    launcher.LAUNCHstart();
+                    launcher.aimAndLAUNCH(speaker);
                 }
                 if (c1.right() || c2.right()) {
                     launcher.LAUNCHprep();
+                    if (speaker.activate()) {
+                        launcher.aim(Launch.pos.smartAim(speaker.area(), speaker.Y()));
+                    }
                 }
                 if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) {
                     launcher.LAUNCH();
