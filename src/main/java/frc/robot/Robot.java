@@ -155,22 +155,31 @@ public class Robot extends TimedRobot {
                 go.unlock();
                 if (c1.pov() != -1) {
                     newAngle = (double)(c1.pov() + 180);
-                    while (newAngle > dir+180) { newAngle -= 360; }
-                    while (newAngle < dir-180) { newAngle += 360; }
+                    while (newAngle > dir + 180) { newAngle -= 360; }
+                    while (newAngle < dir - 180) { newAngle += 360; }
                     dir = newAngle;
                 } else if (c2.pov() != -1) {
                     newAngle = (double)(c2.pov() + 180);
-                    while (newAngle > dir+180) { newAngle -= 360; }
-                    while (newAngle < dir-180) { newAngle += 360; }
+                    while (newAngle > dir + 180) { newAngle -= 360; }
+                    while (newAngle < dir - 180) { newAngle += 360; }
                     dir = newAngle;
                 }
                 dir += 4 * (Math.pow(c1.stick(4), 3) + Math.pow(c2.stick(4), 3));
-                go.swerve(
-                    Math.pow(c1.stick(1), 3) + Math.pow(c2.stick(1), 3),
-                    Math.pow(c1.stick(0), 3) + Math.pow(c2.stick(0), 3),
-                    -0.02*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1),
-                    navx.yaw()
-                );
+                if (c1.active() || c2.active() || !navx.moving()) {
+                    go.swerve(
+                        Math.pow(c1.stick(1), 3) + Math.pow(c2.stick(1), 3),
+                        Math.pow(c1.stick(0), 3) + Math.pow(c2.stick(0), 3),
+                        -0.02*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1),
+                        navx.yaw()
+                    );
+                } else {
+                    go.swerve(
+                        Math.pow(c1.stick(1), 3) + Math.pow(c2.stick(1), 3),
+                        Math.pow(c1.stick(0), 3) + Math.pow(c2.stick(0), 3),
+                        0,
+                        navx.yaw()
+                    );
+                }
             }
             if (c1.back() || c2.back()) {
                 mode = "raw";

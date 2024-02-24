@@ -46,7 +46,7 @@ public class Navx {
     }
 
     public boolean moving() {
-        return velocity() > 0.01;
+        return velocity() > 0.05;
     }
 
     public double celsius() {
