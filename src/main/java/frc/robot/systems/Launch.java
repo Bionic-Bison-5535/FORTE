@@ -9,6 +9,7 @@ public class Launch {
     public CANcoder aimCoder;
     private DigitalInput note;
     private Tim launchTimer = new Tim();
+    private Limelight cam;
     public int stage = 0;
     public boolean holdingNote = false;
 
@@ -82,19 +83,26 @@ public class Launch {
         rightThruster.set(0.8);
     }
 
-    /** Starts automatic launch sequence */
-    public void LAUNCHstart() {
-        launchTimer.reset();
-        stage = 11;
-    }
-
     /** LAUNCH (officially) */
     public void LAUNCH() {
         launchTimer.reset();
         stage = 12;
     }
 
-    /** Launch at low-ish speed at downward angle */
+    /** Starts automatic launch sequence */
+    public void LAUNCHstart() {
+        launchTimer.reset();
+        stage = 11;
+    }
+
+    /** Aims and then begins automatic launch sequence */
+    public void aimAndLAUNCH(Limelight Cam) {
+        stage = 31;
+        cam = Cam;
+        cam.activate();
+    }
+
+    /** Launch at downward angle perfect for scoring in amp */
     public void amp() {
         stage = 21;
     }
@@ -135,15 +143,16 @@ public class Launch {
             }
         }
         if (stage == 13) { // Push note into thrusters
+            feed.set(2);
             leftThruster.set(2);
             rightThruster.set(0.8);
-            feed.set(2);
             if (launchTimer.get() > 300) { // Stop launcher (finish process)
                 feed.set(0);
                 leftThruster.set(0);
                 rightThruster.set(0);
                 stage = 0;
                 holdingNote = false;
+                aim(pos.intake);
             }
         }
 
@@ -153,6 +162,28 @@ public class Launch {
             if (aimMotor.almost()) {
                 stage = 11;
                 launchTimer.reset();
+            }
+        }
+
+        // Aim and Launch:
+        if (stage == 31) { // Pull back note
+            feed.goTo(feed.getEnc() - 0.5535);
+            if (launchTimer.get() > 100) {
+                stage = 32;
+            }
+        }
+        if (stage == 32) { // Fire up thrusters and wait for camera to start
+            leftThruster.set(2);
+            rightThruster.set(0.8);
+            if (launchTimer.get() > 1100 && cam.activate()) {
+                stage = 33;
+            }
+        }
+        if (stage == 33) { // Wait until shot is possible (Tag in view and close enough)
+            leftThruster.set(2);
+            rightThruster.set(0.8);
+            if (cam.area() > 1) {
+                stage = 13;
             }
         }
 
