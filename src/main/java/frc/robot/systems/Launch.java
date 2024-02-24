@@ -11,6 +11,7 @@ public class Launch {
     private Tim launchTimer = new Tim();
     private Limelight cam;
     public int stage = 0;
+    private boolean prepping = false;
     public boolean holdingNote = false;
 
     /** Encoder-based positions for launcher to go to */
@@ -78,28 +79,30 @@ public class Launch {
         rightThruster.set(0);
     }
 
-    /** Fires up thrusters while function called */
+    /** Fires up thrusters and aims */
     public void LAUNCHprep() {
-        leftThruster.set(0.8);
-        rightThruster.set(2);
+        cam.activate();
+        stage = 31;
+        prepping = true;
     }
 
-    /** LAUNCH (officially) */
+    /** LAUNCH (officially) after "LAUNCHprep" function called */
     public void LAUNCH() {
-        launchTimer.reset();
-        stage = 12;
+        prepping = false;
     }
 
     /** Starts automatic launch sequence */
     public void LAUNCHstart() {
         launchTimer.reset();
         stage = 11;
+        prepping = false;
     }
 
     /** Aims and then begins automatic launch sequence */
     public void aimAndLAUNCH() {
         stage = 31;
         cam.activate();
+        prepping = false;
     }
 
     /** Launch at downward angle perfect for scoring in amp */
@@ -207,9 +210,9 @@ public class Launch {
             leftThruster.set(0.8);
             rightThruster.set(2);
             aim(pos.smartAim(cam.Y()));
-            if (aimMotor.almost()) {
-                stage = 13;
-                launchTimer.reset();
+            if (aimMotor.almost() && !prepping) {
+                stage = 14;
+                launchTimer.set(1100);
             }
         }
 

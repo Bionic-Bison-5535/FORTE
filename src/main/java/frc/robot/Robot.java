@@ -180,11 +180,8 @@ public class Robot extends TimedRobot {
                 if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) {
                     launcher.aimAndLAUNCH();
                 }
-                if (c1.right() || c2.right()) {
+                if (c1.onPress(Controls.RIGHT) || c2.onPress(Controls.RIGHT)) {
                     launcher.LAUNCHprep();
-                    if (speaker.activate()) {
-                        launcher.aim(Launch.pos.smartAim(speaker.Y()));
-                    }
                 }
                 if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) {
                     launcher.LAUNCH();
