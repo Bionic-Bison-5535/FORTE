@@ -25,7 +25,7 @@ public class Launch {
         public static double closeup = 15;
         /** Function to calculate encoder position based on Limelight camera input */
         public static double smartAim(double limelightArea, double limelightY) {
-            return limelightArea + limelightY; // DOES NOT WORK! (PLACEHOLDER FOR ACTUAL FORMULA UNTIL FORMULA DISCOVERED)
+            return 30 - limelightArea - limelightY; // DOES NOT WORK! (PLACEHOLDER FOR ACTUAL FORMULA UNTIL FORMULA DISCOVERED)
         }
     }
 
