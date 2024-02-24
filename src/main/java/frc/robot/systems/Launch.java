@@ -132,13 +132,14 @@ public class Launch {
         // Launch System:
         if (stage == 11) { // Pull note in
             feed.goTo(feed.getEnc() - 0.5535);
-            stage = 12;
+            if (launchTimer.get() > 100) {
+                stage = 12;
+            }
         }
         if (stage == 12) { // Fire up thrusters
             leftThruster.set(2);
             rightThruster.set(0.8);
-            if (launchTimer.get() > 1000) {
-                launchTimer.reset();
+            if (launchTimer.get() > 1100) {
                 stage = 13;
             }
         }
@@ -146,7 +147,7 @@ public class Launch {
             feed.set(2);
             leftThruster.set(2);
             rightThruster.set(0.8);
-            if (launchTimer.get() > 300) { // Stop launcher (finish process)
+            if (launchTimer.get() > 1400) { // Stop launcher (finish process)
                 feed.set(0);
                 leftThruster.set(0);
                 rightThruster.set(0);
