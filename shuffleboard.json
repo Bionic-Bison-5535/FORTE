@@ -210,7 +210,7 @@
               "_type": "Gyro",
               "_source0": "network_table:///SmartDashboard/Yaw Angle",
               "_title": "Yaw Angle",
-              "_glyph": 69,
+              "_glyph": 139,
               "_showGlyph": true,
               "Visuals/Major tick spacing": 45.0,
               "Visuals/Starting angle": 180.0,
