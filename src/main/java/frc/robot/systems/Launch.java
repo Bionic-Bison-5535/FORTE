@@ -24,8 +24,8 @@ public class Launch {
         /** Position for scoring in speaker while pressed up against subwoofer */
         public static double closeup = 15;
         /** Function to calculate encoder position based on Limelight camera input */
-        public static double smartAim(double limelightArea, double limelightY) {
-            return 30 - limelightArea - limelightY; // DOES NOT WORK! (PLACEHOLDER FOR ACTUAL FORMULA UNTIL FORMULA DISCOVERED)
+        public static double smartAim(double limelightY) {
+            return 30 - limelightY; // DOES NOT WORK! (PLACEHOLDER FOR ACTUAL FORMULA UNTIL FORMULA DISCOVERED)
         }
     }
 
