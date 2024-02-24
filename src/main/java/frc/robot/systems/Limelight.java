@@ -39,7 +39,7 @@ public class Limelight {
 
 	/** @return True if camera is set to correct pipeline */
 	public boolean pipelineActivated() {
-		return (int)table.getEntry("pipeline").getNumber(-1) == pipeline;
+		return table.getEntry("pipeline").getNumber(-1).intValue() == pipeline;
 	}
 
 	/** @return X position of centre of object of focus */
