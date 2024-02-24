@@ -99,7 +99,7 @@ public class Robot extends TimedRobot {
             if (c1.start() || c2.start()) {
                 mode = "smart";
             }
-            aimMotor.goToPos += 3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), 3);
+            launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), 3));
             if (c1.b() || c2.b()) {
                 intaking = false;
                 launcher.stopIntake();
