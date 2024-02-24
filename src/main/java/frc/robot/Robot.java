@@ -42,7 +42,6 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         Limelight.enableLimelightUSB();
         navx.reset();
-        navx.yaw_Offset += 180;
         noteDropdown.setDefaultOption("None", "0");
         noteDropdown.addOption("Left", "1");
         noteDropdown.addOption("Center", "2");
@@ -151,7 +150,7 @@ public class Robot extends TimedRobot {
                 go.lock();
             } else {
                 go.unlock();
-                go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(4), 3), navx.yaw());
+                go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(4), 3), navx.yaw()+180);
             }
             if (c1.back() || c2.back()) {
                 mode = "raw";
