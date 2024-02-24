@@ -16,6 +16,7 @@ public class Robot extends TimedRobot {
      */
     String mode = "smart";
     boolean intaking = false;
+    boolean actualMatch = false;
 
     private final SendableChooser<String> noteDropdown = new SendableChooser<>();
     private final SendableChooser<String> getMoreDropdown = new SendableChooser<>();
@@ -88,6 +89,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        actualMatch = true;
         noteToGet = noteDropdown.getSelected();
         getMoreNotes = getMoreDropdown.getSelected();
         matchTimer.reset();
@@ -210,7 +212,11 @@ public class Robot extends TimedRobot {
         go.update();
         launcher.update();
         if (intaking) {
-            in.set(0.4);
+            if (actualMatch) {
+                in.set(0.4 + Math.pow(matchTimer.get()/1000-1500,3)/3000000);
+            } else {
+                in.set(0.45);
+            }
         } else {
             in.set(0);
         }
