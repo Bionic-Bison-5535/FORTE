@@ -59,7 +59,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         SmartDashboard.putString("Teleop Mode", mode);
         SmartDashboard.putNumber("Aim Pos", launcher.aimPos());
-        SmartDashboard.putNumber("Timer", Math.floor(matchTimer.get()));
+        SmartDashboard.putNumber("Timer", Math.floor(matchTimer.get()/1000));
         SmartDashboard.putNumber("Internal Robot Celsius Temeprature", Math.round(navx.celsius()));
         SmartDashboard.putNumber("Yaw Angle", navx.coterminalYaw());
         SmartDashboard.putNumber("Speed", navx.velocity());
