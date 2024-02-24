@@ -33,9 +33,9 @@ public class Robot extends TimedRobot {
     Motor rightThruster = new Motor(7, false, false, 1);
     Motor leftThruster = new Motor(8, false, true, 1);
     Motor feedMotor = new Motor(9, false, false, 1);
-    Launch launcher = new Launch(leftThruster, rightThruster, feedMotor, aimMotor, 25, 1);
     DigitalInput iseenote = new DigitalInput(2);
     Limelight speaker, speaker2, ampCam;
+    Launch launcher;
     Limelight posCam = new Limelight(1);
 
     @Override
@@ -68,6 +68,7 @@ public class Robot extends TimedRobot {
             speaker2 = new Limelight(6);
             ampCam = new Limelight(8);
         }
+        launcher = new Launch(leftThruster, rightThruster, feedMotor, aimMotor, 25, 1, speaker);
     }
 
     @Override
