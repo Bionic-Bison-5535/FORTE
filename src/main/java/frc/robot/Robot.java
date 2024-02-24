@@ -171,6 +171,9 @@ public class Robot extends TimedRobot {
                 }
                 if (c1.right() || c2.right()) {
                     launcher.LAUNCHprep();
+                    if (speaker.activate()) {
+                        launcher.aim(Launch.pos.smartAim(speaker.area(), speaker.Y()));
+                    }
                 }
                 if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) {
                     launcher.LAUNCH();

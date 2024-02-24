@@ -14,14 +14,18 @@ public class Launch {
 
     /** Encoder-based positions for launcher to go to */
     public class pos {
+        public static double min = -21;
+        public static double max = 120;
         /** Intake position */
         public static double intake = 19.5;
         /** Position for scoring in amp */
         public static double amp = 88.14;
         /** Position for scoring in speaker while pressed up against subwoofer */
         public static double closeup = 15;
-        public static double min = -21;
-        public static double max = 120;
+        /** Function to calculate encoder position based on Limelight camera input */
+        public static double smartAim(double limelightArea, double limelightY) {
+            return limelightArea + limelightY; // DOES NOT WORK! (PLACEHOLDER FOR ACTUAL FORMULA UNTIL FORMULA DISCOVERED)
+        }
     }
 
 	public Launch(Motor LaunchLeftMotor, Motor LaunchRightMotor, Motor FeedMotor, Motor AimMotor, int aimCoderID, int sensorPin) {
@@ -41,7 +45,11 @@ public class Launch {
     }
     
     public void aim(double encValue) {
-        if (encValue > pos.min && encValue < pos.max) {
+        if (encValue < pos.min) {
+            aimMotor.goTo(pos.min);
+        } else if (encValue > pos.max) {
+            aimMotor.goTo(pos.max);
+        } else {
             aimMotor.goTo(encValue);
         }
     }
