@@ -24,9 +24,18 @@ public class Launch {
         public static double amp = 88.14;
         /** Position for scoring in speaker while pressed up against subwoofer */
         public static double closeup = 15;
+
+        private static double smartPosVal;
+        private static double previousLimelightY;
         /** Function to calculate encoder position based on Limelight camera input */
-        public static double smartAim(double limelightY) {
-            return 40.35 - 0.97*limelightY;
+        public static double smartAim(double limelightY, boolean moving) {
+            if (moving) { // Use previous position to predict future
+                smartPosVal = 40.35 - 0.97 * (2*limelightY - previousLimelightY);
+            } else {
+                smartPosVal = 40.35 - 0.97 * limelightY;
+            }
+            previousLimelightY = limelightY;
+            return smartPosVal;
         }
     }
 
@@ -208,12 +217,13 @@ public class Launch {
             rightThruster.set(2);
             if (cam.area() > 0.16) {
                 stage = 35;
+                aim(pos.smartAim(cam.Y(), false));
             }
         }
         if (stage == 35) { // Aim
             leftThruster.set(0.8);
             rightThruster.set(2);
-            aim(pos.smartAim(cam.Y()));
+            aim(pos.smartAim(cam.Y(), true));
             if (aimMotor.almost() && !prepping) {
                 stage = 14;
                 launchTimer.set(1100);
