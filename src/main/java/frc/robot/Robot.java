@@ -237,11 +237,32 @@ public class Robot extends TimedRobot {
         leds.white();
     }
 
+    double aimPos;
     @Override
     public void testPeriodic() {
-        aimMotor.goTo(SmartDashboard.getNumber("Aim Pos", aimMotor.goToPos));
-        SmartDashboard.putNumber("Area_April", posCam.area());
-        SmartDashboard.putNumber("Yaw_April", posCam.yaw());
+        go.swerve(0.2 * c1.stick(1), 0, 0, 180);
+        if (launcher.stage == 0) {
+            intaking = false;
+            if (!iseenote.get()) {
+                launcher.intake();
+                intaking = true;
+            }
+        }
+        if (c1.stick(5) != 0) {
+            aimPos += 0.5 * c1.stick(5);
+            SmartDashboard.putNumber("Aim Pos", aimPos);
+        } else {
+            aimPos = SmartDashboard.getNumber("Aim Pos", aimPos);
+        }
+        aimMotor.goTo(aimPos);
+        SmartDashboard.putNumber("Area_April", speaker.area());
+        go.update();
+        launcher.update();
+        if (intaking) {
+            in.set(0.4);
+        } else {
+            in.set(0);
+        }
     }
 
 }
