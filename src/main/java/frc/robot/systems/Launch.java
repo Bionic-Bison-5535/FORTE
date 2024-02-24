@@ -184,6 +184,14 @@ public class Launch {
             leftThruster.set(2);
             rightThruster.set(0.8);
             if (cam.area() > 1) {
+                stage = 34;
+            }
+        }
+        if (stage == 34) { // Aim
+            leftThruster.set(2);
+            rightThruster.set(0.8);
+            aim(pos.smartAim(cam.Y()));
+            if (aimMotor.almost()) {
                 stage = 13;
             }
         }
