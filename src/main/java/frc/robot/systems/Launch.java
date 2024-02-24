@@ -10,6 +10,7 @@ public class Launch {
     private DigitalInput note;
     private Tim launchTimer = new Tim();
     public int stage = 0;
+    public boolean holdingNote = false;
 
     /** Encoder-based positions for launcher to go to */
     public class pos {
