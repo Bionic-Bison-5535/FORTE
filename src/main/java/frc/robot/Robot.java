@@ -40,6 +40,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         navx.reset();
+        navx.yaw_Offset += 180;
         noteDropdown.setDefaultOption("None", "0");
         noteDropdown.addOption("Left", "1");
         noteDropdown.addOption("Center", "2");
