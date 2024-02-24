@@ -11,7 +11,7 @@
         "vgap": 27.0,
         "titleType": 1,
         "tiles": {
-          "2,4": {
+          "7,2": {
             "size": [
               1,
               1
@@ -19,12 +19,12 @@
             "content": {
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/limelight_PipelineName",
-              "_title": "limelight_PipelineName",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_title": "Pipeline",
+              "_glyph": 375,
+              "_showGlyph": true
             }
           },
-          "0,4": {
+          "9,4": {
             "size": [
               1,
               1
@@ -37,7 +37,7 @@
               "_showGlyph": false
             }
           },
-          "1,4": {
+          "10,4": {
             "size": [
               1,
               1
@@ -162,19 +162,6 @@
               "_showGlyph": false
             }
           },
-          "7,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Aim Pos",
-              "_title": "Aim Pos",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
           "1,0": {
             "size": [
               1,
@@ -197,8 +184,8 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Internal Robot Celsius Temeprature",
               "_title": "Celsius",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_glyph": 0,
+              "_showGlyph": true
             }
           },
           "7,0": {
@@ -264,7 +251,7 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "0,3": {
+          "4,4": {
             "size": [
               1,
               1
@@ -273,6 +260,86 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Launcher Stage",
               "_title": "Launcher Stage",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "2,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Alliance",
+              "_title": "Alliance",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#0000FFFF",
+              "Colors/Color when false": "#FF0000FF"
+            }
+          },
+          "0,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Event",
+              "_title": "Event",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "1,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Match",
+              "_title": "Match",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Aim Pos",
+              "_title": "Aim Pos",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "1,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Aim Set",
+              "_title": "Aim Set",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "0,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Tag Y",
+              "_title": "Tag Y",
               "_glyph": 148,
               "_showGlyph": false
             }

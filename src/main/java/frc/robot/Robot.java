@@ -15,6 +15,10 @@ public class Robot extends TimedRobot {
      * Can be "raw", "smart", or "auto".
      */
     String mode = "smart";
+    boolean intaking = false;
+    boolean actualMatch = false;
+    double dir = 0;
+    double newAngle;
 
     private final SendableChooser<String> noteDropdown = new SendableChooser<>();
     private final SendableChooser<String> getMoreDropdown = new SendableChooser<>();
@@ -31,23 +35,15 @@ public class Robot extends TimedRobot {
     Motor rightThruster = new Motor(7, false, false, 1);
     Motor leftThruster = new Motor(8, false, true, 1);
     Motor feedMotor = new Motor(9, false, false, 1);
-    Launch launcher = new Launch(leftThruster, rightThruster, feedMotor, aimMotor, 25, 1);
     DigitalInput iseenote = new DigitalInput(2);
     Limelight speaker, speaker2, ampCam;
+    Launch launcher;
     Limelight posCam = new Limelight(1);
-
-    /** Whether or not the intake is running */
-    boolean intaking = false;
-    /** The desired yaw angle of the robot */
-    double dir = 0;
-    /** To be used for finding the nearest coterminal angle when a POV button is pressed */
-    double newAngle;
 
     @Override
     public void robotInit() {
         Limelight.enableLimelightUSB();
         navx.reset();
-        navx.yaw_Offset += 180;
         noteDropdown.setDefaultOption("None", "0");
         noteDropdown.addOption("Left", "1");
         noteDropdown.addOption("Center", "2");
@@ -61,6 +57,9 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("B Offset", go.B_offset);
         SmartDashboard.putNumber("C Offset", go.C_offset);
         SmartDashboard.putNumber("D Offset", go.D_offset);
+        SmartDashboard.putBoolean("Alliance", leds.blueAlliance);
+        SmartDashboard.putString("Event", DriverStation.getEventName());
+        SmartDashboard.putNumber("Match", DriverStation.getMatchNumber());
         if (leds.blueAlliance) {
             speaker = new Limelight(3);
             speaker2 = new Limelight(5);
@@ -70,6 +69,7 @@ public class Robot extends TimedRobot {
             speaker2 = new Limelight(6);
             ampCam = new Limelight(8);
         }
+        launcher = new Launch(leftThruster, rightThruster, feedMotor, aimMotor, 25, 1, speaker);
     }
 
     @Override
@@ -91,6 +91,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        actualMatch = true;
         noteToGet = noteDropdown.getSelected();
         getMoreNotes = getMoreDropdown.getSelected();
         matchTimer.reset();
@@ -108,6 +109,7 @@ public class Robot extends TimedRobot {
         c2.refreshController();
     }
 
+    double temporary = 0;
     @Override
     public void teleopPeriodic() {
 
@@ -118,7 +120,12 @@ public class Robot extends TimedRobot {
                 mode = "smart";
                 dir = navx.yaw();
             }
-            launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), 3));
+            if (c1.stick(2) + c1.stick(3) != 0) {
+                launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), 3));
+                temporary = launcher.aimPos();
+            }
+            SmartDashboard.putNumber("Tag Y", speaker.Y());
+            SmartDashboard.putNumber("Aim Set", temporary);
             if (c1.b() || c2.b()) {
                 intaking = false;
                 launcher.stopIntake();
@@ -202,12 +209,12 @@ public class Robot extends TimedRobot {
                     launcher.intake();
                 }
                 if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) {
-                    launcher.aimAndLAUNCH(speaker);
+                    launcher.aimAndLAUNCH();
                 }
                 if (c1.right() || c2.right()) {
                     launcher.LAUNCHprep();
                     if (speaker.activate()) {
-                        launcher.aim(Launch.pos.smartAim(speaker.area(), speaker.Y()));
+                        launcher.aim(Launch.pos.smartAim(speaker.Y()));
                     }
                 }
                 if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) {
@@ -242,7 +249,11 @@ public class Robot extends TimedRobot {
         go.update();
         launcher.update();
         if (intaking) {
-            in.set(0.4);
+            if (actualMatch) {
+                in.set(0.4 + Math.pow(matchTimer.get()/1000-1500,3)/3000000);
+            } else {
+                in.set(0.45);
+            }
         } else {
             in.set(0);
         }
@@ -264,10 +275,6 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void testPeriodic() {
-        aimMotor.goTo(SmartDashboard.getNumber("Aim Pos", aimMotor.goToPos));
-        SmartDashboard.putNumber("Area_April", posCam.area());
-        SmartDashboard.putNumber("Yaw_April", posCam.yaw());
-    }
+    public void testPeriodic() {}
 
 }
