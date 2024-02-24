@@ -41,10 +41,11 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         Limelight.enableLimelightUSB();
         navx.reset();
+        navx.yaw_Offset += 180;
         noteDropdown.setDefaultOption("None", "0");
-        noteDropdown.addOption("Left Note", "1");
-        noteDropdown.addOption("Center Note", "2");
-        noteDropdown.addOption("Right Note", "3");
+        noteDropdown.addOption("Left", "1");
+        noteDropdown.addOption("Center", "2");
+        noteDropdown.addOption("Right", "3");
         SmartDashboard.putData("Which Note To Get?", noteDropdown);
         getMoreDropdown.setDefaultOption("Yes", "y");
         getMoreDropdown.addOption("No", "n");
@@ -69,13 +70,17 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         SmartDashboard.putString("Teleop Mode", mode);
         SmartDashboard.putNumber("Aim Pos", launcher.aimPos());
-        SmartDashboard.putNumber("Timer", Math.floor(matchTimer.get()));
+        SmartDashboard.putNumber("Timer", Math.floor(matchTimer.get()/1000));
         SmartDashboard.putNumber("Internal Robot Celsius Temeprature", Math.round(navx.celsius()));
         SmartDashboard.putNumber("Yaw Angle", navx.coterminalYaw());
         SmartDashboard.putNumber("Speed", navx.velocity());
         SmartDashboard.putBoolean("I See Note", !iseenote.get());
         SmartDashboard.putBoolean("Note in Launcher Detected", launcher.iseenote());
         SmartDashboard.putNumber("Launcher Stage", launcher.stage);
+        go.A_offset = SmartDashboard.getNumber("A Offset", go.A_offset);
+        go.B_offset = SmartDashboard.getNumber("B Offset", go.B_offset);
+        go.C_offset = SmartDashboard.getNumber("C Offset", go.C_offset);
+        go.D_offset = SmartDashboard.getNumber("D Offset", go.D_offset);
     }
 
     @Override
@@ -105,7 +110,7 @@ public class Robot extends TimedRobot {
             if (c1.start() || c2.start()) {
                 mode = "smart";
             }
-            aimMotor.goToPos += 3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), 3);
+            launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), 3));
             if (c1.b() || c2.b()) {
                 intaking = false;
                 launcher.stopIntake();
@@ -157,7 +162,7 @@ public class Robot extends TimedRobot {
             }
             if (launcher.stage == 0) {
                 intaking = false;
-                if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || !iseenote.get()) {
+                if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) {
                     intaking = true;
                     launcher.intake();
                 }

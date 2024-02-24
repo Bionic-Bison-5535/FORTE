@@ -10,6 +10,7 @@ public class Launch {
     private DigitalInput note;
     private Tim launchTimer = new Tim();
     public int stage = 0;
+    public boolean holdingNote = false;
 
     /** Encoder-based positions for launcher to go to */
     public class pos {
@@ -19,6 +20,8 @@ public class Launch {
         public static double amp = 88.14;
         /** Position for scoring in speaker while pressed up against subwoofer */
         public static double closeup = 15;
+        public static double min = -21;
+        public static double max = 120;
     }
 
 	public Launch(Motor LaunchLeftMotor, Motor LaunchRightMotor, Motor FeedMotor, Motor AimMotor, int aimCoderID, int sensorPin) {
@@ -30,16 +33,23 @@ public class Launch {
         aimCoder = new CANcoder(aimCoderID);
         aimMotor.setEnc(aimCoder.getPosition().getValue()*182);
         aimMotor.goTo(pos.intake);
+        feed.pwr = 3;
 	}
 
     public double aimPos() {
         return aimMotor.getEnc();
     }
-
+    
     public void aim(double encValue) {
-        aimMotor.goTo(encValue);
+        if (encValue > pos.min && encValue < pos.max) {
+            aimMotor.goTo(encValue);
+        }
     }
 
+    public void changeAim(double changeInEncValue) {
+        aim(aimMotor.goToPos + changeInEncValue);
+    }
+    
     public boolean iseenote() {
         return !note.get();
     }
@@ -85,6 +95,7 @@ public class Launch {
     public void update() {
 
         aimMotor.update();
+        feed.update();
 
         // Intake System:
         if (stage == 1) { // Intake note until detected
@@ -98,19 +109,24 @@ public class Launch {
             if (!iseenote()) { // Stop intake (finish process)
                 feed.set(0);
                 stage = 0;
+                holdingNote = true;
             }
         }
 
         // Launch System:
-        if (stage == 11) { // Fire up thrusters
+        if (stage == 11) { // Pull note in
+            feed.goTo(feed.getEnc() - 0.5535);
+            stage = 12;
+        }
+        if (stage == 12) { // Fire up thrusters
             leftThruster.set(2);
             rightThruster.set(0.8);
-            if (launchTimer.get() > 700) {
+            if (launchTimer.get() > 1000) {
                 launchTimer.reset();
-                stage = 12;
+                stage = 13;
             }
         }
-        if (stage == 12) { // Push note into thrusters
+        if (stage == 13) { // Push note into thrusters
             leftThruster.set(2);
             rightThruster.set(0.8);
             feed.set(2);
@@ -119,6 +135,7 @@ public class Launch {
                 leftThruster.set(0);
                 rightThruster.set(0);
                 stage = 0;
+                holdingNote = false;
             }
         }
 

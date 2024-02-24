@@ -19,6 +19,7 @@ public class Motor {
     public double db = 0.01;
     public boolean posMode = false;
     public double maxSpeed = 1;
+    public double pwr = 0.5;
 
     public Motor(int canID, boolean isTalon, boolean invert, double maximum_speed) {
         usingTalon = isTalon;
@@ -95,7 +96,7 @@ public class Motor {
         if (usingTalon) {
             return 2048;
         } else {
-            return 4;
+            return 8;
         }
     }
 
@@ -134,7 +135,7 @@ public class Motor {
     public void update() {
         if (posMode) {
             if (!there()) {
-                set(keepInRange(0.5*((goToPos/rotationValue())-getRotations()), -maxSpeed, maxSpeed));
+                set(keepInRange(pwr*((goToPos/rotationValue())-getRotations()), -maxSpeed, maxSpeed));
             } else {
                 set(0);
             }
