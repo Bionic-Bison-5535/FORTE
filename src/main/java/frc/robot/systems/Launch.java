@@ -206,7 +206,7 @@ public class Launch {
         if (stage == 34) { // Wait until shot is possible (Tag in view and close enough)
             leftThruster.set(0.8);
             rightThruster.set(2);
-            if (cam.area() > 0.12) {
+            if (cam.area() > 0.16) {
                 stage = 35;
             }
         }
