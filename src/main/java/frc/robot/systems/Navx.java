@@ -7,7 +7,7 @@ import com.kauailabs.navx.frc.AHRS;
 public class Navx {
 
     public AHRS NavX = new AHRS(I2C.Port.kMXP);
-    private double yaw_Offset, roll_Offset, pitch_Offset;
+    public double yaw_Offset, roll_Offset, pitch_Offset;
 
     public Navx() {
         roll_Offset = NavX.getRoll();
