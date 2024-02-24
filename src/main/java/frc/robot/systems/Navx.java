@@ -42,7 +42,7 @@ public class Navx {
     }
 
     public double velocity() {
-        return Math.sqrt(Math.pow(NavX.getVelocityX(),2)+Math.pow(NavX.getVelocityX(),2));
+        return Math.sqrt(Math.pow(NavX.getVelocityX(),2)+Math.pow(NavX.getVelocityY(),2));
     }
 
     public boolean moving() {
