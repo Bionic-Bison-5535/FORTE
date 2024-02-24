@@ -80,8 +80,8 @@ public class Launch {
 
     /** Fires up thrusters while function called */
     public void LAUNCHprep() {
-        leftThruster.set(2);
-        rightThruster.set(0.8);
+        leftThruster.set(0.8);
+        rightThruster.set(2);
     }
 
     /** LAUNCH (officially) */
@@ -153,8 +153,8 @@ public class Launch {
         }
         if (stage == 14) { // Push note into thrusters
             feed.set(2);
-            leftThruster.set(2);
-            rightThruster.set(0.8);
+            leftThruster.set(0.8);
+            rightThruster.set(2);
             if (launchTimer.get() > 1400) { // Stop launcher (finish process)
                 feed.set(0);
                 leftThruster.set(0);
