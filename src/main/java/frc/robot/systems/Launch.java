@@ -25,6 +25,10 @@ public class Launch {
         public static double amp = 88.14;
         /** Position for scoring in speaker while pressed up against subwoofer */
         public static double closeup = 15;
+        /** Position to go to before climbing */
+        public static double climbPrep = 95;
+        /** Position to go to to climb (when chain is under launcher) */
+        public static double climb = 55;
 
         private static double smartPosVal;
         private static double previousLimelightY;
@@ -56,7 +60,7 @@ public class Launch {
     public double aimPos() {
         return aimMotor.getEnc();
     }
-    
+
     public void aim(double encValue) {
         if (encValue < pos.min) {
             aimMotor.goTo(pos.min);
@@ -70,7 +74,15 @@ public class Launch {
     public void changeAim(double changeInEncValue) {
         aim(aimMotor.goToPos + changeInEncValue);
     }
-    
+
+    public void prepClimb() {
+        aim(pos.climbPrep);
+    }
+
+    public void climb() {
+        aim(pos.climb);
+    }
+
     public boolean iseenote() {
         return !note.get();
     }

@@ -173,6 +173,11 @@ public class Robot extends TimedRobot {
                 intaking = false;
                 launcher.stop();
             }
+            if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
+                launcher.prepClimb();
+            } else if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) {
+                launcher.climb();
+            }
             if (launcher.stage == 0) {
                 intaking = false;
                 if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) {
