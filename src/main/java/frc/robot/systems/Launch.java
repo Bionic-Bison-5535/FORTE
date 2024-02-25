@@ -82,11 +82,12 @@ public class Launch {
 		}
     }
 
-    public void stopIntake() {
+    public void stop() {
         stage = 0;
         feed.set(0);
         leftThruster.set(0);
         rightThruster.set(0);
+        aim(pos.intake);
     }
 
     /** Fires up thrusters and aims */

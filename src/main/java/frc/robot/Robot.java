@@ -126,7 +126,7 @@ public class Robot extends TimedRobot {
             SmartDashboard.putNumber("Aim Set", temporary);
             if (c1.b() || c2.b()) {
                 intaking = false;
-                launcher.stopIntake();
+                launcher.stop();
             }
             if (launcher.stage == 0) {
                 go.unlock();
@@ -171,7 +171,7 @@ public class Robot extends TimedRobot {
             }
             if (c1.b() || c2.b()) {
                 intaking = false;
-                launcher.stopIntake();
+                launcher.stop();
             }
             if (launcher.stage == 0) {
                 intaking = false;
