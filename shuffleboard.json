@@ -211,11 +211,14 @@
               2
             ],
             "content": {
-              "_type": "Text View",
+              "_type": "Simple Dial",
               "_source0": "network_table:///SmartDashboard/Speed",
               "_title": "Speed!",
-              "_glyph": 148,
-              "_showGlyph": false
+              "_glyph": 417,
+              "_showGlyph": true,
+              "Range/Min": 0.0,
+              "Range/Max": 8.0,
+              "Visuals/Show value": true
             }
           },
           "9,2": {
