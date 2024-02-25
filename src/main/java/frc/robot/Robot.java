@@ -19,7 +19,6 @@ public class Robot extends TimedRobot {
     boolean actualMatch = false;
     double dir = 0;
     double newAngle;
-    boolean mustRotate = true;
 
     private final SendableChooser<String> noteDropdown = new SendableChooser<>();
     private final SendableChooser<String> getMoreDropdown = new SendableChooser<>();
@@ -139,22 +138,17 @@ public class Robot extends TimedRobot {
                 if (c1.onPress(Controls.A) || c2.onPress(Controls.A)) {
                     intaking = true;
                     launcher.intake();
-                }
-                if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) {
+                } else if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) {
                     go.lock();
                     go.update();
                     launcher.LAUNCHstart();
-                }
-                if (c1.right() || c2.right()) {
+                } else if (c1.right() || c2.right()) {
                     launcher.LAUNCHprep();
-                }
-                if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) {
+                } else if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) {
                     launcher.LAUNCH();
-                }
-                if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) {
+                } else if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) {
                     launcher.amp();
-                }
-                if (c1.onPress(Controls.X) || c2.onPress(Controls.X)) {
+                } else if (c1.onPress(Controls.X) || c2.onPress(Controls.X)) {
                     launcher.aim(Launch.pos.closeup);
                 }
             }
@@ -169,34 +163,20 @@ public class Robot extends TimedRobot {
                     while (newAngle > dir + 180) { newAngle -= 360; }
                     while (newAngle < dir - 180) { newAngle += 360; }
                     dir = newAngle;
-                    mustRotate = true;
                 } else if (c2.pov() != -1) {
                     newAngle = (double)(c2.pov() + 180);
                     while (newAngle > dir + 180) { newAngle -= 360; }
                     while (newAngle < dir - 180) { newAngle += 360; }
                     dir = newAngle;
-                    mustRotate = true;
                 } else if (c1.active() || c2.active()) {
                     dir += 2.5 * (Math.pow(c1.stick(4), 3) + Math.pow(c2.stick(4), 3));
-                    mustRotate = true;
-                } else if (Math.abs(navx.yaw()-dir) < 2) {
-                    mustRotate = false;
                 }
-                if (mustRotate) {
-                    go.swerve(
-                        Math.pow(c1.stick(1), 3) + Math.pow(c2.stick(1), 3),
-                        Math.pow(c1.stick(0), 3) + Math.pow(c2.stick(0), 3),
-                        -0.02*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1),
-                        navx.yaw() + 180
-                    );
-                } else {
-                    go.swerve(
-                        Math.pow(c1.stick(1), 3) + Math.pow(c2.stick(1), 3),
-                        Math.pow(c1.stick(0), 3) + Math.pow(c2.stick(0), 3),
-                        0,
-                        navx.yaw() + 180
-                    );
-                }
+                go.swerve(
+                    Math.pow(c1.stick(1), 3) + Math.pow(c2.stick(1), 3),
+                    Math.pow(c1.stick(0), 3) + Math.pow(c2.stick(0), 3),
+                    -0.02*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1),
+                    navx.yaw() + 180
+                );
             }
             if (c1.back() || c2.back()) {
                 mode = "raw";
@@ -207,12 +187,12 @@ public class Robot extends TimedRobot {
             if ((c1.right_stick() && c1.start()) || (c2.right_stick() && c2.start())) {
                 navx.zeroYaw();
                 dir = 0;
-            }
-            if (c1.b() || c2.b()) {
+            } else if (c1.b() || c2.b()) {
                 intaking = false;
                 launcher.stop();
-            }
-            if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
+            } else if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) {
+                launcher.LAUNCH();
+            } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
                 launcher.prepClimb();
             } else if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) {
                 launcher.climb();
@@ -222,23 +202,16 @@ public class Robot extends TimedRobot {
                 if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) {
                     intaking = true;
                     launcher.intake();
-                }
-                if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) {
+                } else if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) {
                     launcher.aimAndLAUNCH();
                     while (!speaker.pipelineActivated()) {
                         launcher.update();
                         if (c1.b() || c2.b()) { break; }
                     }
                     dir = navx.yaw() + speaker.X();
-                    mustRotate = true;
-                }
-                if (c1.onPress(Controls.RIGHT) || c2.onPress(Controls.RIGHT)) {
+                } else if (c1.onPress(Controls.RIGHT) || c2.onPress(Controls.RIGHT)) {
                     launcher.LAUNCHprep();
-                }
-                if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) {
-                    launcher.LAUNCH();
-                }
-                if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) {
+                } else if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) {
                     launcher.amp();
                 }
             }
