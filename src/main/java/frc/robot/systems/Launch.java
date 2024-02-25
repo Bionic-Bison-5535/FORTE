@@ -11,7 +11,7 @@ public class Launch {
     private Tim launchTimer = new Tim();
     private Limelight cam;
     public int stage = 0;
-    private boolean prepping = false;
+    public boolean prepping = false;
     public boolean holdingNote = false;
     private double targetWidth;
 
@@ -100,6 +100,7 @@ public class Launch {
         leftThruster.set(0);
         rightThruster.set(0);
         aim(pos.intake);
+        prepping = false;
     }
 
     /** Fires up thrusters and aims */

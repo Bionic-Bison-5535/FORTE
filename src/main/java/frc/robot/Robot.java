@@ -201,6 +201,10 @@ public class Robot extends TimedRobot {
                 launcher.stop();
             } else if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) {
                 launcher.LAUNCH();
+            } else if (launcher.prepping && speaker.pipelineActivated()) {
+                if (speaker.Y() >= 9 || c1.left() || c2.left()) {
+                    launcher.LAUNCH();
+                }
             } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
                 launcher.prepClimb();
             } else if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) {
