@@ -131,7 +131,7 @@ public class Robot extends TimedRobot {
             SmartDashboard.putNumber("Aim Set", temporary);
             if (c1.b() || c2.b()) {
                 intaking = false;
-                launcher.stopIntake();
+                launcher.stop();
             }
             if (launcher.stage == 0) {
                 go.unlock();
@@ -209,7 +209,12 @@ public class Robot extends TimedRobot {
             }
             if (c1.b() || c2.b()) {
                 intaking = false;
-                launcher.stopIntake();
+                launcher.stop();
+            }
+            if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
+                launcher.prepClimb();
+            } else if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) {
+                launcher.climb();
             }
             if (launcher.stage == 0) {
                 intaking = false;
