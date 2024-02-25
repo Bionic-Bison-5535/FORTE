@@ -11,6 +11,7 @@ public class Launch {
     private Tim launchTimer = new Tim();
     private Limelight cam;
     public int stage = 0;
+    private boolean prepping = false;
     public boolean holdingNote = false;
 
     /** Encoder-based positions for launcher to go to */
@@ -23,9 +24,18 @@ public class Launch {
         public static double amp = 88.14;
         /** Position for scoring in speaker while pressed up against subwoofer */
         public static double closeup = 15;
+
+        private static double smartPosVal;
+        private static double previousLimelightY;
         /** Function to calculate encoder position based on Limelight camera input */
-        public static double smartAim(double limelightY) {
-            return 40.35 - 0.97*limelightY;
+        public static double smartAim(double limelightY, boolean moving) {
+            if (moving) { // Use previous position to predict future
+                smartPosVal = 40.35 - 0.97 * (2*limelightY - previousLimelightY);
+            } else {
+                smartPosVal = 40.35 - 0.97 * limelightY;
+            }
+            previousLimelightY = limelightY;
+            return smartPosVal;
         }
     }
 
@@ -78,28 +88,30 @@ public class Launch {
         rightThruster.set(0);
     }
 
-    /** Fires up thrusters while function called */
+    /** Fires up thrusters and aims */
     public void LAUNCHprep() {
-        leftThruster.set(0.8);
-        rightThruster.set(2);
+        cam.activate();
+        stage = 31;
+        prepping = true;
     }
 
-    /** LAUNCH (officially) */
+    /** LAUNCH (officially) after "LAUNCHprep" function called */
     public void LAUNCH() {
-        launchTimer.reset();
-        stage = 12;
+        prepping = false;
     }
 
     /** Starts automatic launch sequence */
     public void LAUNCHstart() {
         launchTimer.reset();
         stage = 11;
+        prepping = false;
     }
 
     /** Aims and then begins automatic launch sequence */
     public void aimAndLAUNCH() {
         stage = 31;
         cam.activate();
+        prepping = false;
     }
 
     /** Launch at downward angle perfect for scoring in amp */
@@ -116,8 +128,12 @@ public class Launch {
         // Intake System:
         if (stage == 1) { // Intake note until detected
             feed.set(0.15);
+            leftThruster.set(-0.05);
+            rightThruster.set(-0.05);
             if (iseenote()) {
                 feed.set(0);
+                leftThruster.set(0);
+                rightThruster.set(0);
                 stage = 2;
             }
         } else if (stage == 2) { // Bring note to exact launch position
@@ -199,17 +215,18 @@ public class Launch {
         if (stage == 34) { // Wait until shot is possible (Tag in view and close enough)
             leftThruster.set(0.8);
             rightThruster.set(2);
-            if (cam.area() > 0.12) {
+            if (cam.area() > 0.16) {
                 stage = 35;
+                aim(pos.smartAim(cam.Y(), false));
             }
         }
         if (stage == 35) { // Aim
             leftThruster.set(0.8);
             rightThruster.set(2);
-            aim(pos.smartAim(cam.Y()));
-            if (aimMotor.almost()) {
-                stage = 13;
-                launchTimer.reset();
+            aim(pos.smartAim(cam.Y(), true));
+            if (aimMotor.almost() && !prepping) {
+                stage = 14;
+                launchTimer.set(1100);
             }
         }
 

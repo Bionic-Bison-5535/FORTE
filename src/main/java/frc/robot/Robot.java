@@ -218,11 +218,8 @@ public class Robot extends TimedRobot {
                 if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) {
                     launcher.aimAndLAUNCH();
                 }
-                if (c1.right() || c2.right()) {
+                if (c1.onPress(Controls.RIGHT) || c2.onPress(Controls.RIGHT)) {
                     launcher.LAUNCHprep();
-                    if (speaker.activate()) {
-                        launcher.aim(Launch.pos.smartAim(speaker.Y()));
-                    }
                 }
                 if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) {
                     launcher.LAUNCH();
@@ -244,7 +241,7 @@ public class Robot extends TimedRobot {
         // LED Strip Color:
         if (mode == "auto") {
             leds.orange();
-        } else if (DriverStation.getMatchTime() < 20) { // Final Countdown
+        } else if (actualMatch && matchTimer.get() >= 150000) { // Final Countdown
             leds.turquoise();
         } else if (launcher.stage > 0 && launcher.stage < 10) { // Intaking Note
             leds.yellow();
