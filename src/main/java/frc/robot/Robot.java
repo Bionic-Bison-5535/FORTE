@@ -19,6 +19,7 @@ public class Robot extends TimedRobot {
     boolean actualMatch = false;
     double dir = 0;
     double newAngle;
+    boolean mustRotate = true;
 
     private final SendableChooser<String> noteDropdown = new SendableChooser<>();
     private final SendableChooser<String> getMoreDropdown = new SendableChooser<>();
@@ -165,19 +166,34 @@ public class Robot extends TimedRobot {
                     while (newAngle > dir + 180) { newAngle -= 360; }
                     while (newAngle < dir - 180) { newAngle += 360; }
                     dir = newAngle;
+                    mustRotate = true;
                 } else if (c2.pov() != -1) {
                     newAngle = (double)(c2.pov() + 180);
                     while (newAngle > dir + 180) { newAngle -= 360; }
                     while (newAngle < dir - 180) { newAngle += 360; }
                     dir = newAngle;
+                    mustRotate = true;
+                } else if (c1.active() || c2.active()) {
+                    dir += 2.5 * (Math.pow(c1.stick(4), 3) + Math.pow(c2.stick(4), 3));
+                    mustRotate = true;
+                } else if (Math.abs(navx.yaw()-dir) < 2) {
+                    mustRotate = false;
                 }
-                dir += 2.5 * (Math.pow(c1.stick(4), 3) + Math.pow(c2.stick(4), 3));
-                go.swerve(
-                    Math.pow(c1.stick(1), 3) + Math.pow(c2.stick(1), 3),
-                    Math.pow(c1.stick(0), 3) + Math.pow(c2.stick(0), 3),
-                    -0.02*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1),
-                    navx.yaw()
-                );
+                if (mustRotate) {
+                    go.swerve(
+                        Math.pow(c1.stick(1), 3) + Math.pow(c2.stick(1), 3),
+                        Math.pow(c1.stick(0), 3) + Math.pow(c2.stick(0), 3),
+                        -0.02*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1),
+                        navx.yaw() + 180
+                    );
+                } else {
+                    go.swerve(
+                        Math.pow(c1.stick(1), 3) + Math.pow(c2.stick(1), 3),
+                        Math.pow(c1.stick(0), 3) + Math.pow(c2.stick(0), 3),
+                        0,
+                        navx.yaw() + 180
+                    );
+                }
             }
             if (c1.back() || c2.back()) {
                 mode = "raw";
