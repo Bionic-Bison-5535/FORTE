@@ -4,6 +4,10 @@
 ### About the Name
 This year's FIRST Robotics Competition (FRC) is called "Crescendo", and it is entirely music themed, the goal being for robots to collect and score "notes" into the "speaker", the "amp" and the "trap", and at the end of the match getting "on stage" with the "spotlight" and bonus points for "harmony".  Since "forte" is a term used in music to define a section of loudness and emphasis in a musical composition, the robot's name goes along with the whole music theme very well.  Additionally, the word "forte" also means "the strongest point", originating from ancient swordfighting as the strongest part of the sword was named the "forte".  This also makes "FORTE" a great name for our robot as we would like to prove ourselves to be the strongest point on the field as we compete.  Finally, "forte" is also used to describe a thing that one excels at.  Our robot is FORTE because we will excel at what we do during competitions.
 
+### About the Code
+**_THIS CODE IS NOT FINISHED!_** It will be truly excellent when it is done, but it is not.
+It should be fully functional by our [first milestone](https://github.com/Bionic-Bison-5535/FORTE/milestone/1), March 1st, 2024.  Further improvements will be made until the robotics season is over.
+
 ### About the Competition
 
 Click the image below to watch a three-minute summary of the "Crescendo" competition.

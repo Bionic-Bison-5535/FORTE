@@ -13,6 +13,7 @@ public class Launch {
     public int stage = 0;
     private boolean prepping = false;
     public boolean holdingNote = false;
+    private double targetWidth;
 
     /** Encoder-based positions for launcher to go to */
     public class pos {
@@ -212,12 +213,15 @@ public class Launch {
                 stage = 34;
             }
         }
-        if (stage == 34) { // Wait until shot is possible (Tag in view and close enough)
+        if (stage == 34) { // Wait until shot is possible (Tag in view, close enough, and horizontally aligned)
             leftThruster.set(0.8);
             rightThruster.set(2);
             if (cam.area() > 0.16) {
-                stage = 35;
-                aim(pos.smartAim(cam.Y(), false));
+                targetWidth = 3*cam.width();
+                if (-targetWidth < cam.X() && cam.X() < targetWidth) {
+                    stage = 35;
+                    aim(pos.smartAim(cam.Y(), false));
+                }
             }
         }
         if (stage == 35) { // Aim

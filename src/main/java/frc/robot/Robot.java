@@ -124,6 +124,8 @@ public class Robot extends TimedRobot {
             if (c1.stick(2) + c1.stick(3) != 0) {
                 launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), 3));
                 temporary = launcher.aimPos();
+            } else if (c1.x() || c2.x()) {
+                launcher.aim(Launch.pos.closeup);
             }
             SmartDashboard.putNumber("Tag Y", speaker.Y());
             SmartDashboard.putNumber("Aim Set", temporary);
