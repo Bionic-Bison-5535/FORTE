@@ -164,7 +164,17 @@ public class Robot extends TimedRobot {
                 go.update();
             } else {
                 go.unlock();
-                if (c1.pov() != -1) {
+                if (launcher.holdingNote) {
+                    if (speaker.valid()) {
+                        dir = navx.yaw() + speaker.X();
+                    } else if (navx.coterminalYaw() < -45 || navx.coterminalYaw() > 45) {
+                        newAngle = 0;
+                        while (newAngle > dir + 180) { newAngle -= 360; }
+                        while (newAngle < dir - 180) { newAngle += 360; }
+                        dir = newAngle;
+                    }
+                    mustRotate = true;
+                } else if (c1.pov() != -1) {
                     newAngle = (double)(c1.pov() + 180);
                     while (newAngle > dir + 180) { newAngle -= 360; }
                     while (newAngle < dir - 180) { newAngle += 360; }
