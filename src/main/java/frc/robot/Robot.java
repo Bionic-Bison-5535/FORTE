@@ -161,6 +161,7 @@ public class Robot extends TimedRobot {
         } else if (mode == "smart") {
             if (c1.left_stick() || c2.left_stick()) {
                 go.lock();
+                go.update();
             } else {
                 go.unlock();
                 if (c1.pov() != -1) {
