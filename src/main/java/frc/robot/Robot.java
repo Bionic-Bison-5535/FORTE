@@ -217,6 +217,12 @@ public class Robot extends TimedRobot {
                 }
                 if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) {
                     launcher.aimAndLAUNCH();
+                    while (!speaker.pipelineActivated()) {
+                        launcher.update();
+                        if (c1.b() || c2.b()) { break; }
+                    }
+                    dir = navx.yaw() + speaker.X();
+                    mustRotate = true;
                 }
                 if (c1.onPress(Controls.RIGHT) || c2.onPress(Controls.RIGHT)) {
                     launcher.LAUNCHprep();
