@@ -78,6 +78,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         SmartDashboard.putString("Teleop Mode", mode);
         SmartDashboard.putNumber("Aim Pos", launcher.aimPos());
+        SmartDashboard.putNumber("Limelight Y", Limelight.Y_());
         SmartDashboard.putNumber("Timer", Math.floor(matchTimer.get()/1000));
         SmartDashboard.putNumber("Internal Robot Celsius Temeprature", Math.round(navx.celsius()));
         SmartDashboard.putNumber("Yaw Angle", navx.coterminalYaw());
@@ -113,7 +114,6 @@ public class Robot extends TimedRobot {
         c2.refreshController();
     }
 
-    double temporary = 0;
     @Override
     public void teleopPeriodic() {
 
@@ -125,17 +125,13 @@ public class Robot extends TimedRobot {
             }
             if (c1.stick(2) + c1.stick(3) != 0) {
                 launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), 3));
-                temporary = launcher.aimPos();
             } else if (c1.x() || c2.x()) {
                 launcher.aim(Launch.pos.closeup);
             }
-            SmartDashboard.putNumber("Tag Y", speaker.Y());
-            SmartDashboard.putNumber("Aim Set", temporary);
             if (c1.b() || c2.b()) {
                 intaking = false;
                 launcher.stop();
-            }
-            if (launcher.stage == 0) {
+            } else if (launcher.stage == 0) {
                 go.unlock();
                 intaking = false;
                 if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote && !sensorError)) {
@@ -176,16 +172,15 @@ public class Robot extends TimedRobot {
             if ((c1.right_stick() && c1.start()) || (c2.right_stick() && c2.start())) {
                 navx.zeroYaw();
             }
-            if (c1.b() || c2.b()) {
-                intaking = false;
-                launcher.stop();
-            }
             if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
                 launcher.prepClimb();
             } else if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) {
                 launcher.climb();
             }
-            if (launcher.stage == 0) {
+            if (c1.b() || c2.b()) {
+                intaking = false;
+                launcher.stop();
+            } else if (launcher.stage == 0) {
                 intaking = false;
                 if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) {
                     intaking = true;
