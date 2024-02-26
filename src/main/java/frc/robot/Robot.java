@@ -17,6 +17,7 @@ public class Robot extends TimedRobot {
     String mode = "smart";
     boolean intaking = false;
     boolean actualMatch = false;
+    public static boolean sensorError = false;
 
     private final SendableChooser<String> noteDropdown = new SendableChooser<>();
     private final SendableChooser<String> getMoreDropdown = new SendableChooser<>();
@@ -58,6 +59,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putBoolean("Alliance", leds.blueAlliance);
         SmartDashboard.putString("Event", DriverStation.getEventName());
         SmartDashboard.putNumber("Match", DriverStation.getMatchNumber());
+        SmartDashboard.putBoolean("Sensor Error", false);
         if (leds.blueAlliance) {
             speaker = new Limelight(3);
             speaker2 = new Limelight(5);
@@ -85,6 +87,7 @@ public class Robot extends TimedRobot {
         go.B_offset = SmartDashboard.getNumber("B Offset", go.B_offset);
         go.C_offset = SmartDashboard.getNumber("C Offset", go.C_offset);
         go.D_offset = SmartDashboard.getNumber("D Offset", go.D_offset);
+        sensorError = SmartDashboard.getBoolean("Sensor Error", false);
     }
 
     @Override
@@ -131,7 +134,7 @@ public class Robot extends TimedRobot {
             if (launcher.stage == 0) {
                 go.unlock();
                 intaking = false;
-                if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) {
+                if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote && !sensorError)) {
                     intaking = true;
                     launcher.intake();
                 }

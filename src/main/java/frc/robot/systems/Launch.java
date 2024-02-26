@@ -89,8 +89,14 @@ public class Launch {
 
     public void intake() {
         if (stage == 0) {
-			stage = 1;
-            aimMotor.goTo(pos.intake);
+            if (frc.robot.Robot.sensorError) {
+                feed.set(0.15);
+                leftThruster.set(-0.05);
+                rightThruster.set(-0.05);
+            } else {
+			    stage = 1;
+                aimMotor.goTo(pos.intake);
+            }
 		}
     }
 
@@ -162,7 +168,7 @@ public class Launch {
         // Launch System:
         if (stage == 11) { // Pull note in
             feed.set(-0.08);
-            if (iseenote()) {
+            if (iseenote() || frc.robot.Robot.sensorError) {
                 stage = 12;
                 launchTimer.reset();
             }
@@ -207,7 +213,7 @@ public class Launch {
         // Aim and Launch:
         if (stage == 31) { // Pull note in
             feed.set(-0.08);
-            if (iseenote()) {
+            if (iseenote() || frc.robot.Robot.sensorError) {
                 stage = 32;
                 launchTimer.reset();
             }
