@@ -19,6 +19,7 @@ public class Robot extends TimedRobot {
     boolean actualMatch = false;
     double dir = 0;
     double newAngle;
+    public static boolean sensorError = false;
 
     private final SendableChooser<String> noteDropdown = new SendableChooser<>();
     private final SendableChooser<String> getMoreDropdown = new SendableChooser<>();
@@ -60,6 +61,9 @@ public class Robot extends TimedRobot {
         SmartDashboard.putBoolean("Alliance", leds.blueAlliance);
         SmartDashboard.putString("Event", DriverStation.getEventName());
         SmartDashboard.putNumber("Match", DriverStation.getMatchNumber());
+        SmartDashboard.putBoolean("Sensor Error", false);
+        SmartDashboard.putNumber("Aim Formula b", Launch.pos.smartAim_b);
+        SmartDashboard.putNumber("Aim Formula m", Launch.pos.smartAim_m);
         if (leds.blueAlliance) {
             speaker = new Limelight(3);
             speaker2 = new Limelight(5);
@@ -76,6 +80,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         SmartDashboard.putString("Teleop Mode", mode);
         SmartDashboard.putNumber("Aim Pos", launcher.aimPos());
+        SmartDashboard.putNumber("Limelight Y", Limelight.Y_());
         SmartDashboard.putNumber("Timer", Math.floor(matchTimer.get()/1000));
         SmartDashboard.putNumber("Internal Robot Celsius Temeprature", Math.round(navx.celsius()));
         SmartDashboard.putNumber("Yaw Angle", navx.coterminalYaw());
@@ -87,6 +92,9 @@ public class Robot extends TimedRobot {
         go.B_offset = SmartDashboard.getNumber("B Offset", go.B_offset);
         go.C_offset = SmartDashboard.getNumber("C Offset", go.C_offset);
         go.D_offset = SmartDashboard.getNumber("D Offset", go.D_offset);
+        sensorError = SmartDashboard.getBoolean("Sensor Error", false);
+        Launch.pos.smartAim_b = SmartDashboard.getNumber("Aim Formula b", Launch.pos.smartAim_b);
+        Launch.pos.smartAim_m = SmartDashboard.getNumber("Aim Formula m", Launch.pos.smartAim_m);
     }
 
     @Override
@@ -109,7 +117,6 @@ public class Robot extends TimedRobot {
         c2.refreshController();
     }
 
-    double temporary = 0;
     @Override
     public void teleopPeriodic() {
 
@@ -122,20 +129,16 @@ public class Robot extends TimedRobot {
             }
             if (c1.stick(2) + c1.stick(3) != 0) {
                 launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), 3));
-                temporary = launcher.aimPos();
             } else if (c1.x() || c2.x()) {
                 launcher.aim(Launch.pos.closeup);
             }
-            SmartDashboard.putNumber("Tag Y", speaker.Y());
-            SmartDashboard.putNumber("Aim Set", temporary);
             if (c1.b() || c2.b()) {
                 intaking = false;
                 launcher.stop();
-            }
-            if (launcher.stage == 0) {
+            } else if (launcher.stage == 0) {
                 go.unlock();
                 intaking = false;
-                if (c1.onPress(Controls.A) || c2.onPress(Controls.A)) {
+                if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote && !sensorError)) {
                     intaking = true;
                     launcher.intake();
                 } else if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) {
@@ -187,9 +190,6 @@ public class Robot extends TimedRobot {
             if ((c1.right_stick() && c1.start()) || (c2.right_stick() && c2.start())) {
                 navx.zeroYaw();
                 dir = 0;
-            } else if (c1.b() || c2.b()) {
-                intaking = false;
-                launcher.stop();
             } else if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) {
                 launcher.LAUNCH();
             } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
@@ -197,7 +197,10 @@ public class Robot extends TimedRobot {
             } else if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) {
                 launcher.climb();
             }
-            if (launcher.stage == 0) {
+            if (c1.b() || c2.b()) {
+                intaking = false;
+                launcher.stop();
+            } else if (launcher.stage == 0) {
                 intaking = false;
                 if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) {
                     intaking = true;
