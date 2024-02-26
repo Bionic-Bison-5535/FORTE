@@ -19,6 +19,7 @@ public class Robot extends TimedRobot {
     boolean actualMatch = false;
     double dir = 0;
     double newAngle;
+    double launchOver = 9;
     public static boolean sensorError = false;
 
     private final SendableChooser<String> noteDropdown = new SendableChooser<>();
@@ -64,6 +65,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putBoolean("Sensor Error", false);
         SmartDashboard.putNumber("Aim Formula b", Launch.pos.smartAim_b);
         SmartDashboard.putNumber("Aim Formula m", Launch.pos.smartAim_m);
+        SmartDashboard.putNumber("Launch Over", launchOver);
         if (leds.blueAlliance) {
             speaker = new Limelight(3);
             speaker2 = new Limelight(5);
@@ -95,6 +97,7 @@ public class Robot extends TimedRobot {
         sensorError = SmartDashboard.getBoolean("Sensor Error", false);
         Launch.pos.smartAim_b = SmartDashboard.getNumber("Aim Formula b", Launch.pos.smartAim_b);
         Launch.pos.smartAim_m = SmartDashboard.getNumber("Aim Formula m", Launch.pos.smartAim_m);
+        launchOver = SmartDashboard.getNumber("Launch Over", launchOver);
     }
 
     @Override
@@ -202,7 +205,7 @@ public class Robot extends TimedRobot {
             } else if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) {
                 launcher.LAUNCH();
             } else if (launcher.prepping && speaker.pipelineActivated()) {
-                if (speaker.Y() >= 9 || c1.left() || c2.left()) {
+                if (speaker.Y() >= launchOver || c1.left() || c2.left()) {
                     launcher.LAUNCH();
                 }
             } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
