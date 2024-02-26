@@ -32,12 +32,14 @@ public class Launch {
 
         private static double smartPosVal;
         private static double previousLimelightY;
+        public static double smartAim_b = 40.35;
+        public static double smartAim_m = -0.97;
         /** Function to calculate encoder position based on Limelight camera input */
         public static double smartAim(double limelightY, boolean moving) {
             if (moving) { // Use previous position to predict future
-                smartPosVal = 40.35 - 0.97 * (2*limelightY - previousLimelightY);
+                smartPosVal = smartAim_b + smartAim_m * (2*limelightY - previousLimelightY);
             } else {
-                smartPosVal = 40.35 - 0.97 * limelightY;
+                smartPosVal = smartAim_b + smartAim_m * limelightY;
             }
             previousLimelightY = limelightY;
             return smartPosVal;
