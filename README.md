@@ -6,7 +6,7 @@ This year's FIRST Robotics Competition (FRC) is called "Crescendo", and it is en
 
 ### About the Code
 **_THIS CODE IS NOT FINISHED!_** It will be truly excellent when it is done, but it is not.
-It should be fully functional by our [first milestone](https://github.com/Bionic-Bison-5535/FORTE/milestone/1), March 1st, 2024.  Further improvements will be made until the robotics season is over.
+It should be fully functional by our [first milestone](https://github.com/Bionic-Bison-5535/FORTE/milestone/1), March 1st, 2024.  Further improvements will continue be made until the robotics season is over.  We use a [Gantt Chart](https://github.com/orgs/Bionic-Bison-5535/projects/2/views/2) to keep track of what we must work on each day.
 
 ### About the Competition
 

@@ -32,12 +32,14 @@ public class Launch {
 
         private static double smartPosVal;
         private static double previousLimelightY;
+        public static double smartAim_b = 40.35;
+        public static double smartAim_m = -0.97;
         /** Function to calculate encoder position based on Limelight camera input */
         public static double smartAim(double limelightY, boolean moving) {
             if (moving) { // Use previous position to predict future
-                smartPosVal = 40.35 - 0.97 * (2*limelightY - previousLimelightY);
+                smartPosVal = smartAim_b + smartAim_m * (2*limelightY - previousLimelightY);
             } else {
-                smartPosVal = 40.35 - 0.97 * limelightY;
+                smartPosVal = smartAim_b + smartAim_m * limelightY;
             }
             previousLimelightY = limelightY;
             return smartPosVal;
@@ -89,8 +91,14 @@ public class Launch {
 
     public void intake() {
         if (stage == 0) {
-			stage = 1;
-            aimMotor.goTo(pos.intake);
+            if (frc.robot.Robot.sensorError) {
+                feed.set(0.15);
+                leftThruster.set(-0.05);
+                rightThruster.set(-0.05);
+            } else {
+			    stage = 1;
+                aimMotor.goTo(pos.intake);
+            }
 		}
     }
 
@@ -163,7 +171,7 @@ public class Launch {
         // Launch System:
         if (stage == 11) { // Pull note in
             feed.set(-0.08);
-            if (iseenote()) {
+            if (iseenote() || frc.robot.Robot.sensorError) {
                 stage = 12;
                 launchTimer.reset();
             }
@@ -208,7 +216,7 @@ public class Launch {
         // Aim and Launch:
         if (stage == 31) { // Pull note in
             feed.set(-0.08);
-            if (iseenote()) {
+            if (iseenote() || frc.robot.Robot.sensorError) {
                 stage = 32;
                 launchTimer.reset();
             }
