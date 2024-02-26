@@ -131,7 +131,7 @@ public class Robot extends TimedRobot {
             if (launcher.stage == 0) {
                 go.unlock();
                 intaking = false;
-                if (c1.onPress(Controls.A) || c2.onPress(Controls.A)) {
+                if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) {
                     intaking = true;
                     launcher.intake();
                 }
