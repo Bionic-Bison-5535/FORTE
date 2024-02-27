@@ -58,12 +58,23 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         Limelight.enableLimelightUSB();
         navx.reset();
+        if (leds.blueAlliance) {
+            speaker = new Limelight(3);
+            speaker2 = new Limelight(5);
+            ampCam = new Limelight(7);
+        } else {
+            speaker = new Limelight(4);
+            speaker2 = new Limelight(6);
+            ampCam = new Limelight(8);
+        }
+        launcher = new Launch(leftThruster, rightThruster, feedMotor, aimMotor, 25, 1, speaker);
         noteDropdown.setDefaultOption("None", "0");
         noteDropdown.addOption("Left", "1");
         noteDropdown.addOption("Center", "2");
         noteDropdown.addOption("Right", "3");
         SmartDashboard.putData("Which Note To Get?", noteDropdown);
         getMoreDropdown.setDefaultOption("Yes", "y");
+        SmartDashboard.putNumber("General Aim Offset", launcher.offset);
         getMoreDropdown.addOption("No", "n");
         getMoreDropdown.addOption("Only Collect", "c");
         SmartDashboard.putData("Get More Notes?", getMoreDropdown);
@@ -76,17 +87,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Match", DriverStation.getMatchNumber());
         SmartDashboard.putBoolean("Sensor Error", false);
         SmartDashboard.putNumber("Smart Aim Offset", Launch.pos.smartAim_offset);
-        SmartDashboard.putNumber("General Aim Offset", launcher.offset);
-        if (leds.blueAlliance) {
-            speaker = new Limelight(3);
-            speaker2 = new Limelight(5);
-            ampCam = new Limelight(7);
-        } else {
-            speaker = new Limelight(4);
-            speaker2 = new Limelight(6);
-            ampCam = new Limelight(8);
-        }
-        launcher = new Launch(leftThruster, rightThruster, feedMotor, aimMotor, 25, 1, speaker);
     }
 
     @Override
