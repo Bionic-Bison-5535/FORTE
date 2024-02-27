@@ -166,6 +166,11 @@ public class Robot extends TimedRobot {
             } else if (c1.x() || c2.x()) {
                 launcher.aim(Launch.pos.closeup);
             }
+            if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) {
+                launcher.prepClimb();
+            } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
+                launcher.climb();
+            }
             if (c1.b() || c2.b()) {
                 intaking = false;
                 launcher.stop();
@@ -210,9 +215,9 @@ public class Robot extends TimedRobot {
             if ((c1.right_stick() && c1.start()) || (c2.right_stick() && c2.start())) {
                 navx.zeroYaw();
             }
-            if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
+            if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) {
                 launcher.prepClimb();
-            } else if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) {
+            } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
                 launcher.climb();
             }
             if (c1.b() || c2.b()) {
