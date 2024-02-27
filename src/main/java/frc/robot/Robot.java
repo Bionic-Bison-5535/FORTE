@@ -41,6 +41,16 @@ public class Robot extends TimedRobot {
     Launch launcher;
     Limelight posCam = new Limelight(1);
 
+    double keepInRange(double number, double floor, double ceiling) {
+        if (number >= floor && number <= ceiling) {
+            return number;
+        } else if (number < floor) {
+            return floor;
+        } else {
+            return ceiling;
+        }
+    }
+
     @Override
     public void robotInit() {
         Limelight.enableLimelightUSB();
@@ -82,7 +92,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Aim Pos", launcher.aimPos());
         SmartDashboard.putNumber("Limelight Y", Limelight.Y_());
         SmartDashboard.putNumber("Timer", Math.floor(matchTimer.get()/1000));
-        SmartDashboard.putNumber("Internal Robot Celsius Temeprature", Math.round(navx.celsius()));
         SmartDashboard.putNumber("Yaw Angle", navx.coterminalYaw());
         SmartDashboard.putNumber("Speed", navx.velocity());
         SmartDashboard.putBoolean("I See Note", !iseenote.get());
@@ -156,31 +165,25 @@ public class Robot extends TimedRobot {
                 }
             }
         } else if (mode == "smart") {
-            if (c1.left_stick() || c2.left_stick()) {
-                go.lock();
-                go.update();
-            } else {
-                go.unlock();
-                if (c1.pov() != -1) {
-                    newAngle = (double)(c1.pov() + 180);
-                    while (newAngle > dir + 180) { newAngle -= 360; }
-                    while (newAngle < dir - 180) { newAngle += 360; }
-                    dir = newAngle;
-                } else if (c2.pov() != -1) {
-                    newAngle = (double)(c2.pov() + 180);
-                    while (newAngle > dir + 180) { newAngle -= 360; }
-                    while (newAngle < dir - 180) { newAngle += 360; }
-                    dir = newAngle;
-                } else if (c1.active() || c2.active()) {
-                    dir += 2.5 * (Math.pow(c1.stick(4), 3) + Math.pow(c2.stick(4), 3));
-                }
-                go.swerve(
-                    Math.pow(c1.stick(1), 3) + Math.pow(c2.stick(1), 3),
-                    Math.pow(c1.stick(0), 3) + Math.pow(c2.stick(0), 3),
-                    -0.02*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1),
-                    navx.yaw() + 180
-                );
+            if (c1.pov() != -1) {
+                newAngle = (double)(c1.pov() + 180);
+                while (newAngle > dir + 180) { newAngle -= 360; }
+                while (newAngle < dir - 180) { newAngle += 360; }
+                dir = newAngle;
+            } else if (c2.pov() != -1) {
+                newAngle = (double)(c2.pov() + 180);
+                while (newAngle > dir + 180) { newAngle -= 360; }
+                while (newAngle < dir - 180) { newAngle += 360; }
+                dir = newAngle;
+            } else if (c1.active() || c2.active()) {
+                dir += 2.5 * (Math.pow(c1.stick(4), 3) + Math.pow(c2.stick(4), 3));
             }
+            go.swerve(
+                Math.pow(c1.stick(1), 3) + Math.pow(c2.stick(1), 3),
+                Math.pow(c1.stick(0), 3) + Math.pow(c2.stick(0), 3),
+                keepInRange(-0.02*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1), -0.5, 0.5),
+                navx.yaw() + 180
+            );
             if (c1.back() || c2.back()) {
                 mode = "raw";
             }
