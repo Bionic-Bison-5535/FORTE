@@ -92,14 +92,8 @@ public class Launch {
 
     public void intake() {
         if (stage == 0) {
-            if (frc.robot.Robot.sensorError) {
-                feed.set(0.15);
-                leftThruster.set(-0.05);
-                rightThruster.set(-0.05);
-            } else {
-			    stage = 1;
-                aim(pos.intake);
-            }
+            stage = 1;
+            aim(pos.intake);
 		}
     }
 
