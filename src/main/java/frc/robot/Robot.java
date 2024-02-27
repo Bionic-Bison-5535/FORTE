@@ -19,6 +19,8 @@ public class Robot extends TimedRobot {
     boolean actualMatch = false;
     double dir = 0;
     double newAngle;
+    int autoStage = 0;
+
     public static boolean sensorError = false;
 
     private final SendableChooser<String> noteDropdown = new SendableChooser<>();
@@ -29,6 +31,7 @@ public class Robot extends TimedRobot {
     Controls c1 = new Controls(0, 0.1);
     Controls c2 = new Controls(1, 0.1);
     Tim matchTimer = new Tim();
+    Tim Alec = new Tim();
     Navx navx = new Navx();
     Lights leds = new Lights(30);
     Motor in = new Motor(5, true, true, 1);
@@ -114,10 +117,47 @@ public class Robot extends TimedRobot {
         matchTimer.reset();
         leds.orange();
         dir = navx.yaw();
+        launcher.holdingNote = true;
     }
 
     @Override
-    public void autonomousPeriodic() {}
+    public void autonomousPeriodic() {
+        launcher.update();
+        go.update();
+        if (autoStage == 0) {
+            autoStage = 1;
+        }       
+        if (autoStage == 1) {
+            launcher.LAUNCHprep();
+            autoStage = 2;
+        }
+        if (autoStage == 2) {
+            if (speaker.valid()) {
+                go.swerve(0, 0, speaker.X()/40, 0);
+            } else {
+                go.swerve(0, 0, 0.5535, 0);
+            }
+            if (speaker.X() > -5 &&  speaker.X() > 5); {
+                autoStage = 3;
+            }            
+        }
+        if (autoStage == 3) {
+            launcher.LAUNCH();
+            if (launcher.holdingNote == false) {
+                autoStage = 4;
+                Alec.reset();
+            }
+        }
+        if (autoStage == 4) {
+            go.swerve(-0.75, 0, 0, navx.yaw()+180);
+            if (Alec.get() > 500) {
+                autoStage = 5;
+            }
+        }
+        if (autoStage == 5) {
+            go.swerve(0, 0, 0, 0);
+        }
+    }   
 
     @Override
     public void teleopInit() {
@@ -140,6 +180,11 @@ public class Robot extends TimedRobot {
                 launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), 3));
             } else if (c1.x() || c2.x()) {
                 launcher.aim(Launch.pos.closeup);
+            }
+            if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) {
+                launcher.prepClimb();
+            } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
+                launcher.climb();
             }
             if (c1.b() || c2.b()) {
                 intaking = false;
@@ -195,9 +240,9 @@ public class Robot extends TimedRobot {
                 dir = 0;
             } else if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) {
                 launcher.LAUNCH();
-            } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
-                launcher.prepClimb();
             } else if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) {
+                launcher.prepClimb();
+            } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
                 launcher.climb();
             }
             if (c1.b() || c2.b()) {
