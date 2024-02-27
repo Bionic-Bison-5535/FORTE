@@ -72,8 +72,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putString("Event", DriverStation.getEventName());
         SmartDashboard.putNumber("Match", DriverStation.getMatchNumber());
         SmartDashboard.putBoolean("Sensor Error", false);
-        SmartDashboard.putNumber("Aim Formula b", Launch.pos.smartAim_b);
-        SmartDashboard.putNumber("Aim Formula m", Launch.pos.smartAim_m);
+        SmartDashboard.putNumber("Smart Aim Offset", Launch.pos.smartAim_offset);
+        SmartDashboard.putNumber("General Aim Offset", launcher.offset);
         if (leds.blueAlliance) {
             speaker = new Limelight(3);
             speaker2 = new Limelight(5);
@@ -102,8 +102,8 @@ public class Robot extends TimedRobot {
         go.C_offset = SmartDashboard.getNumber("C Offset", go.C_offset);
         go.D_offset = SmartDashboard.getNumber("D Offset", go.D_offset);
         sensorError = SmartDashboard.getBoolean("Sensor Error", false);
-        Launch.pos.smartAim_b = SmartDashboard.getNumber("Aim Formula b", Launch.pos.smartAim_b);
-        Launch.pos.smartAim_m = SmartDashboard.getNumber("Aim Formula m", Launch.pos.smartAim_m);
+        Launch.pos.smartAim_offset = SmartDashboard.getNumber("Smart Aim Offset", Launch.pos.smartAim_offset);
+        launcher.offset = SmartDashboard.getNumber("General Aim Offset", launcher.offset);
     }
 
     @Override

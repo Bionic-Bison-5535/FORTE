@@ -14,6 +14,7 @@ public class Launch {
     private boolean prepping = false;
     public boolean holdingNote = false;
     private double targetWidth;
+    public double offset = -11.520975112915039;
 
     /** Encoder-based positions for launcher to go to */
     public class pos {
@@ -32,14 +33,13 @@ public class Launch {
 
         private static double smartPosVal;
         private static double previousLimelightY;
-        public static double smartAim_b = 40.35;
-        public static double smartAim_m = -0.97;
+        public static double smartAim_offset = 0;
         /** Function to calculate encoder position based on Limelight camera input */
         public static double smartAim(double limelightY, boolean moving) {
             if (moving) { // Use previous position to predict future
-                smartPosVal = smartAim_b + smartAim_m * (2*limelightY - previousLimelightY);
+                smartPosVal = 40.35 - 0.97 * (2*limelightY - previousLimelightY) + smartAim_offset;
             } else {
-                smartPosVal = smartAim_b + smartAim_m * limelightY;
+                smartPosVal = 40.35 - 0.97 * limelightY + smartAim_offset;
             }
             previousLimelightY = limelightY;
             return smartPosVal;
@@ -53,8 +53,8 @@ public class Launch {
         feed = FeedMotor;
         aimMotor = AimMotor;
         aimCoder = new CANcoder(aimCoderID);
-        aimMotor.setEnc((aimCoder.getAbsolutePosition().getValue())*182+11.520975112915039);
-        aimMotor.goTo(pos.intake);
+        aimMotor.setEnc((aimCoder.getAbsolutePosition().getValue())*182);
+        aim(pos.intake);
         feed.pwr = 3;
         cam = Cam;
 	}
@@ -65,11 +65,11 @@ public class Launch {
 
     public void aim(double encValue) {
         if (encValue < pos.min) {
-            aimMotor.goTo(pos.min);
+            aimMotor.goTo(pos.min - offset);
         } else if (encValue > pos.max) {
-            aimMotor.goTo(pos.max);
+            aimMotor.goTo(pos.max - offset);
         } else {
-            aimMotor.goTo(encValue);
+            aimMotor.goTo(encValue - offset);
         }
     }
 
@@ -97,7 +97,7 @@ public class Launch {
                 rightThruster.set(-0.05);
             } else {
 			    stage = 1;
-                aimMotor.goTo(pos.intake);
+                aim(pos.intake);
             }
 		}
     }
@@ -205,7 +205,7 @@ public class Launch {
 
         // Amp Launch:
         if (stage == 21) { // Angle to amp score position
-            aimMotor.goTo(pos.amp);
+            aim(pos.amp);
             if (aimMotor.almost()) {
                 stage = 11;
                 launchTimer.reset();
