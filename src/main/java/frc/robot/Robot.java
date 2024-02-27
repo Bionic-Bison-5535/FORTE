@@ -172,46 +172,45 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
 
-        // Main Code:
+        // RAW MODE PERIODIC:
         if (mode == "raw") {
-            go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(4), 3), 0);
-            if (c1.start() || c2.start()) {
+            go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(4), 3), 0); // Drive
+            if (c1.start() || c2.start()) { // Mode Change
                 mode = "smart";
                 dir = navx.yaw();
-            }
-            if (c1.stick(2) + c1.stick(3) != 0) {
+            } else if (c1.stick(2) + c1.stick(3) != 0) { // Adjust Launcher Aim
                 launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), 3));
             } else if (c1.x() || c2.x()) {
                 launcher.aim(Launch.pos.closeup);
-            }
-            if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) {
+            } else if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) {
                 launcher.prepClimb();
             } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
                 launcher.climb();
             }
-            if (c1.b() || c2.b()) {
+            if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) { // LAUNCH (Release held down right button)
+                launcher.LAUNCH();
+            }
+            if (c1.b() || c2.b()) { // Cancel Any Launcher Activity
                 intaking = false;
                 launcher.stop();
-            } else if (launcher.stage == 0) {
+            } else if (launcher.stage == 0) { // If Launcher Not Doing Anything
                 go.unlock();
                 intaking = false;
-                if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote && !sensorError)) {
+                if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote && !sensorError)) { // Intake
                     intaking = true;
                     launcher.intake();
-                } else if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) {
+                } else if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) { // Launch Sequence
                     go.lock();
                     go.update();
                     launcher.LAUNCHstart();
-                } else if (c1.right() || c2.right()) {
+                } else if (c1.right() || c2.right()) { // Launch Preparation (Hold right button down)
                     launcher.LAUNCHprep();
-                } else if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) {
-                    launcher.LAUNCH();
-                } else if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) {
+                } else if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) { // Launch into Amp
                     launcher.amp();
-                } else if (c1.onPress(Controls.X) || c2.onPress(Controls.X)) {
-                    launcher.aim(Launch.pos.closeup);
                 }
             }
+        
+        // SMART MODE PERIODIC:
         } else if (mode == "smart") {
             if (launcher.holdingNote) {
                 if (speaker.valid()) {
@@ -222,75 +221,74 @@ public class Robot extends TimedRobot {
                     while (newAngle < dir - 180) { newAngle += 360; }
                     dir = newAngle;
                 }
-            } else if (c1.pov() != -1) {
+            } else if (c1.pov() != -1) { // Controller 1 POV
                 newAngle = (double)(c1.pov() + 180);
                 while (newAngle > dir + 180) { newAngle -= 360; }
                 while (newAngle < dir - 180) { newAngle += 360; }
                 dir = newAngle;
-            } else if (c2.pov() != -1) {
+            } else if (c2.pov() != -1) { // Controller 2 POV
                 newAngle = (double)(c2.pov() + 180);
                 while (newAngle > dir + 180) { newAngle -= 360; }
                 while (newAngle < dir - 180) { newAngle += 360; }
                 dir = newAngle;
-            } else if (c1.active() || c2.active()) {
+            } else if (c1.active() || c2.active()) { // Manual Rotation
                 dir += 2.5 * (Math.pow(c1.stick(4), 3) + Math.pow(c2.stick(4), 3));
             }
-            go.swerve(
+            go.swerve( // Drive with Headless Mode
                 Math.pow(c1.stick(1), 3) + Math.pow(c2.stick(1), 3),
                 Math.pow(c1.stick(0), 3) + Math.pow(c2.stick(0), 3),
-                keepInRange(-0.02*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1), -0.5, 0.5),
+                keepInRange(-0.02*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1), -0.7, 0.7),
                 navx.yaw() + 180
             );
-            if (c1.back() || c2.back()) {
+            if (c1.back() || c2.back()) { // Change Mode
                 mode = "raw";
-            }
-            if (c1.onPress(Controls.X) || c2.onPress(Controls.X)) {
+            } else if (c1.onPress(Controls.X) || c2.onPress(Controls.X)) {
                 mode = "auto";
             }
-            if ((c1.right_stick() && c1.start()) || (c2.right_stick() && c2.start())) {
+            if ((c1.right_stick() && c1.start()) || (c2.right_stick() && c2.start())) { // NavX Calibration
                 navx.zeroYaw();
                 dir = 0;
-            } else if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) {
+            } else if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) { // LAUNCH
                 launcher.LAUNCH();
             } else if (launcher.prepping && speaker.pipelineActivated()) {
                 if (speaker.Y() >= launchOver || c1.left() || c2.left()) {
                     launcher.LAUNCH();
                 }
-            } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
-                launcher.prepClimb();
-            } else if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) {
+            }
+            if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) { // Climbing System
                 launcher.prepClimb();
             } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
                 launcher.climb();
             }
-            if (c1.b() || c2.b()) {
+            if (c1.b() || c2.b()) { // Cancel Any Launcher Activity
                 intaking = false;
                 launcher.stop();
-            } else if (launcher.stage == 0) {
+            } else if (launcher.stage == 0) { // If Launcher Not Doing Anything
                 intaking = false;
                 if (launcher.holdingNote) {
                     launcher.LAUNCHprep();
-                } else if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) {
+                } else if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) { // Intake
                     intaking = true;
                     launcher.intake();
-                } else if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) {
+                } else if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) { // Automatic Launch Sequence
                     launcher.aimAndLAUNCH();
                     while (!speaker.pipelineActivated()) {
                         launcher.update();
                         if (c1.b() || c2.b()) { break; }
                     }
                     dir = navx.yaw() + speaker.X();
-                } else if (c1.onPress(Controls.RIGHT) || c2.onPress(Controls.RIGHT)) {
+                } else if (c1.onPress(Controls.RIGHT) || c2.onPress(Controls.RIGHT)) { // Prepare to Launch (Hold Button Down)
                     launcher.LAUNCHprep();
-                } else if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) {
+                } else if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) { // Launch Into Amp
                     launcher.amp();
                 }
             }
+        
+        // TELEAUTO PERIODIC:
         } else if (mode == "auto") {
-            if (c1.back() || c2.back()) {
+            if (c1.back() || c2.back()) { // Change Mode
                 mode = "raw";
-            }
-            if (c1.onPress(Controls.X) || c2.onPress(Controls.X) || c1.active() || c2.active()) {
+            } else if (c1.onPress(Controls.X) || c2.onPress(Controls.X) || c1.active() || c2.active()) {
                 mode = "smart";
             }
             autonomousPeriodic();
@@ -312,7 +310,7 @@ public class Robot extends TimedRobot {
         launcher.update();
         if (intaking) {
             if (actualMatch) {
-                in.set(0.4 + Math.pow(matchTimer.get()/1000-1500,3)/3000000);
+                in.set(0.4+Math.pow(matchTimer.get()/1000-1500,3)/3000000);
             } else {
                 in.set(0.45);
             }
