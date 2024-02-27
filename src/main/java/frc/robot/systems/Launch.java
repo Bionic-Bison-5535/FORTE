@@ -22,7 +22,7 @@ public class Launch {
         /** Intake position */
         public static double intake = 20;
         /** Position for scoring in amp */
-        public static double amp = 88.14;
+        public static double amp = 88;
         /** Position for scoring in speaker while pressed up against subwoofer */
         public static double closeup = 15;
         /** Position to go to before climbing */
@@ -53,7 +53,7 @@ public class Launch {
         feed = FeedMotor;
         aimMotor = AimMotor;
         aimCoder = new CANcoder(aimCoderID);
-        aimMotor.setEnc(aimCoder.getPosition().getValue()*182);
+        aimMotor.setEnc((aimCoder.getAbsolutePosition().getValue())*182+11.520975112915039);
         aimMotor.goTo(pos.intake);
         feed.pwr = 3;
         cam = Cam;
@@ -176,8 +176,8 @@ public class Launch {
             }
         }
         if (stage == 12) { // Pull note in further
-            feed.set(-0.08);
-            if (launchTimer.get() > 50) {
+            feed.set(-0.05);
+            if (launchTimer.get() > 10) {
                 stage = 13;
                 feed.goTo(feed.getEnc());
             }
@@ -221,8 +221,8 @@ public class Launch {
             }
         }
         if (stage == 32) { // Pull note in further
-            feed.set(-0.08);
-            if (launchTimer.get() > 50) {
+            feed.set(-0.05);
+            if (launchTimer.get() > 10) {
                 stage = 33;
                 feed.goTo(feed.getEnc());
             }
@@ -230,7 +230,7 @@ public class Launch {
         if (stage == 33) { // Fire up thrusters and wait for camera to start
             leftThruster.set(0.8);
             rightThruster.set(2);
-            if (launchTimer.get() > 1100 && cam.pipelineActivated()) {
+            if (cam.pipelineActivated()) {
                 stage = 34;
             }
         }
@@ -242,6 +242,7 @@ public class Launch {
                 if (-targetWidth < cam.X() && cam.X() < targetWidth) {
                     stage = 35;
                     aim(pos.smartAim(cam.Y(), false));
+                    launchTimer.reset();
                 }
             }
         }
@@ -249,7 +250,7 @@ public class Launch {
             leftThruster.set(0.8);
             rightThruster.set(2);
             aim(pos.smartAim(cam.Y(), true));
-            if (aimMotor.almost() && !prepping) {
+            if (!prepping && launchTimer.get() > 1000) {
                 stage = 14;
                 launchTimer.set(1100);
             }
