@@ -14,7 +14,7 @@ public class Launch {
     private boolean prepping = false;
     public boolean holdingNote = false;
     private double targetWidth;
-    public double offset = -11.520975112915039;
+    public double offset = 11.520975112915039;
 
     /** Encoder-based positions for launcher to go to */
     public class pos {
