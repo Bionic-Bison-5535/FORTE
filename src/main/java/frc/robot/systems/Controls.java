@@ -42,6 +42,14 @@ public class Controls {
     public boolean active() {
         return (stick(0) != 0 || stick(1) != 0 || stick(4) != 0 || stick(5) != 0 || pov() != -1);
     }
+
+    public double direction() {
+        return in.getDirectionDegrees();
+    }
+
+    public double magnitude() {
+        return in.getMagnitude();
+    }
     
     /**
      * Function for getting boolean button status on controller

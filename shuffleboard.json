@@ -175,19 +175,6 @@
               "_showGlyph": true
             }
           },
-          "8,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Internal Robot Celsius Temeprature",
-              "_title": "Celsius",
-              "_glyph": 0,
-              "_showGlyph": true
-            }
-          },
           "7,0": {
             "size": [
               2,
@@ -251,7 +238,7 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "4,4": {
+          "0,3": {
             "size": [
               1,
               1
@@ -305,7 +292,7 @@
               "_showGlyph": false
             }
           },
-          "3,4": {
+          "1,3": {
             "size": [
               1,
               1
@@ -318,28 +305,54 @@
               "_showGlyph": false
             }
           },
-          "1,3": {
+          "8,2": {
             "size": [
               1,
               1
             ],
             "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Aim Set",
-              "_title": "Aim Set",
+              "_type": "Toggle Switch",
+              "_source0": "network_table:///SmartDashboard/Sensor Error",
+              "_title": "Sensor Error",
               "_glyph": 148,
               "_showGlyph": false
             }
           },
-          "0,3": {
+          "6,4": {
             "size": [
               1,
               1
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Tag Y",
-              "_title": "Tag Y",
+              "_source0": "network_table:///SmartDashboard/Aim Formula b",
+              "_title": "Aim Formula b",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "7,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Aim Formula m",
+              "_title": "Aim Formula m",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "8,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Limelight Y",
+              "_title": "Limelight Y",
               "_glyph": 148,
               "_showGlyph": false
             }

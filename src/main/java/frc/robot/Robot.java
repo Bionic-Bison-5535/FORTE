@@ -17,7 +17,10 @@ public class Robot extends TimedRobot {
     String mode = "smart";
     boolean intaking = false;
     boolean actualMatch = false;
+    double dir = 0;
+    double newAngle;
     int autoStage = 0;
+
     public static boolean sensorError = false;
 
     private final SendableChooser<String> noteDropdown = new SendableChooser<>();
@@ -41,6 +44,16 @@ public class Robot extends TimedRobot {
     Launch launcher;
     Limelight posCam = new Limelight(1);
 
+    double keepInRange(double number, double floor, double ceiling) {
+        if (number >= floor && number <= ceiling) {
+            return number;
+        } else if (number < floor) {
+            return floor;
+        } else {
+            return ceiling;
+        }
+    }
+
     @Override
     public void robotInit() {
         Limelight.enableLimelightUSB();
@@ -62,8 +75,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putString("Event", DriverStation.getEventName());
         SmartDashboard.putNumber("Match", DriverStation.getMatchNumber());
         SmartDashboard.putBoolean("Sensor Error", false);
-        SmartDashboard.putNumber("Aim Formula b", Launch.pos.smartAim_b);
-        SmartDashboard.putNumber("Aim Formula m", Launch.pos.smartAim_m);
+        SmartDashboard.putNumber("Smart Aim Offset", Launch.pos.smartAim_offset);
+        SmartDashboard.putNumber("General Aim Offset", launcher.offset);
         if (leds.blueAlliance) {
             speaker = new Limelight(3);
             speaker2 = new Limelight(5);
@@ -92,8 +105,8 @@ public class Robot extends TimedRobot {
         go.C_offset = SmartDashboard.getNumber("C Offset", go.C_offset);
         go.D_offset = SmartDashboard.getNumber("D Offset", go.D_offset);
         sensorError = SmartDashboard.getBoolean("Sensor Error", false);
-        Launch.pos.smartAim_b = SmartDashboard.getNumber("Aim Formula b", Launch.pos.smartAim_b);
-        Launch.pos.smartAim_m = SmartDashboard.getNumber("Aim Formula m", Launch.pos.smartAim_m);
+        Launch.pos.smartAim_offset = SmartDashboard.getNumber("Smart Aim Offset", Launch.pos.smartAim_offset);
+        launcher.offset = SmartDashboard.getNumber("General Aim Offset", launcher.offset);
     }
 
     @Override
@@ -103,6 +116,7 @@ public class Robot extends TimedRobot {
         getMoreNotes = getMoreDropdown.getSelected();
         matchTimer.reset();
         leds.orange();
+        dir = navx.yaw();
         launcher.holdingNote = true;
     }
 
@@ -160,6 +174,7 @@ public class Robot extends TimedRobot {
             go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(4), 3), 0);
             if (c1.start() || c2.start()) {
                 mode = "smart";
+                dir = navx.yaw();
             }
             if (c1.stick(2) + c1.stick(3) != 0) {
                 launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), 3));
@@ -180,32 +195,40 @@ public class Robot extends TimedRobot {
                 if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote && !sensorError)) {
                     intaking = true;
                     launcher.intake();
-                }
-                if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) {
+                } else if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) {
                     go.lock();
                     go.update();
                     launcher.LAUNCHstart();
-                }
-                if (c1.right() || c2.right()) {
+                } else if (c1.right() || c2.right()) {
                     launcher.LAUNCHprep();
-                }
-                if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) {
+                } else if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) {
                     launcher.LAUNCH();
-                }
-                if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) {
+                } else if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) {
                     launcher.amp();
-                }
-                if (c1.onPress(Controls.X) || c2.onPress(Controls.X)) {
+                } else if (c1.onPress(Controls.X) || c2.onPress(Controls.X)) {
                     launcher.aim(Launch.pos.closeup);
                 }
             }
         } else if (mode == "smart") {
-            if (c1.left_stick() || c2.left_stick()) {
-                go.lock();
-            } else {
-                go.unlock();
-                go.swerve(Math.pow(c1.stick(1), 3), Math.pow(c1.stick(0), 3), Math.pow(c1.stick(4), 3), navx.yaw()+180);
+            if (c1.pov() != -1) {
+                newAngle = (double)(c1.pov() + 180);
+                while (newAngle > dir + 180) { newAngle -= 360; }
+                while (newAngle < dir - 180) { newAngle += 360; }
+                dir = newAngle;
+            } else if (c2.pov() != -1) {
+                newAngle = (double)(c2.pov() + 180);
+                while (newAngle > dir + 180) { newAngle -= 360; }
+                while (newAngle < dir - 180) { newAngle += 360; }
+                dir = newAngle;
+            } else if (c1.active() || c2.active()) {
+                dir += 2.5 * (Math.pow(c1.stick(4), 3) + Math.pow(c2.stick(4), 3));
             }
+            go.swerve(
+                Math.pow(c1.stick(1), 3) + Math.pow(c2.stick(1), 3),
+                Math.pow(c1.stick(0), 3) + Math.pow(c2.stick(0), 3),
+                keepInRange(-0.02*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1), -0.5, 0.5),
+                navx.yaw() + 180
+            );
             if (c1.back() || c2.back()) {
                 mode = "raw";
             }
@@ -214,8 +237,10 @@ public class Robot extends TimedRobot {
             }
             if ((c1.right_stick() && c1.start()) || (c2.right_stick() && c2.start())) {
                 navx.zeroYaw();
-            }
-            if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) {
+                dir = 0;
+            } else if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) {
+                launcher.LAUNCH();
+            } else if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) {
                 launcher.prepClimb();
             } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
                 launcher.climb();
@@ -228,17 +253,16 @@ public class Robot extends TimedRobot {
                 if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) {
                     intaking = true;
                     launcher.intake();
-                }
-                if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) {
+                } else if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) {
                     launcher.aimAndLAUNCH();
-                }
-                if (c1.onPress(Controls.RIGHT) || c2.onPress(Controls.RIGHT)) {
+                    while (!speaker.pipelineActivated()) {
+                        launcher.update();
+                        if (c1.b() || c2.b()) { break; }
+                    }
+                    dir = navx.yaw() + speaker.X();
+                } else if (c1.onPress(Controls.RIGHT) || c2.onPress(Controls.RIGHT)) {
                     launcher.LAUNCHprep();
-                }
-                if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) {
-                    launcher.LAUNCH();
-                }
-                if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) {
+                } else if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) {
                     launcher.amp();
                 }
             }
