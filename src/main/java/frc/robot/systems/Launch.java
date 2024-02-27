@@ -117,7 +117,12 @@ public class Launch {
         prepping = true;
     }
 
-    /** LAUNCH (officially) after "LAUNCHprep" function called */
+    /** Fires up thrusters */
+    public void LAUNCHprep_noCam() {
+        stage = 11;
+    }
+
+    /** LAUNCH (officially) after "LAUNCHprep" or "LAUNCHprep_noCam" function called */
     public void LAUNCH() {
         prepping = false;
     }
@@ -185,7 +190,7 @@ public class Launch {
         if (stage == 13) { // Fire up thrusters
             leftThruster.set(0.8);
             rightThruster.set(2);
-            if (launchTimer.get() > 1100) {
+            if (launchTimer.get() > 1100 && !prepping) {
                 stage = 14;
             }
         }
