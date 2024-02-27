@@ -134,12 +134,13 @@ public class Robot extends TimedRobot {
         if (autoStage == 2) {
             if (speaker.valid()) {
                 go.swerve(0, 0, speaker.X()/40, 0);
+                if (speaker.X() > -5 &&  speaker.X() > 5); {
+                    autoStage = 3;
+                    go.swerve(0, 0, 0, 0);
+                }
             } else {
                 go.swerve(0, 0, 0.5535, 0);
             }
-            if (speaker.X() > -5 &&  speaker.X() > 5); {
-                autoStage = 3;
-            }            
         }
         if (autoStage == 3) {
             launcher.LAUNCH();
