@@ -11,7 +11,7 @@
         "vgap": 27.0,
         "titleType": 1,
         "tiles": {
-          "7,2": {
+          "8,2": {
             "size": [
               1,
               1
@@ -238,7 +238,7 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "0,3": {
+          "7,2": {
             "size": [
               1,
               1
@@ -305,46 +305,7 @@
               "_showGlyph": false
             }
           },
-          "8,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Toggle Switch",
-              "_source0": "network_table:///SmartDashboard/Sensor Error",
-              "_title": "Sensor Error",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "6,4": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Aim Formula b",
-              "_title": "Aim Formula b",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "7,4": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Aim Formula m",
-              "_title": "Aim Formula m",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "8,4": {
+          "0,3": {
             "size": [
               1,
               1
@@ -353,6 +314,32 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Limelight Y",
               "_title": "Limelight Y",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Smart Aim Offset",
+              "_title": "Smart Aim Offset",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "4,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/General Aim Offset",
+              "_title": "General Aim Offset",
               "_glyph": 148,
               "_showGlyph": false
             }
