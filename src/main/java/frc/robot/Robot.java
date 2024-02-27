@@ -20,6 +20,8 @@ public class Robot extends TimedRobot {
     double dir = 0;
     double newAngle;
     double launchOver = 9;
+    int autoStage = 0;
+
     public static boolean sensorError = false;
 
     private final SendableChooser<String> noteDropdown = new SendableChooser<>();
@@ -30,6 +32,7 @@ public class Robot extends TimedRobot {
     Controls c1 = new Controls(0, 0.1);
     Controls c2 = new Controls(1, 0.1);
     Tim matchTimer = new Tim();
+    Tim Alec = new Tim();
     Navx navx = new Navx();
     Lights leds = new Lights(30);
     Motor in = new Motor(5, true, true, 1);
@@ -41,6 +44,16 @@ public class Robot extends TimedRobot {
     Limelight speaker, speaker2, ampCam;
     Launch launcher;
     Limelight posCam = new Limelight(1);
+
+    double keepInRange(double number, double floor, double ceiling) {
+        if (number >= floor && number <= ceiling) {
+            return number;
+        } else if (number < floor) {
+            return floor;
+        } else {
+            return ceiling;
+        }
+    }
 
     @Override
     public void robotInit() {
@@ -63,9 +76,9 @@ public class Robot extends TimedRobot {
         SmartDashboard.putString("Event", DriverStation.getEventName());
         SmartDashboard.putNumber("Match", DriverStation.getMatchNumber());
         SmartDashboard.putBoolean("Sensor Error", false);
-        SmartDashboard.putNumber("Aim Formula b", Launch.pos.smartAim_b);
-        SmartDashboard.putNumber("Aim Formula m", Launch.pos.smartAim_m);
         SmartDashboard.putNumber("Launch Over", launchOver);
+        SmartDashboard.putNumber("Smart Aim Offset", Launch.pos.smartAim_offset);
+        SmartDashboard.putNumber("General Aim Offset", launcher.offset);
         if (leds.blueAlliance) {
             speaker = new Limelight(3);
             speaker2 = new Limelight(5);
@@ -84,7 +97,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Aim Pos", launcher.aimPos());
         SmartDashboard.putNumber("Limelight Y", Limelight.Y_());
         SmartDashboard.putNumber("Timer", Math.floor(matchTimer.get()/1000));
-        SmartDashboard.putNumber("Internal Robot Celsius Temeprature", Math.round(navx.celsius()));
         SmartDashboard.putNumber("Yaw Angle", navx.coterminalYaw());
         SmartDashboard.putNumber("Speed", navx.velocity());
         SmartDashboard.putBoolean("I See Note", !iseenote.get());
@@ -95,9 +107,9 @@ public class Robot extends TimedRobot {
         go.C_offset = SmartDashboard.getNumber("C Offset", go.C_offset);
         go.D_offset = SmartDashboard.getNumber("D Offset", go.D_offset);
         sensorError = SmartDashboard.getBoolean("Sensor Error", false);
-        Launch.pos.smartAim_b = SmartDashboard.getNumber("Aim Formula b", Launch.pos.smartAim_b);
-        Launch.pos.smartAim_m = SmartDashboard.getNumber("Aim Formula m", Launch.pos.smartAim_m);
         launchOver = SmartDashboard.getNumber("Launch Over", launchOver);
+        Launch.pos.smartAim_offset = SmartDashboard.getNumber("Smart Aim Offset", Launch.pos.smartAim_offset);
+        launcher.offset = SmartDashboard.getNumber("General Aim Offset", launcher.offset);
     }
 
     @Override
@@ -108,10 +120,47 @@ public class Robot extends TimedRobot {
         matchTimer.reset();
         leds.orange();
         dir = navx.yaw();
+        launcher.holdingNote = true;
     }
 
     @Override
-    public void autonomousPeriodic() {}
+    public void autonomousPeriodic() {
+        launcher.update();
+        go.update();
+        if (autoStage == 0) {
+            autoStage = 1;
+        }       
+        if (autoStage == 1) {
+            launcher.LAUNCHprep();
+            autoStage = 2;
+        }
+        if (autoStage == 2) {
+            if (speaker.valid()) {
+                go.swerve(0, 0, speaker.X()/40, 0);
+            } else {
+                go.swerve(0, 0, 0.5535, 0);
+            }
+            if (speaker.X() > -5 &&  speaker.X() > 5); {
+                autoStage = 3;
+            }            
+        }
+        if (autoStage == 3) {
+            launcher.LAUNCH();
+            if (launcher.holdingNote == false) {
+                autoStage = 4;
+                Alec.reset();
+            }
+        }
+        if (autoStage == 4) {
+            go.swerve(-0.75, 0, 0, navx.yaw()+180);
+            if (Alec.get() > 500) {
+                autoStage = 5;
+            }
+        }
+        if (autoStage == 5) {
+            go.swerve(0, 0, 0, 0);
+        }
+    }   
 
     @Override
     public void teleopInit() {
@@ -134,6 +183,11 @@ public class Robot extends TimedRobot {
                 launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), 3));
             } else if (c1.x() || c2.x()) {
                 launcher.aim(Launch.pos.closeup);
+            }
+            if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) {
+                launcher.prepClimb();
+            } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
+                launcher.climb();
             }
             if (c1.b() || c2.b()) {
                 intaking = false;
@@ -159,40 +213,34 @@ public class Robot extends TimedRobot {
                 }
             }
         } else if (mode == "smart") {
-            if (c1.left_stick() || c2.left_stick()) {
-                go.lock();
-                go.update();
-            } else {
-                go.unlock();
-                if (launcher.holdingNote) {
-                    if (speaker.valid()) {
-                        dir = navx.yaw() + speaker.X();
-                    } else if (navx.coterminalYaw() < -45 || navx.coterminalYaw() > 45) {
-                        newAngle = 0;
-                        while (newAngle > dir + 180) { newAngle -= 360; }
-                        while (newAngle < dir - 180) { newAngle += 360; }
-                        dir = newAngle;
-                    }
-                } else if (c1.pov() != -1) {
-                    newAngle = (double)(c1.pov() + 180);
+            if (launcher.holdingNote) {
+                if (speaker.valid()) {
+                    dir = navx.yaw() + speaker.X();
+                } else if (navx.coterminalYaw() < -45 || navx.coterminalYaw() > 45) {
+                    newAngle = 0;
                     while (newAngle > dir + 180) { newAngle -= 360; }
                     while (newAngle < dir - 180) { newAngle += 360; }
                     dir = newAngle;
-                } else if (c2.pov() != -1) {
-                    newAngle = (double)(c2.pov() + 180);
-                    while (newAngle > dir + 180) { newAngle -= 360; }
-                    while (newAngle < dir - 180) { newAngle += 360; }
-                    dir = newAngle;
-                } else if (c1.active() || c2.active()) {
-                    dir += 2.5 * (Math.pow(c1.stick(4), 3) + Math.pow(c2.stick(4), 3));
                 }
-                go.swerve(
-                    Math.pow(c1.stick(1), 3) + Math.pow(c2.stick(1), 3),
-                    Math.pow(c1.stick(0), 3) + Math.pow(c2.stick(0), 3),
-                    -0.02*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1),
-                    navx.yaw() + 180
-                );
+            } else if (c1.pov() != -1) {
+                newAngle = (double)(c1.pov() + 180);
+                while (newAngle > dir + 180) { newAngle -= 360; }
+                while (newAngle < dir - 180) { newAngle += 360; }
+                dir = newAngle;
+            } else if (c2.pov() != -1) {
+                newAngle = (double)(c2.pov() + 180);
+                while (newAngle > dir + 180) { newAngle -= 360; }
+                while (newAngle < dir - 180) { newAngle += 360; }
+                dir = newAngle;
+            } else if (c1.active() || c2.active()) {
+                dir += 2.5 * (Math.pow(c1.stick(4), 3) + Math.pow(c2.stick(4), 3));
             }
+            go.swerve(
+                Math.pow(c1.stick(1), 3) + Math.pow(c2.stick(1), 3),
+                Math.pow(c1.stick(0), 3) + Math.pow(c2.stick(0), 3),
+                keepInRange(-0.02*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1), -0.5, 0.5),
+                navx.yaw() + 180
+            );
             if (c1.back() || c2.back()) {
                 mode = "raw";
             }
@@ -211,6 +259,8 @@ public class Robot extends TimedRobot {
             } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
                 launcher.prepClimb();
             } else if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) {
+                launcher.prepClimb();
+            } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
                 launcher.climb();
             }
             if (c1.b() || c2.b()) {
