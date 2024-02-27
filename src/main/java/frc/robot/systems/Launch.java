@@ -15,6 +15,7 @@ public class Launch {
     public boolean holdingNote = false;
     private double targetWidth;
     public double offset = 11.520975112915039;
+    public final double pullback = 14;
 
     /** Encoder-based positions for launcher to go to */
     public class pos {
@@ -55,7 +56,7 @@ public class Launch {
         aimCoder = new CANcoder(aimCoderID);
         aimMotor.setEnc((aimCoder.getAbsolutePosition().getValue())*182);
         aim(pos.intake);
-        feed.pwr = 3;
+        feed.pwr = 1.5;
         cam = Cam;
 	}
 
@@ -182,7 +183,7 @@ public class Launch {
         }
         if (stage == 12) { // Pull note in further
             feed.set(-0.05);
-            if (launchTimer.get() > 10) {
+            if (launchTimer.get() > pullback) {
                 stage = 13;
                 feed.goTo(feed.getEnc());
             }
@@ -227,7 +228,7 @@ public class Launch {
         }
         if (stage == 32) { // Pull note in further
             feed.set(-0.05);
-            if (launchTimer.get() > 10) {
+            if (launchTimer.get() > pullback) {
                 stage = 33;
                 feed.goTo(feed.getEnc());
             }
