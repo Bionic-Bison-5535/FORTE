@@ -17,6 +17,7 @@ public class Robot extends TimedRobot {
     String mode = "smart";
     boolean intaking = false;
     boolean actualMatch = false;
+    int autoStage = 0;
     public static boolean sensorError = false;
 
     private final SendableChooser<String> noteDropdown = new SendableChooser<>();
@@ -27,6 +28,7 @@ public class Robot extends TimedRobot {
     Controls c1 = new Controls(0, 0.1);
     Controls c2 = new Controls(1, 0.1);
     Tim matchTimer = new Tim();
+    Tim Alec = new Tim();
     Navx navx = new Navx();
     Lights leds = new Lights(30);
     Motor in = new Motor(5, true, true, 1);
@@ -80,7 +82,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Aim Pos", launcher.aimPos());
         SmartDashboard.putNumber("Limelight Y", Limelight.Y_());
         SmartDashboard.putNumber("Timer", Math.floor(matchTimer.get()/1000));
-        SmartDashboard.putNumber("Internal Robot Celsius Temeprature", Math.round(navx.celsius()));
         SmartDashboard.putNumber("Yaw Angle", navx.coterminalYaw());
         SmartDashboard.putNumber("Speed", navx.velocity());
         SmartDashboard.putBoolean("I See Note", !iseenote.get());
@@ -102,10 +103,46 @@ public class Robot extends TimedRobot {
         getMoreNotes = getMoreDropdown.getSelected();
         matchTimer.reset();
         leds.orange();
+        launcher.holdingNote = true;
     }
 
     @Override
-    public void autonomousPeriodic() {}
+    public void autonomousPeriodic() {
+        launcher.update();
+        if (autoStage == 0) {
+            autoStage = 1;
+        }       
+        if (autoStage == 1) {
+            launcher.LAUNCHprep();
+            autoStage = 2;
+        }
+        if (autoStage == 2) {
+            if (speaker.valid()) {
+                go.swerve(0, 0, speaker.X()/40, 0);
+            } else {
+                go.swerve(0, 0, 0.5535, 0);
+            }
+            if (speaker.X() > -5 &&  speaker.X() > 5); {
+                autoStage = 3;
+            }            
+        }
+        if (autoStage == 3) {
+            launcher.LAUNCH();
+            if (launcher.holdingNote == false) {
+                autoStage = 4;
+                Alec.reset();
+            }
+        }
+        if (autoStage == 4) {
+            go.swerve(-0.75, 0, 0, navx.yaw()+180);
+            if (Alec.get() > 500) {
+                autoStage = 5;
+            }
+        }
+        if (autoStage == 5) {
+            go.swerve(0, 0, 0, 0);
+        }
+    }   
 
     @Override
     public void teleopInit() {
