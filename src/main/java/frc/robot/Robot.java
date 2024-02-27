@@ -109,6 +109,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousPeriodic() {
         launcher.update();
+        go.update();
         if (autoStage == 0) {
             autoStage = 1;
         }       
