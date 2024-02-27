@@ -21,8 +21,6 @@ public class Robot extends TimedRobot {
     double newAngle;
     int autoStage = 0;
 
-    public static boolean sensorError = false;
-
     private final SendableChooser<String> noteDropdown = new SendableChooser<>();
     private final SendableChooser<String> getMoreDropdown = new SendableChooser<>();
     String noteToGet, getMoreNotes;
@@ -85,7 +83,6 @@ public class Robot extends TimedRobot {
         SmartDashboard.putBoolean("Alliance", leds.blueAlliance);
         SmartDashboard.putString("Event", DriverStation.getEventName());
         SmartDashboard.putNumber("Match", DriverStation.getMatchNumber());
-        SmartDashboard.putBoolean("Sensor Error", false);
         SmartDashboard.putNumber("Smart Aim Offset", Launch.pos.smartAim_offset);
     }
 
@@ -104,7 +101,6 @@ public class Robot extends TimedRobot {
         go.B_offset = SmartDashboard.getNumber("B Offset", go.B_offset);
         go.C_offset = SmartDashboard.getNumber("C Offset", go.C_offset);
         go.D_offset = SmartDashboard.getNumber("D Offset", go.D_offset);
-        sensorError = SmartDashboard.getBoolean("Sensor Error", false);
         Launch.pos.smartAim_offset = SmartDashboard.getNumber("Smart Aim Offset", Launch.pos.smartAim_offset);
         launcher.offset = SmartDashboard.getNumber("General Aim Offset", launcher.offset);
     }
@@ -194,7 +190,7 @@ public class Robot extends TimedRobot {
             } else if (launcher.stage == 0) { // If Launcher Not Doing Anything
                 go.unlock();
                 intaking = false;
-                if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote && !sensorError)) { // Intake
+                if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) { // Intake
                     intaking = true;
                     launcher.intake();
                 } else if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) { // Launch Sequence

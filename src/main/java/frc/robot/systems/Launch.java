@@ -175,7 +175,7 @@ public class Launch {
         // Launch System:
         if (stage == 11) { // Pull note in
             feed.set(-0.08);
-            if (iseenote() || frc.robot.Robot.sensorError) {
+            if (iseenote()) {
                 stage = 12;
                 launchTimer.reset();
             }
@@ -220,7 +220,7 @@ public class Launch {
         // Aim and Launch:
         if (stage == 31) { // Pull note in
             feed.set(-0.08);
-            if (iseenote() || frc.robot.Robot.sensorError) {
+            if (iseenote()) {
                 stage = 32;
                 launchTimer.reset();
             }
