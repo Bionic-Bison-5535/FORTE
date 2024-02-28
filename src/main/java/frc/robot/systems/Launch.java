@@ -38,9 +38,9 @@ public class Launch {
         /** Function to calculate encoder position based on Limelight camera input */
         public static double smartAim(double limelightY, boolean moving) {
             if (moving) { // Use previous position to predict future
-                smartPosVal = 40.35 - 0.97 * (2*limelightY - previousLimelightY) + smartAim_offset;
+                smartPosVal = 30.7 - Math.pow(2*limelightY - previousLimelightY, 2)/34 - smartAim_offset;
             } else {
-                smartPosVal = 40.35 - 0.97 * limelightY + smartAim_offset;
+                smartPosVal = 30.7 - Math.pow(limelightY, 2)/34 - smartAim_offset;
             }
             previousLimelightY = limelightY;
             return smartPosVal;
@@ -61,7 +61,7 @@ public class Launch {
 	}
 
     public double aimPos() {
-        return aimMotor.getEnc();
+        return aimMotor.getEnc() - offset;
     }
 
     public void aim(double encValue) {
@@ -75,7 +75,7 @@ public class Launch {
     }
 
     public void changeAim(double changeInEncValue) {
-        aim(aimMotor.goToPos + changeInEncValue);
+        aim(aimMotor.goToPos + changeInEncValue + offset);
     }
 
     public void prepClimb() {
