@@ -15,7 +15,7 @@ public class Launch {
     public boolean holdingNote = false;
     private double targetWidth;
     public double offset = 11.520975112915039;
-    public final double pullback = 14;
+    public final double pullback = 10;
 
     /** Encoder-based positions for launcher to go to */
     public class pos {
@@ -56,7 +56,7 @@ public class Launch {
         aimCoder = new CANcoder(aimCoderID);
         aimMotor.setEnc((aimCoder.getAbsolutePosition().getValue())*182);
         aim(pos.intake);
-        feed.pwr = 1.5;
+        feed.pwr = 1.87;
         cam = Cam;
 	}
 
@@ -183,16 +183,16 @@ public class Launch {
             }
         }
         if (stage == 13) { // Fire up thrusters
-            leftThruster.set(0.8);
-            rightThruster.set(2);
+            leftThruster.set(1);
+            rightThruster.set(1);
             if (launchTimer.get() > 1100 && !prepping) {
                 stage = 14;
             }
         }
         if (stage == 14) { // Push note into thrusters
             feed.set(2);
-            leftThruster.set(0.8);
-            rightThruster.set(2);
+            leftThruster.set(1);
+            rightThruster.set(1);
             if (launchTimer.get() > 1400) { // Stop launcher (finish process)
                 feed.set(0);
                 leftThruster.set(0);
@@ -228,15 +228,15 @@ public class Launch {
             }
         }
         if (stage == 33) { // Fire up thrusters and wait for camera to start
-            leftThruster.set(0.8);
-            rightThruster.set(2);
+            leftThruster.set(1);
+            rightThruster.set(1);
             if (cam.pipelineActivated()) {
                 stage = 34;
             }
         }
         if (stage == 34) { // Wait until shot is possible (Tag in view, close enough, and horizontally aligned)
-            leftThruster.set(0.8);
-            rightThruster.set(2);
+            leftThruster.set(1);
+            rightThruster.set(1);
             if (cam.area() > 0.16) {
                 targetWidth = 3*cam.width();
                 if (-targetWidth < cam.X() && cam.X() < targetWidth) {
@@ -247,8 +247,8 @@ public class Launch {
             }
         }
         if (stage == 35) { // Aim
-            leftThruster.set(0.8);
-            rightThruster.set(2);
+            leftThruster.set(1);
+            rightThruster.set(1);
             aim(pos.smartAim(cam.Y(), true));
             if (!prepping && launchTimer.get() > 1000) {
                 stage = 14;
