@@ -14,7 +14,8 @@ public class Launch {
     public boolean prepping = false;
     public boolean holdingNote = false;
     private double targetWidth;
-    public double offset = -11.520975112915039;
+    public double offset = 11.520975112915039;
+    public final double pullback = 10;
 
     /** Encoder-based positions for launcher to go to */
     public class pos {
@@ -37,9 +38,9 @@ public class Launch {
         /** Function to calculate encoder position based on Limelight camera input */
         public static double smartAim(double limelightY, boolean moving) {
             if (moving) { // Use previous position to predict future
-                smartPosVal = 40.35 - 0.97 * (2*limelightY - previousLimelightY) + smartAim_offset;
+                smartPosVal = 30.7 - Math.pow(2*limelightY - previousLimelightY, 2)/34 - smartAim_offset;
             } else {
-                smartPosVal = 40.35 - 0.97 * limelightY + smartAim_offset;
+                smartPosVal = 30.7 - Math.pow(limelightY, 2)/34 - smartAim_offset;
             }
             previousLimelightY = limelightY;
             return smartPosVal;
@@ -55,12 +56,12 @@ public class Launch {
         aimCoder = new CANcoder(aimCoderID);
         aimMotor.setEnc((aimCoder.getAbsolutePosition().getValue())*182);
         aim(pos.intake);
-        feed.pwr = 3;
+        feed.pwr = 1.87;
         cam = Cam;
 	}
 
     public double aimPos() {
-        return aimMotor.getEnc();
+        return aimMotor.getEnc() - offset;
     }
 
     public void aim(double encValue) {
@@ -74,7 +75,7 @@ public class Launch {
     }
 
     public void changeAim(double changeInEncValue) {
-        aim(aimMotor.goToPos + changeInEncValue);
+        aim(aimMotor.goToPos + changeInEncValue + offset);
     }
 
     public void prepClimb() {
@@ -91,14 +92,8 @@ public class Launch {
 
     public void intake() {
         if (stage == 0) {
-            if (frc.robot.Robot.sensorError) {
-                feed.set(0.15);
-                leftThruster.set(-0.05);
-                rightThruster.set(-0.05);
-            } else {
-			    stage = 1;
-                aim(pos.intake);
-            }
+            stage = 1;
+            aim(pos.intake);
 		}
     }
 
@@ -176,29 +171,29 @@ public class Launch {
         // Launch System:
         if (stage == 11) { // Pull note in
             feed.set(-0.08);
-            if (iseenote() || frc.robot.Robot.sensorError) {
+            if (iseenote()) {
                 stage = 12;
                 launchTimer.reset();
             }
         }
         if (stage == 12) { // Pull note in further
             feed.set(-0.05);
-            if (launchTimer.get() > 10) {
+            if (launchTimer.get() > pullback) {
                 stage = 13;
                 feed.goTo(feed.getEnc());
             }
         }
         if (stage == 13) { // Fire up thrusters
-            leftThruster.set(0.8);
-            rightThruster.set(2);
+            leftThruster.set(1);
+            rightThruster.set(1);
             if (launchTimer.get() > 1100 && !prepping) {
                 stage = 14;
             }
         }
         if (stage == 14) { // Push note into thrusters
             feed.set(2);
-            leftThruster.set(0.8);
-            rightThruster.set(2);
+            leftThruster.set(1);
+            rightThruster.set(1);
             if (launchTimer.get() > 1400) { // Stop launcher (finish process)
                 feed.set(0);
                 leftThruster.set(0);
@@ -221,28 +216,28 @@ public class Launch {
         // Aim and Launch:
         if (stage == 31) { // Pull note in
             feed.set(-0.08);
-            if (iseenote() || frc.robot.Robot.sensorError) {
+            if (iseenote()) {
                 stage = 32;
                 launchTimer.reset();
             }
         }
         if (stage == 32) { // Pull note in further
             feed.set(-0.05);
-            if (launchTimer.get() > 10) {
+            if (launchTimer.get() > pullback) {
                 stage = 33;
                 feed.goTo(feed.getEnc());
             }
         }
         if (stage == 33) { // Fire up thrusters and wait for camera to start
-            leftThruster.set(0.8);
-            rightThruster.set(2);
+            leftThruster.set(1);
+            rightThruster.set(1);
             if (cam.pipelineActivated()) {
                 stage = 34;
             }
         }
         if (stage == 34) { // Wait until shot is possible (Tag in view, close enough, and horizontally aligned)
-            leftThruster.set(0.8);
-            rightThruster.set(2);
+            leftThruster.set(1);
+            rightThruster.set(1);
             if (cam.area() > 0.16) {
                 targetWidth = 3*cam.width();
                 if (-targetWidth < cam.X() && cam.X() < targetWidth) {
@@ -253,8 +248,8 @@ public class Launch {
             }
         }
         if (stage == 35) { // Aim
-            leftThruster.set(0.8);
-            rightThruster.set(2);
+            leftThruster.set(1);
+            rightThruster.set(1);
             aim(pos.smartAim(cam.Y(), true));
             if (!prepping && launchTimer.get() > 1000) {
                 stage = 14;
