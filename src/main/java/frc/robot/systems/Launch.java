@@ -93,10 +93,8 @@ public class Launch {
     }
 
     public void intake() {
-        if (stage == 0) {
-            stage = 1;
-            aim(pos.intake);
-		}
+        stage = 1;
+        aim(pos.intake);
     }
 
     public void stop() {

@@ -21,7 +21,7 @@ public class Robot extends TimedRobot {
     double newAngle;
     double launchOver = 9;
     int autoStage = 0;
-    boolean verySmart = true;
+    boolean confident = true;
     boolean conscious = true;
     boolean wasDisabled = false;
 
@@ -269,7 +269,7 @@ public class Robot extends TimedRobot {
         
         // SMART MODE PERIODIC:
         } else if (mode == "smart") {
-            if (conscious && verySmart && launcher.holdingNote) {
+            if (conscious && confident && launcher.holdingNote) {
                 if (speaker.valid()) {
                     dir = navx.yaw() + speaker.X()*0.5;
                 } else if (navx.coterminalYaw() < -45 || navx.coterminalYaw() > 45) {
@@ -308,7 +308,7 @@ public class Robot extends TimedRobot {
                 dir = 0;
             } else if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) { // LAUNCH
                 launcher.LAUNCH();
-            } else if (conscious && verySmart && launcher.prepping && speaker.pipelineActivated() && speaker.valid()) {
+            } else if (conscious && confident && launcher.prepping && speaker.pipelineActivated() && speaker.valid()) {
                 if (speaker.Y() >= launchOver || c1.left() || c2.left()) {
                     launcher.LAUNCH();
                 }
@@ -318,19 +318,23 @@ public class Robot extends TimedRobot {
             } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
                 launcher.climb();
             }
-            if (c1.b() || c2.b()) { // Cancel Any Launcher Activity
+            if (c1.onPress(Controls.B) || c2.onPress(Controls.B)) { // Cancel Any Launcher Activity
                 intaking = false;
-                launcher.stop();
-                verySmart = false;
+                confident = false;
                 SmartDashboard.putBoolean("Consciousness", false);
+                if (launcher.prepping) {
+                    launcher.intake();
+                } else {
+                    launcher.stop();
+                }
             } else if (launcher.stage == 0) { // If Launcher Not Doing Anything
                 intaking = false;
-                if (conscious && verySmart && launcher.holdingNote) {
+                if (conscious && confident && launcher.holdingNote) {
                     launcher.LAUNCHprep();
                 } else if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) { // Intake
                     intaking = true;
                     launcher.intake();
-                    verySmart = true;
+                    confident = true;
                     SmartDashboard.putBoolean("Consciousness", true);
                 } else if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) { // Automatic Launch Sequence
                     launcher.aimAndLAUNCH();
