@@ -121,7 +121,6 @@ public class Robot extends TimedRobot {
         noteToGet = noteDropdown.getSelected();
         getMoreNotes = getMoreDropdown.getSelected();
         matchTimer.reset();
-        leds.orange();
         dir = navx.yaw();
         launcher.holdingNote = true;
         intaking = false;
