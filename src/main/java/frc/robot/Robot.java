@@ -348,12 +348,12 @@ public class Robot extends TimedRobot {
         }
 
         // LED Strip Color:
-        if (mode == "auto") {
-            leds.orange();
-        } else if (actualMatch && matchTimer.get() >= 115000) { // Final Countdown!
+        if (actualMatch && matchTimer.get() >= 115000) { // Final Countdown!
             leds.turquoise();
         } else if (launcher.holdingNote) { // Holding Note
             leds.yellow();
+        } else if (!iseenote.get()) { // Getting Note
+            leds.orange();
         } else {
             leds.allianceColor();
         }
