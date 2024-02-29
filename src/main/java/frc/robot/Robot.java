@@ -287,7 +287,16 @@ public class Robot extends TimedRobot {
                     dir = navx.yaw() + speaker.X()*0.8;
                 } else if (c1.onPress(Controls.RIGHT) || c2.onPress(Controls.RIGHT)) { // Prepare to Launch (Hold Button Down)
                     launcher.LAUNCHprep();
-                } else if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) { // Launch Into Amp
+                } else if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) { // Turn in direction to launch in amp
+                    if (leds.blueAlliance) {
+                        newAngle = 90;
+                    } else {
+                        newAngle = -90;
+                    }
+                    while (newAngle > dir + 180) { newAngle -= 360; }
+                    while (newAngle < dir - 180) { newAngle += 360; }
+                    dir = newAngle;
+                } else if (c1.onRelease(Controls.Y) || c2.onRelease(Controls.Y)) { // Launch Into Amp
                     launcher.amp();
                 }
             }
