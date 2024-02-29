@@ -24,7 +24,7 @@
               "_showGlyph": true
             }
           },
-          "9,4": {
+          "8,4": {
             "size": [
               1,
               1
@@ -37,7 +37,7 @@
               "_showGlyph": false
             }
           },
-          "10,4": {
+          "9,4": {
             "size": [
               1,
               1
@@ -342,6 +342,47 @@
               "_title": "General Aim Offset",
               "_glyph": 148,
               "_showGlyph": false
+            }
+          },
+          "5,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Launch Over",
+              "_title": "Launch Over",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "10,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Toggle Switch",
+              "_source0": "network_table:///SmartDashboard/Consciousness",
+              "_title": "Consciousness",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "6,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Note Detected",
+              "_title": "Note Detected",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
             }
           }
         }
