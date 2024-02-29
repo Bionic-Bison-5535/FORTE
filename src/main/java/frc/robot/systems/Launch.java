@@ -14,8 +14,10 @@ public class Launch {
     public boolean prepping = false;
     public boolean holdingNote = false;
     private double targetWidth;
+    private double nowX, previousX;
     public double offset = 11.520975112915039;
-    public final double pullback = 10;
+    public static final double pullback = 10;
+    public static final double loopsToLaunch = 5;
 
     /** Encoder-based positions for launcher to go to */
     public class pos {
@@ -35,10 +37,10 @@ public class Launch {
         private static double smartPosVal;
         private static double previousLimelightY;
         public static double smartAim_offset = 0;
-        /** Function to calculate encoder position based on Limelight camera input */
+        /** Function to calculate necessary aim encoder position based on Limelight camera input */
         public static double smartAim(double limelightY, boolean moving) {
             if (moving) { // Use previous position to predict future
-                smartPosVal = 35.2 - Math.pow(2*limelightY - previousLimelightY, 2)/34 - smartAim_offset;
+                smartPosVal = 35.2 - Math.pow(limelightY + loopsToLaunch*(limelightY - previousLimelightY), 2)/34 - smartAim_offset;
             } else {
                 smartPosVal = 35.2 - Math.pow(limelightY, 2)/34 - smartAim_offset;
             }
@@ -233,6 +235,7 @@ public class Launch {
             rightThruster.set(1);
             if (cam.pipelineActivated()) {
                 stage = 34;
+                previousX = cam.X();
             }
         }
         if (stage == 34) { // Wait until shot is possible (Tag in view, close enough, and horizontally aligned)
@@ -240,11 +243,13 @@ public class Launch {
             rightThruster.set(1);
             if (cam.area() > 0.16) {
                 targetWidth = 3*cam.width();
-                if (-targetWidth < cam.X() && cam.X() < targetWidth) {
+                nowX = cam.X();
+                if (-targetWidth < (nowX + loopsToLaunch*(nowX - previousX)) && loopsToLaunch*(nowX + (nowX - previousX)) < targetWidth) {
                     stage = 35;
                     aim(pos.smartAim(cam.Y(), false));
                     launchTimer.reset();
                 }
+                previousX = nowX;
             }
         }
         if (stage == 35) { // Aim
