@@ -39,9 +39,10 @@ public class Robot extends TimedRobot {
     Motor leftThruster = new Motor(8, false, true, 1);
     Motor feedMotor = new Motor(9, false, false, 1);
     DigitalInput iseenote = new DigitalInput(2);
-    Limelight speaker, speaker2, ampCam;
     Launch launcher;
+    Limelight speaker, speaker2, ampCam;
     Limelight posCam = new Limelight(1);
+    POF pof = new POF(posCam);
 
     double keepInRange(double number, double floor, double ceiling) {
         if (number >= floor && number <= ceiling) {
@@ -137,12 +138,11 @@ public class Robot extends TimedRobot {
         leds.orange();
         dir = navx.yaw();
         launcher.holdingNote = true;
+        intaking = false;
     }
 
     @Override
     public void autonomousPeriodic() {
-        launcher.update();
-        go.update();
         if (autoStage == 0) {
             autoStage = 1;
         }       
@@ -175,7 +175,51 @@ public class Robot extends TimedRobot {
             }
         }
         if (autoStage == 5) {
+            if (noteToGet != "0") {
+                if (noteToGet == "1") {
+                    pof.goTo(pof.note1);
+                } else if (noteToGet == "2") {
+                    pof.goTo(pof.note2);
+                } else if (noteToGet == "3") {
+                    pof.goTo(pof.note3);
+                }
+            }
+            if (pof.there()) {
+                autoStage = 6;
+            }
+        }
+        if (autoStage == 6) {
+            if (iseenote.get()) {
+                go.swerve(-0.25, 0, 0, navx.yaw() + 180);
+            } else {
+                go.swerve(0, 0, 0, 0);
+                intaking = true;
+                launcher.intake();
+                autoStage = 7;
+            }
+        }
+        if (autoStage == 7) {
+            if (launcher.stage == 0) {
+                intaking = false;
+                go.swerve(0.1, 0, 0, 0);
+                autoStage = 8;
+                launcher.aimAndLAUNCH();
+            }
+        }
+        if (autoStage == 8) {
             go.swerve(0, 0, 0, 0);
+            autoStage = 9;
+        }
+        if (autoStage == 9) {
+            //Do nothing
+        }
+        launcher.update();
+        go.update();
+        launcher.update();
+        if (intaking) {
+            in.set(0.45);
+        } else {
+            in.set(0);
         }
     }   
 
