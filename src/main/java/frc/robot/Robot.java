@@ -12,7 +12,7 @@ public class Robot extends TimedRobot {
 
     /**
      * Mode for robot during teleop.
-     * Can be "raw", "smart", or "auto".
+     * Can be "raw" or "smart".
      */
     String mode = "smart";
     boolean intaking = false;
@@ -290,8 +290,9 @@ public class Robot extends TimedRobot {
             );
             if (c1.back() || c2.back()) { // Change Mode
                 mode = "raw";
-            } else if (c1.onPress(Controls.X) || c2.onPress(Controls.X)) {
-                mode = "auto";
+            }
+            if (c1.onPress(Controls.X) || c2.onPress(Controls.X)) { // Toggle Consciousness
+                conscious = !conscious;
             }
             if ((c1.right_stick() && c1.start()) || (c2.right_stick() && c2.start())) { // NavX Calibration
                 navx.zeroYaw();
@@ -344,15 +345,6 @@ public class Robot extends TimedRobot {
                     launcher.amp();
                 }
             }
-        
-        // TELEAUTO PERIODIC:
-        } else if (mode == "auto") {
-            if (c1.back() || c2.back()) { // Change Mode
-                mode = "raw";
-            } else if (c1.onPress(Controls.X) || c2.onPress(Controls.X) || c1.active() || c2.active()) {
-                mode = "smart";
-            }
-            autonomousPeriodic();
         }
 
         // LED Strip Color:
