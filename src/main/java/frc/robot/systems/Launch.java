@@ -38,9 +38,9 @@ public class Launch {
         /** Function to calculate encoder position based on Limelight camera input */
         public static double smartAim(double limelightY, boolean moving) {
             if (moving) { // Use previous position to predict future
-                smartPosVal = 30.7 - Math.pow(2*limelightY - previousLimelightY, 2)/34 - smartAim_offset;
+                smartPosVal = 35.2 - Math.pow(2*limelightY - previousLimelightY, 2)/34 - smartAim_offset;
             } else {
-                smartPosVal = 30.7 - Math.pow(limelightY, 2)/34 - smartAim_offset;
+                smartPosVal = 35.2 - Math.pow(limelightY, 2)/34 - smartAim_offset;
             }
             previousLimelightY = limelightY;
             return smartPosVal;
