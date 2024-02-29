@@ -250,10 +250,12 @@ public class Launch {
         if (stage == 35) { // Aim
             leftThruster.set(1);
             rightThruster.set(1);
-            aim(pos.smartAim(cam.Y(), true));
-            if (!prepping && launchTimer.get() > 1000) {
-                stage = 14;
-                launchTimer.set(1100);
+            if (cam.valid()) {
+                aim(pos.smartAim(cam.Y(), true));
+                if (!prepping && launchTimer.get() > 1000) {
+                    stage = 14;
+                    launchTimer.set(1100);
+                }
             }
         }
 
