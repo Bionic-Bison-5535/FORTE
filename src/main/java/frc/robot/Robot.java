@@ -21,6 +21,8 @@ public class Robot extends TimedRobot {
     double newAngle;
     double launchOver = 9;
     int autoStage = 0;
+    boolean verySmart = true;
+    boolean conscious = true;
 
     private final SendableChooser<String> noteDropdown = new SendableChooser<>();
     private final SendableChooser<String> getMoreDropdown = new SendableChooser<>();
@@ -73,10 +75,10 @@ public class Robot extends TimedRobot {
         noteDropdown.addOption("Right", "3");
         SmartDashboard.putData("Which Note To Get?", noteDropdown);
         getMoreDropdown.setDefaultOption("Yes", "y");
-        SmartDashboard.putNumber("General Aim Offset", launcher.offset);
         getMoreDropdown.addOption("No", "n");
         getMoreDropdown.addOption("Only Collect", "c");
         SmartDashboard.putData("Get More Notes?", getMoreDropdown);
+        SmartDashboard.putNumber("General Aim Offset", launcher.offset);
         SmartDashboard.putNumber("A Offset", go.A_offset);
         SmartDashboard.putNumber("B Offset", go.B_offset);
         SmartDashboard.putNumber("C Offset", go.C_offset);
@@ -87,6 +89,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Launch Over", launchOver);
         SmartDashboard.putNumber("Smart Aim Offset", Launch.pos.smartAim_offset);
         SmartDashboard.putNumber("General Aim Offset", launcher.offset);
+        SmartDashboard.putBoolean("Consciousness", conscious);
     }
 
     @Override
@@ -107,6 +110,7 @@ public class Robot extends TimedRobot {
         launchOver = SmartDashboard.getNumber("Launch Over", launchOver);
         Launch.pos.smartAim_offset = SmartDashboard.getNumber("Smart Aim Offset", Launch.pos.smartAim_offset);
         launcher.offset = SmartDashboard.getNumber("General Aim Offset", launcher.offset);
+        conscious = SmartDashboard.getBoolean("Consciousness", conscious);
     }
 
     @Override
@@ -165,6 +169,9 @@ public class Robot extends TimedRobot {
         matchTimer.set(15000);
         c1.refreshController();
         c2.refreshController();
+        if (getMoreNotes != "c") {
+            launcher.holdingNote = false;
+        }
     }
 
     @Override
@@ -192,7 +199,6 @@ public class Robot extends TimedRobot {
                 intaking = false;
                 launcher.stop();
             } else if (launcher.stage == 0) { // If Launcher Not Doing Anything
-                go.unlock();
                 intaking = false;
                 if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) { // Intake
                     intaking = true;
@@ -210,9 +216,9 @@ public class Robot extends TimedRobot {
         
         // SMART MODE PERIODIC:
         } else if (mode == "smart") {
-            if (launcher.holdingNote) {
+            if (conscious && verySmart && launcher.holdingNote) {
                 if (speaker.valid()) {
-                    dir = navx.yaw() + speaker.X();
+                    dir = navx.yaw() + speaker.X()*0.5;
                 } else if (navx.coterminalYaw() < -45 || navx.coterminalYaw() > 45) {
                     newAngle = 0;
                     while (newAngle > dir + 180) { newAngle -= 360; }
@@ -248,7 +254,7 @@ public class Robot extends TimedRobot {
                 dir = 0;
             } else if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) { // LAUNCH
                 launcher.LAUNCH();
-            } else if (launcher.prepping && speaker.pipelineActivated()) {
+            } else if (conscious && verySmart && launcher.prepping && speaker.pipelineActivated() && speaker.valid()) {
                 if (speaker.Y() >= launchOver || c1.left() || c2.left()) {
                     launcher.LAUNCH();
                 }
@@ -261,20 +267,24 @@ public class Robot extends TimedRobot {
             if (c1.b() || c2.b()) { // Cancel Any Launcher Activity
                 intaking = false;
                 launcher.stop();
+                verySmart = false;
+                SmartDashboard.putBoolean("Consciousness", false);
             } else if (launcher.stage == 0) { // If Launcher Not Doing Anything
                 intaking = false;
-                if (launcher.holdingNote) {
+                if (conscious && verySmart && launcher.holdingNote) {
                     launcher.LAUNCHprep();
                 } else if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) { // Intake
                     intaking = true;
                     launcher.intake();
+                    verySmart = true;
+                    SmartDashboard.putBoolean("Consciousness", true);
                 } else if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) { // Automatic Launch Sequence
                     launcher.aimAndLAUNCH();
                     while (!speaker.pipelineActivated()) {
                         launcher.update();
                         if (c1.b() || c2.b()) { break; }
                     }
-                    dir = navx.yaw() + speaker.X();
+                    dir = navx.yaw() + speaker.X()*0.8;
                 } else if (c1.onPress(Controls.RIGHT) || c2.onPress(Controls.RIGHT)) { // Prepare to Launch (Hold Button Down)
                     launcher.LAUNCHprep();
                 } else if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) { // Launch Into Amp
