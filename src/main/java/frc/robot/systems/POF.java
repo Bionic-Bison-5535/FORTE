@@ -6,7 +6,9 @@ public class POF {
     public double[] posData;
     public double setX, setY;
     public double x, y, yaw;
-
+    public double[] note1 ={0,0};
+    public double[] note2 ={0,0};
+    public double[] note3 ={0,0};
     public POF(Limelight AprilTagCam) {
         cam = AprilTagCam;
         cam.activate();
