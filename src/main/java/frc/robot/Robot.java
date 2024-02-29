@@ -57,25 +57,6 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         Limelight.enableLimelightUSB();
         navx.reset();
-        noteDropdown.setDefaultOption("None", "0");
-        noteDropdown.addOption("Left", "1");
-        noteDropdown.addOption("Center", "2");
-        noteDropdown.addOption("Right", "3");
-        SmartDashboard.putData("Which Note To Get?", noteDropdown);
-        getMoreDropdown.setDefaultOption("Yes", "y");
-        getMoreDropdown.addOption("No", "n");
-        getMoreDropdown.addOption("Only Collect", "c");
-        SmartDashboard.putData("Get More Notes?", getMoreDropdown);
-        SmartDashboard.putNumber("A Offset", go.A_offset);
-        SmartDashboard.putNumber("B Offset", go.B_offset);
-        SmartDashboard.putNumber("C Offset", go.C_offset);
-        SmartDashboard.putNumber("D Offset", go.D_offset);
-        SmartDashboard.putBoolean("Alliance", leds.blueAlliance);
-        SmartDashboard.putString("Event", DriverStation.getEventName());
-        SmartDashboard.putNumber("Match", DriverStation.getMatchNumber());
-        SmartDashboard.putNumber("Launch Over", launchOver);
-        SmartDashboard.putNumber("Smart Aim Offset", Launch.pos.smartAim_offset);
-        SmartDashboard.putNumber("General Aim Offset", launcher.offset);
         if (leds.blueAlliance) {
             speaker = new Limelight(3);
             speaker2 = new Limelight(5);
