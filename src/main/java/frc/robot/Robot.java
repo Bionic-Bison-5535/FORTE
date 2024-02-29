@@ -23,6 +23,7 @@ public class Robot extends TimedRobot {
     int autoStage = 0;
     boolean verySmart = true;
     boolean conscious = true;
+    boolean wasDisabled = false;
 
     private final SendableChooser<String> noteDropdown = new SendableChooser<>();
     private final SendableChooser<String> getMoreDropdown = new SendableChooser<>();
@@ -206,6 +207,14 @@ public class Robot extends TimedRobot {
         } else {
             in.set(0);
         }
+        // LED Strip Color:
+        if (launcher.holdingNote) { // Holding Note
+            leds.yellow();
+        } else if (!iseenote.get()) { // Getting Note
+            leds.orange();
+        } else {
+            leds.allianceColor();
+        }
     }   
 
     @Override
@@ -371,11 +380,29 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
-        leds.green();
+        matchTimer.reset();
+        leds.checkAlliance();
+        if (wasDisabled) {
+            leds.green();
+        }
+    }
+    
+    @Override
+    public void disabledPeriodic() {
+        if (!wasDisabled) {
+            if (matchTimer.get() % 2000 > 1750) { // Blink Alliance Color every 2 seconds for 1/4 second
+                leds.checkAlliance();
+                leds.allianceColor();
+            } else {
+                leds.green();
+            }
+        }
     }
 
     @Override
-    public void disabledPeriodic() {}
+    public void disabledExit() {
+        wasDisabled = true;
+    }
 
     @Override
     public void testInit() {
