@@ -72,13 +72,13 @@ public class Robot extends TimedRobot {
         SmartDashboard.putString("Event", DriverStation.getEventName());
         SmartDashboard.putNumber("Match", DriverStation.getMatchNumber());
         launcher = new Launch(leftThruster, rightThruster, feedMotor, aimMotor, 25, 1, speaker);
-        noteDropdown.setDefaultOption("None", "0");
+        noteDropdown.setDefaultOption("Center", "2");
         noteDropdown.addOption("Left", "1");
-        noteDropdown.addOption("Center", "2");
+        noteDropdown.addOption("None", "0");
         noteDropdown.addOption("Right", "3");
         SmartDashboard.putData("Which Note To Get?", noteDropdown);
-        getMoreDropdown.setDefaultOption("Yes", "y");
-        getMoreDropdown.addOption("No", "n");
+        getMoreDropdown.setDefaultOption("No", "n");
+        getMoreDropdown.addOption("Yes", "y");
         getMoreDropdown.addOption("Only Collect", "c");
         SmartDashboard.putData("Get More Notes?", getMoreDropdown);
         SmartDashboard.putNumber("General Aim Offset", launcher.offset);
@@ -124,6 +124,11 @@ public class Robot extends TimedRobot {
         getMoreNotes = getMoreDropdown.getSelected();
         matchTimer.reset();
         dir = navx.yaw();
+        if (noteToGet == "1") {
+            navx.yaw_Offset = -60;
+        } else if (noteToGet == "3") {
+            navx.yaw_Offset = 60;
+        }
         launcher.holdingNote = true;
         intaking = false;
         autoStage = 0;
@@ -145,7 +150,13 @@ public class Robot extends TimedRobot {
         }
         // Temprary Auto Stages:
         if (autoStage == 2) {
-            go.swerve(-0.2, 0, 0, navx.yaw() + 180);
+            if (noteToGet == "2") {
+                go.swerve(-0.2, 0, 0, 0);
+            } else if (noteToGet == "1") {
+                go.swerve(0.4*4/9, 0.4, 0, 0);
+            } else if (noteToGet == "3") {
+                go.swerve(0.4*4/9, -0.4, 0, 0);
+            }
             if (!iseenote.get()) {
                 autoStage = 3;
                 launcher.intake();
@@ -156,9 +167,9 @@ public class Robot extends TimedRobot {
             }
         }
         if (autoStage == 3) {
-            go.swerve(-0.05, 0, 0, navx.yaw() + 180);
+            go.swerve(-0.05, 0, 0, 0);
             if (launcher.holdingNote) {
-                go.swerve(0.05, 0, 0, navx.yaw() + 180);
+                go.swerve(0.05, 0, 0, 0);
                 launcher.aimAndLAUNCH();
                 autoStage = 4;
             }
