@@ -2,7 +2,6 @@ package frc.robot.systems;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.net.PortForwarder;
 
 public class Limelight {
 
@@ -15,17 +14,6 @@ public class Limelight {
 		if (Pipline >= 0 && Pipline < 10) {
 			pipeline = Pipline;
 		}
-	}
-
-	public static void enableLimelightUSB() {
-		PortForwarder.add(5800, "limelight.local", 5800);
-		PortForwarder.add(5801, "limelight.local", 5801);
-		PortForwarder.add(5802, "limelight.local", 5802);
-		PortForwarder.add(5803, "limelight.local", 5803);
-		PortForwarder.add(5804, "limelight.local", 5804);
-		PortForwarder.add(5805, "limelight.local", 5805);
-		PortForwarder.add(5806, "limelight.local", 5806);
-		PortForwarder.add(5807, "limelight.local", 5807);
 	}
 
 	/**

@@ -59,8 +59,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-        Limelight.enableLimelightUSB();
-        navx.reset();
         if (leds.blueAlliance) {
             speaker = new Limelight(3);
             speaker2 = new Limelight(5);
@@ -95,6 +93,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Smart Aim Offset", Launch.pos.smartAim_offset);
         SmartDashboard.putNumber("General Aim Offset", launcher.offset);
         SmartDashboard.putBoolean("Consciousness", conscious);
+        navx.reset();
     }
 
     @Override
