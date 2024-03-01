@@ -21,7 +21,6 @@ public class Robot extends TimedRobot {
     double newAngle;
     double launchOver = 10;
     int autoStage = 0;
-    boolean confident = true;
     boolean conscious = true;
     boolean wasDisabled = false;
     double sensitivity = 3.8;
@@ -295,7 +294,7 @@ public class Robot extends TimedRobot {
                 } else if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) { // Launch Sequence
                     go.update();
                     launcher.LAUNCHstart();
-                } else if (c1.right() || c2.right()) { // Launch Preparation (Hold right button down)
+                } else if (c1.onPress(Controls.RIGHT) || c2.onPress(Controls.RIGHT)) { // Launch Preparation (Hold right button down)
                     launcher.LAUNCHprep();
                 } else if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) { // Launch into Amp
                     launcher.amp();
@@ -304,7 +303,7 @@ public class Robot extends TimedRobot {
 
         // SMART MODE PERIODIC:
         } else if (mode == "smart") {
-            if (conscious && confident && launcher.holdingNote) {
+            if (conscious && launcher.holdingNote && !c1.y() && !c2.y()) {
                 if (speaker.valid()) {
                     dir = navx.yaw() + speaker.X()*0.4;
                 } else if (navx.coterminalYaw() < -45 || navx.coterminalYaw() > 45) {
@@ -349,7 +348,7 @@ public class Robot extends TimedRobot {
                 dir = 0;
             } else if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) { // LAUNCH
                 launcher.LAUNCH();
-            } else if (conscious && confident && launcher.prepping && speaker.pipelineActivated() && speaker.valid()) {
+            } else if (conscious && !c1.y() && !c2.y() && launcher.prepping && speaker.pipelineActivated() && speaker.valid()) { // Automatic LAUNCH
                 if (speaker.Y() >= launchOver) {
                     launcher.LAUNCH();
                 }
@@ -360,16 +359,16 @@ public class Robot extends TimedRobot {
             }
             if (c1.onPress(Controls.B) || c2.onPress(Controls.B)) { // Cancel Any Launcher Activity
                 intaking = false;
-                confident = false;
                 launcher.stop();
+                conscious = false;
+                SmartDashboard.putBoolean("Consciousness", conscious);
             } else if (launcher.stage == 0) { // If Launcher Not Doing Anything
                 intaking = false;
-                if (conscious && confident && launcher.holdingNote && speaker.valid()) {
+                if (conscious && launcher.holdingNote && speaker.valid() && !c1.active() && !c2.active()) { // Automatic Launch Prep
                     launcher.LAUNCHprep();
                 } else if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) { // Intake
                     intaking = true;
                     launcher.intake();
-                    confident = true;
                 } else if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) { // Automatic Launch Sequence
                     launcher.aimAndLAUNCH();
                     while (!speaker.pipelineActivated()) {
@@ -385,7 +384,6 @@ public class Robot extends TimedRobot {
                     } else {
                         newAngle = -90;
                     }
-                    confident = false;
                     while (newAngle > dir + 180) { newAngle -= 360; }
                     while (newAngle < dir - 180) { newAngle += 360; }
                     dir = newAngle;
