@@ -16,7 +16,7 @@ public class Launch {
     private double targetWidth;
     private double nowX, previousX;
     public double offset = 11.520975112915039;
-    public static final double pullback = 10;
+    public static final double pullback = 12;
     public static final double loopsToLaunch = 5;
 
     /** Encoder-based positions for launcher to go to */
