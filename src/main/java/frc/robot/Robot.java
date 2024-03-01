@@ -313,12 +313,12 @@ public class Robot extends TimedRobot {
                     dir = newAngle;
                 }
             } else if (c1.pov() != -1) { // Controller 1 POV
-                newAngle = (double)(c1.pov() + 180);
+                newAngle = (double)(c1.pov());
                 while (newAngle > dir + 180) { newAngle -= 360; }
                 while (newAngle < dir - 180) { newAngle += 360; }
                 dir = newAngle;
             } else if (c2.pov() != -1) { // Controller 2 POV
-                newAngle = (double)(c2.pov() + 180);
+                newAngle = (double)(c2.pov());
                 while (newAngle > dir + 180) { newAngle -= 360; }
                 while (newAngle < dir - 180) { newAngle += 360; }
                 dir = newAngle;
