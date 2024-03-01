@@ -138,12 +138,39 @@ public class Robot extends TimedRobot {
         if (autoStage == 1) {
             launcher.aim(Launch.pos.closeup);
             launcher.LAUNCHstart();
-            if (launcher.stage == 0) {
+            if (launcher.holdingNote == false) {
                 autoStage = 2;
+                Alec.reset();
             }
         }
+        // Temprary Auto Stages:
         if (autoStage == 2) {
-            /*
+            go.swerve(-0.2, 0, 0, navx.yaw() + 180);
+            if (!iseenote.get()) {
+                autoStage = 3;
+                launcher.intake();
+                intaking = true;
+            } else if (Alec.get() > 3000) {
+                go.swerve(0, 0, 0, 0);
+                autoStage = 9;
+            }
+        }
+        if (autoStage == 3) {
+            go.swerve(-0.05, 0, 0, navx.yaw() + 180);
+            if (launcher.holdingNote) {
+                go.swerve(0.05, 0, 0, navx.yaw() + 180);
+                launcher.aimAndLAUNCH();
+                autoStage = 4;
+            }
+        }
+        if (autoStage == 4) {
+            if (!launcher.holdingNote) {
+                go.swerve(0, 0, 0, 0);
+                autoStage = 9;
+            }
+        }
+        /* Auto Stages to use later:
+        if (autoStage == 2) {
             if (speaker.valid()) {
                 go.swerve(0, 0, speaker.X()/40, 0);
                 if (speaker.X() > -5 && speaker.X() > 5); {
@@ -153,18 +180,13 @@ public class Robot extends TimedRobot {
             } else {
                 go.swerve(0, 0, 0.05, 0);
             }
-            */
-            autoStage = 3;
         }
         if (autoStage == 3) {
-            /*
             launcher.LAUNCH();
             if (launcher.holdingNote == false) {
                 autoStage = 4;
                 Alec.reset();
             }
-            */
-            autoStage = 4;
         }
         if (autoStage == 4) {
             go.swerve(-0.15, 0, 0, navx.yaw()+180);
@@ -208,6 +230,7 @@ public class Robot extends TimedRobot {
             go.swerve(0, 0, 0, 0);
             autoStage = 9;
         }
+        */
         if (autoStage == 9) {
             //Do nothing
         }
@@ -227,7 +250,7 @@ public class Robot extends TimedRobot {
         } else {
             leds.allianceColor();
         }
-    }   
+    }
 
     @Override
     public void teleopInit() {
