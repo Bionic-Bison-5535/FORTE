@@ -396,7 +396,7 @@ public class Robot extends TimedRobot {
         }
 
         // LED Strip Color:
-        if (actualMatch && matchTimer.get() >= 115000) { // Final Countdown!
+        if (actualMatch && matchTimer.get() >= 130000) { // Final Countdown!
             leds.turquoise();
         } else if (launcher.holdingNote) { // Holding Note
             leds.yellow();
