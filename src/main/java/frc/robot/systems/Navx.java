@@ -53,8 +53,12 @@ public class Navx {
         return NavX.getTempC();
     }
 
-    public double compass() {
-        return NavX.getCompassHeading();
+    public double accel_x() {
+        return NavX.getRawAccelX();
+    }
+
+    public double accel_y() {
+        return NavX.getRawAccelY();
     }
 
 }
