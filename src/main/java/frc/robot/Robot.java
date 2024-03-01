@@ -371,11 +371,6 @@ public class Robot extends TimedRobot {
                     launcher.intake();
                 } else if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) { // Automatic Launch Sequence
                     launcher.aimAndLAUNCH();
-                    while (!speaker.pipelineActivated()) {
-                        launcher.update();
-                        if (c1.b() || c2.b()) { break; }
-                    }
-                    dir = navx.yaw() + speaker.X()*0.8;
                 } else if (c1.onPress(Controls.RIGHT) || c2.onPress(Controls.RIGHT)) { // Prepare to Launch (Hold Button Down)
                     launcher.LAUNCHprep();
                 } else if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) { // Turn in direction to launch in amp
