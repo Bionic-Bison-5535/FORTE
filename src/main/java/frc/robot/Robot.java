@@ -21,9 +21,9 @@ public class Robot extends TimedRobot {
     double newAngle;
     double launchOver = 10;
     int autoStage = 0;
-    boolean confident = true;
     boolean conscious = true;
     boolean wasDisabled = false;
+    double sensitivity = 3.8;
 
     private final SendableChooser<String> noteDropdown = new SendableChooser<>();
     private final SendableChooser<String> getMoreDropdown = new SendableChooser<>();
@@ -59,8 +59,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-        Limelight.enableLimelightUSB();
-        navx.reset();
         if (leds.blueAlliance) {
             speaker = new Limelight(3);
             speaker2 = new Limelight(5);
@@ -95,6 +93,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Smart Aim Offset", Launch.pos.smartAim_offset);
         SmartDashboard.putNumber("General Aim Offset", launcher.offset);
         SmartDashboard.putBoolean("Consciousness", conscious);
+        navx.reset();
     }
 
     @Override
@@ -139,12 +138,39 @@ public class Robot extends TimedRobot {
         if (autoStage == 1) {
             launcher.aim(Launch.pos.closeup);
             launcher.LAUNCHstart();
-            if (launcher.stage == 0) {
+            if (launcher.holdingNote == false) {
                 autoStage = 2;
+                Alec.reset();
             }
         }
+        // Temprary Auto Stages:
         if (autoStage == 2) {
-            /*
+            go.swerve(-0.2, 0, 0, navx.yaw() + 180);
+            if (!iseenote.get()) {
+                autoStage = 3;
+                launcher.intake();
+                intaking = true;
+            } else if (Alec.get() > 3000) {
+                go.swerve(0, 0, 0, 0);
+                autoStage = 9;
+            }
+        }
+        if (autoStage == 3) {
+            go.swerve(-0.05, 0, 0, navx.yaw() + 180);
+            if (launcher.holdingNote) {
+                go.swerve(0.05, 0, 0, navx.yaw() + 180);
+                launcher.aimAndLAUNCH();
+                autoStage = 4;
+            }
+        }
+        if (autoStage == 4) {
+            if (!launcher.holdingNote) {
+                go.swerve(0, 0, 0, 0);
+                autoStage = 9;
+            }
+        }
+        /* Auto Stages to use later:
+        if (autoStage == 2) {
             if (speaker.valid()) {
                 go.swerve(0, 0, speaker.X()/40, 0);
                 if (speaker.X() > -5 && speaker.X() > 5); {
@@ -154,18 +180,13 @@ public class Robot extends TimedRobot {
             } else {
                 go.swerve(0, 0, 0.05, 0);
             }
-            */
-            autoStage = 3;
         }
         if (autoStage == 3) {
-            /*
             launcher.LAUNCH();
             if (launcher.holdingNote == false) {
                 autoStage = 4;
                 Alec.reset();
             }
-            */
-            autoStage = 4;
         }
         if (autoStage == 4) {
             go.swerve(-0.15, 0, 0, navx.yaw()+180);
@@ -209,6 +230,7 @@ public class Robot extends TimedRobot {
             go.swerve(0, 0, 0, 0);
             autoStage = 9;
         }
+        */
         if (autoStage == 9) {
             //Do nothing
         }
@@ -228,7 +250,7 @@ public class Robot extends TimedRobot {
         } else {
             leds.allianceColor();
         }
-    }   
+    }
 
     @Override
     public void teleopInit() {
@@ -245,12 +267,12 @@ public class Robot extends TimedRobot {
 
         // RAW MODE PERIODIC:
         if (mode == "raw") {
-            go.swerve(Math.pow(c1.stick(1), 3) + Math.pow(c2.stick(1), 3), Math.pow(c1.stick(0), 3) + Math.pow(c2.stick(0), 3), Math.pow(c1.stick(4), 3) + Math.pow(c2.stick(4), 3), 0); // Drive
+            go.swerve(Math.pow(c1.stick(1) + c2.stick(1), sensitivity), Math.pow(c1.stick(0) + c2.stick(0), sensitivity), Math.pow(c1.stick(4) + c2.stick(4), sensitivity), 0); // Drive
             if (c1.start() || c2.start()) { // Mode Change
                 mode = "smart";
                 dir = navx.yaw();
             }
-            launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), 3));
+            launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), sensitivity));
             if (c1.x() || c2.x()) {
                 launcher.aim(Launch.pos.closeup);
             } else if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) {
@@ -272,18 +294,18 @@ public class Robot extends TimedRobot {
                 } else if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) { // Launch Sequence
                     go.update();
                     launcher.LAUNCHstart();
-                } else if (c1.right() || c2.right()) { // Launch Preparation (Hold right button down)
+                } else if (c1.onPress(Controls.RIGHT) || c2.onPress(Controls.RIGHT)) { // Launch Preparation (Hold right button down)
                     launcher.LAUNCHprep();
                 } else if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) { // Launch into Amp
                     launcher.amp();
                 }
             }
-        
+
         // SMART MODE PERIODIC:
         } else if (mode == "smart") {
-            if (conscious && confident && launcher.holdingNote) {
+            if (conscious && launcher.holdingNote && !c1.y() && !c2.y()) {
                 if (speaker.valid()) {
-                    dir = navx.yaw() + speaker.X()*0.5;
+                    dir = navx.yaw() + speaker.X()*0.4;
                 } else if (navx.coterminalYaw() < -45 || navx.coterminalYaw() > 45) {
                     newAngle = 0;
                     while (newAngle > dir + 180) { newAngle -= 360; }
@@ -291,27 +313,27 @@ public class Robot extends TimedRobot {
                     dir = newAngle;
                 }
             } else if (c1.pov() != -1) { // Controller 1 POV
-                newAngle = (double)(c1.pov() + 180);
+                newAngle = (double)(c1.pov());
                 while (newAngle > dir + 180) { newAngle -= 360; }
                 while (newAngle < dir - 180) { newAngle += 360; }
                 dir = newAngle;
             } else if (c2.pov() != -1) { // Controller 2 POV
-                newAngle = (double)(c2.pov() + 180);
+                newAngle = (double)(c2.pov());
                 while (newAngle > dir + 180) { newAngle -= 360; }
                 while (newAngle < dir - 180) { newAngle += 360; }
                 dir = newAngle;
             } else if (c1.active() || c2.active()) { // Manual Rotation
-                dir += 2.7 * (Math.pow(c1.stick(4), 5) + Math.pow(c2.stick(4), 5));
+                dir += 3 * keepInRange(Math.pow(c1.stick(4) + c2.stick(4), sensitivity), -1, 1);
             }
-            if (!(c1.left_stick() || c2.left_stick())) {
-                go.speed = 0.325*go.default_speed;
-            } else {
+            if (c1.left_stick() || c2.left_stick()) { // Turbo mode
                 go.speed = go.default_speed;
+            } else {
+                go.speed = 0.35*go.default_speed;
             }
             go.swerve( // Drive with Headless Mode
-                Math.pow(c1.stick(1), 5) + Math.pow(c2.stick(1), 5),
-                Math.pow(c1.stick(0), 5) + Math.pow(c2.stick(0), 5),
-                keepInRange(-0.02*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1), -0.7, 0.7),
+                Math.pow(c1.stick(1) + c2.stick(1), sensitivity),
+                Math.pow(c1.stick(0) + c2.stick(0), sensitivity),
+                keepInRange(-0.021*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1), -0.7, 0.7),
                 navx.yaw() + 180
             );
             if (c1.back() || c2.back()) { // Change Mode
@@ -326,35 +348,29 @@ public class Robot extends TimedRobot {
                 dir = 0;
             } else if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) { // LAUNCH
                 launcher.LAUNCH();
-            } else if (conscious && confident && launcher.prepping && speaker.pipelineActivated() && speaker.valid()) {
+            } else if (conscious && !c1.y() && !c2.y() && launcher.prepping && speaker.pipelineActivated() && speaker.valid()) { // Automatic LAUNCH
                 if (speaker.Y() >= launchOver) {
                     launcher.LAUNCH();
                 }
-            }
-            if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) { // Climbing System
+            } else if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) { // Climbing System
                 launcher.prepClimb();
             } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
                 launcher.climb();
             }
             if (c1.onPress(Controls.B) || c2.onPress(Controls.B)) { // Cancel Any Launcher Activity
                 intaking = false;
-                confident = false;
                 launcher.stop();
+                conscious = false;
+                SmartDashboard.putBoolean("Consciousness", conscious);
             } else if (launcher.stage == 0) { // If Launcher Not Doing Anything
                 intaking = false;
-                if (conscious && confident && launcher.holdingNote && speaker.valid()) {
+                if (conscious && launcher.holdingNote && speaker.valid() && c1.stick(1) == 0 && c2.stick(1) == 0) { // Automatic Launch Prep
                     launcher.LAUNCHprep();
                 } else if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) { // Intake
                     intaking = true;
                     launcher.intake();
-                    confident = true;
                 } else if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) { // Automatic Launch Sequence
                     launcher.aimAndLAUNCH();
-                    while (!speaker.pipelineActivated()) {
-                        launcher.update();
-                        if (c1.b() || c2.b()) { break; }
-                    }
-                    dir = navx.yaw() + speaker.X()*0.8;
                 } else if (c1.onPress(Controls.RIGHT) || c2.onPress(Controls.RIGHT)) { // Prepare to Launch (Hold Button Down)
                     launcher.LAUNCHprep();
                 } else if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) { // Turn in direction to launch in amp
@@ -363,7 +379,6 @@ public class Robot extends TimedRobot {
                     } else {
                         newAngle = -90;
                     }
-                    confident = false;
                     while (newAngle > dir + 180) { newAngle -= 360; }
                     while (newAngle < dir - 180) { newAngle += 360; }
                     dir = newAngle;
@@ -374,7 +389,7 @@ public class Robot extends TimedRobot {
         }
 
         // LED Strip Color:
-        if (actualMatch && matchTimer.get() >= 115000) { // Final Countdown!
+        if (actualMatch && matchTimer.get() >= 130000) { // Final Countdown!
             leds.turquoise();
         } else if (launcher.holdingNote) { // Holding Note
             leds.yellow();
@@ -387,8 +402,8 @@ public class Robot extends TimedRobot {
         // Update Systems:
         go.update();
         launcher.update();
-        if (c1.left() || c2.left()) {
-            in.set(-0.5);
+        if (mode == "smart" && c1.stick(2) + c2.stick(2) >= 0.1) {
+            in.set(c1.stick(2) + c2.stick(2));
         } else if (intaking) {
             in.set(0.5);
         } else {

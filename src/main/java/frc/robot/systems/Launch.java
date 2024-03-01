@@ -22,7 +22,7 @@ public class Launch {
     /** Encoder-based positions for launcher to go to */
     public class pos {
         public static double min = -21;
-        public static double max = 120;
+        public static double max = 200;
         /** Intake position */
         public static double intake = 20;
         /** Position for scoring in amp */
@@ -116,6 +116,7 @@ public class Launch {
     /** Fires up thrusters */
     public void LAUNCHprep_noCam() {
         stage = 11;
+        prepping = true;
     }
 
     /** LAUNCH (officially) after "LAUNCHprep" or "LAUNCHprep_noCam" function called */
@@ -123,14 +124,14 @@ public class Launch {
         prepping = false;
     }
 
-    /** Starts automatic launch sequence */
+    /** Starts automatic launch sequence without aim */
     public void LAUNCHstart() {
         launchTimer.reset();
         stage = 11;
         prepping = false;
     }
 
-    /** Aims and then begins automatic launch sequence */
+    /** Starts automatic launch sequence with aim */
     public void aimAndLAUNCH() {
         stage = 31;
         cam.activate();
@@ -188,13 +189,14 @@ public class Launch {
             rightThruster.set(1);
             if (launchTimer.get() > 1100 && !prepping) {
                 stage = 14;
+                launchTimer.reset();
             }
         }
         if (stage == 14) { // Push note into thrusters
             feed.set(2);
             leftThruster.set(1);
             rightThruster.set(1);
-            if (launchTimer.get() > 1400) { // Stop launcher (finish process)
+            if (launchTimer.get() > 300) { // Stop launcher (finish process)
                 feed.set(0);
                 leftThruster.set(0);
                 rightThruster.set(0);

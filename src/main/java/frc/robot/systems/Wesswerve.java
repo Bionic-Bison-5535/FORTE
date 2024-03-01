@@ -145,7 +145,11 @@ public class Wesswerve {
 		}
 		if (move) {
 			if (kraken) {
-				Output.set(-0.012*(Input.getPosition().getValue()*360 - newAngle));
+				if (Math.abs(Input.getPosition().getValue()*360-newAngle) > wheelAngleErrorRange) {
+					Output.set(-0.012*(Input.getPosition().getValue()*360 - newAngle));
+				} else {
+					Output.set(0);
+				}
 				if (!smartAngle) { negation = true; }
 			} else {
 				if (Math.round(Input.getPosition().getValue()*360-wheelAngleErrorRange) > newAngle) {
