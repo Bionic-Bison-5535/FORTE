@@ -24,6 +24,7 @@ public class Robot extends TimedRobot {
     boolean confident = true;
     boolean conscious = true;
     boolean wasDisabled = false;
+    double sensitivity = 3.8;
 
     private final SendableChooser<String> noteDropdown = new SendableChooser<>();
     private final SendableChooser<String> getMoreDropdown = new SendableChooser<>();
@@ -267,12 +268,12 @@ public class Robot extends TimedRobot {
 
         // RAW MODE PERIODIC:
         if (mode == "raw") {
-            go.swerve(Math.pow(c1.stick(1), 3) + Math.pow(c2.stick(1), 3), Math.pow(c1.stick(0), 3) + Math.pow(c2.stick(0), 3), Math.pow(c1.stick(4), 3) + Math.pow(c2.stick(4), 3), 0); // Drive
+            go.swerve(Math.pow(c1.stick(1) + c2.stick(1), sensitivity), Math.pow(c1.stick(0) + c2.stick(0), sensitivity), Math.pow(c1.stick(4) + c2.stick(4), sensitivity), 0); // Drive
             if (c1.start() || c2.start()) { // Mode Change
                 mode = "smart";
                 dir = navx.yaw();
             }
-            launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), 3));
+            launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), sensitivity));
             if (c1.x() || c2.x()) {
                 launcher.aim(Launch.pos.closeup);
             } else if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) {
@@ -300,12 +301,12 @@ public class Robot extends TimedRobot {
                     launcher.amp();
                 }
             }
-        
+
         // SMART MODE PERIODIC:
         } else if (mode == "smart") {
             if (conscious && confident && launcher.holdingNote) {
                 if (speaker.valid()) {
-                    dir = navx.yaw() + speaker.X()*0.5;
+                    dir = navx.yaw() + speaker.X()*0.4;
                 } else if (navx.coterminalYaw() < -45 || navx.coterminalYaw() > 45) {
                     newAngle = 0;
                     while (newAngle > dir + 180) { newAngle -= 360; }
@@ -323,17 +324,17 @@ public class Robot extends TimedRobot {
                 while (newAngle < dir - 180) { newAngle += 360; }
                 dir = newAngle;
             } else if (c1.active() || c2.active()) { // Manual Rotation
-                dir += 2.7 * (Math.pow(c1.stick(4), 5) + Math.pow(c2.stick(4), 5));
+                dir += 3 * keepInRange(Math.pow(c1.stick(4) + c2.stick(4), sensitivity), -1, 1);
             }
-            if (!(c1.left_stick() || c2.left_stick())) {
-                go.speed = 0.325*go.default_speed;
-            } else {
+            if (c1.left_stick() || c2.left_stick()) { // Turbo mode
                 go.speed = go.default_speed;
+            } else {
+                go.speed = 0.35*go.default_speed;
             }
             go.swerve( // Drive with Headless Mode
-                Math.pow(c1.stick(1), 5) + Math.pow(c2.stick(1), 5),
-                Math.pow(c1.stick(0), 5) + Math.pow(c2.stick(0), 5),
-                keepInRange(-0.02*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1), -0.7, 0.7),
+                Math.pow(c1.stick(1) + c2.stick(1), sensitivity),
+                Math.pow(c1.stick(0) + c2.stick(0), sensitivity),
+                keepInRange(-0.021*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1), -0.7, 0.7),
                 navx.yaw() + 180
             );
             if (c1.back() || c2.back()) { // Change Mode
@@ -352,8 +353,7 @@ public class Robot extends TimedRobot {
                 if (speaker.Y() >= launchOver) {
                     launcher.LAUNCH();
                 }
-            }
-            if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) { // Climbing System
+            } else if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) { // Climbing System
                 launcher.prepClimb();
             } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
                 launcher.climb();
