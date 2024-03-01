@@ -364,7 +364,7 @@ public class Robot extends TimedRobot {
                 SmartDashboard.putBoolean("Consciousness", conscious);
             } else if (launcher.stage == 0) { // If Launcher Not Doing Anything
                 intaking = false;
-                if (conscious && launcher.holdingNote && speaker.valid() && !c1.active() && !c2.active()) { // Automatic Launch Prep
+                if (conscious && launcher.holdingNote && speaker.valid() && c1.stick(1) == 0 && c2.stick(1) == 0) { // Automatic Launch Prep
                     launcher.LAUNCHprep();
                 } else if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) { // Intake
                     intaking = true;
