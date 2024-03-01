@@ -22,7 +22,7 @@ public class Launch {
     /** Encoder-based positions for launcher to go to */
     public class pos {
         public static double min = -21;
-        public static double max = 120;
+        public static double max = 200;
         /** Intake position */
         public static double intake = 20;
         /** Position for scoring in amp */
