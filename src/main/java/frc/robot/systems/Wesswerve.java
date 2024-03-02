@@ -27,7 +27,7 @@ public class Wesswerve {
 	public double default_speed = 1;
 	public double speed = default_speed;
 	public double steeringAmplifier = 0.5;
-	private final double wheelAngleErrorRange = 1;
+	private final double wheelAngleErrorRange = 0;
 	private final double dist = 0.5;
 	public double x;
 	public double y;

@@ -22,7 +22,7 @@ public class Launch {
     /** Encoder-based positions for launcher to go to */
     public class pos {
         public static double min = -21;
-        public static double max = 200;
+        public static double max = 152;
         /** Intake position */
         public static double intake = 20;
         /** Position for scoring in amp */
@@ -40,9 +40,9 @@ public class Launch {
         /** Function to calculate necessary aim encoder position based on Limelight camera input */
         public static double smartAim(double limelightY, boolean moving) {
             if (moving) { // Use previous position to predict future
-                smartPosVal = 35.2 - Math.pow(limelightY + loopsToLaunch*(limelightY - previousLimelightY), 2)/34 - smartAim_offset;
+                smartPosVal = 31 - Math.pow(limelightY + loopsToLaunch*(limelightY - previousLimelightY), 2)/34 - smartAim_offset;
             } else {
-                smartPosVal = 35.2 - Math.pow(limelightY, 2)/34 - smartAim_offset;
+                smartPosVal = 31 - Math.pow(limelightY, 2)/34 - smartAim_offset;
             }
             previousLimelightY = limelightY;
             return smartPosVal;
@@ -259,7 +259,7 @@ public class Launch {
                 aim(pos.smartAim(cam.Y(), true));
                 if (!prepping && launchTimer.get() > 1000) {
                     stage = 14;
-                    launchTimer.set(1100);
+                    launchTimer.reset();
                 }
             }
         }

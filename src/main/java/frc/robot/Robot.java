@@ -23,7 +23,7 @@ public class Robot extends TimedRobot {
     int autoStage = 0;
     boolean conscious = true;
     boolean wasDisabled = false;
-    double sensitivity = 3.8;
+    double sensitivity = 5;
 
     private final SendableChooser<String> noteDropdown = new SendableChooser<>();
     private final SendableChooser<String> getMoreDropdown = new SendableChooser<>();
@@ -139,10 +139,10 @@ public class Robot extends TimedRobot {
         if (autoStage == 0) {
             autoStage = 1;
             speaker.activate();
+            launcher.LAUNCHstart();
         }       
         if (autoStage == 1) {
             launcher.aim(Launch.pos.closeup);
-            launcher.LAUNCHstart();
             if (launcher.holdingNote == false) {
                 autoStage = 2;
                 Alec.reset();
@@ -151,11 +151,11 @@ public class Robot extends TimedRobot {
         // Temprary Auto Stages:
         if (autoStage == 2) {
             if (noteToGet == "2") {
-                go.swerve(-0.2, 0, 0, 0);
+                go.swerve(0.2, 0, 0, 0);
             } else if (noteToGet == "1") {
-                go.swerve(0.4*4/9, 0.4, 0, 0);
-            } else if (noteToGet == "3") {
                 go.swerve(0.4*4/9, -0.4, 0, 0);
+            } else if (noteToGet == "3") {
+                go.swerve(0.4*4/9, 0.4, 0, 0);
             }
             if (!iseenote.get()) {
                 autoStage = 3;
@@ -167,14 +167,14 @@ public class Robot extends TimedRobot {
             }
         }
         if (autoStage == 3) {
-            go.swerve(-0.05, 0, 0, 0);
+            go.swerve(0.1, 0, 0, 0);
             if (launcher.holdingNote) {
-                go.swerve(0.05, 0, 0, 0);
                 launcher.aimAndLAUNCH();
                 autoStage = 4;
             }
         }
         if (autoStage == 4) {
+            go.swerve(-0.1, 0, 0, 0);
             if (!launcher.holdingNote) {
                 go.swerve(0, 0, 0, 0);
                 autoStage = 9;
@@ -249,7 +249,7 @@ public class Robot extends TimedRobot {
         go.update();
         launcher.update();
         if (intaking) {
-            in.set(0.45);
+            in.set(0.5);
         } else {
             in.set(0);
         }
@@ -414,7 +414,7 @@ public class Robot extends TimedRobot {
         go.update();
         launcher.update();
         if (mode == "smart" && c1.stick(2) + c2.stick(2) >= 0.1) {
-            in.set(c1.stick(2) + c2.stick(2));
+            in.set(-c1.stick(2) - c2.stick(2));
         } else if (intaking) {
             in.set(0.5);
         } else {
