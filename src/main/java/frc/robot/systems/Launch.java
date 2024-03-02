@@ -15,24 +15,24 @@ public class Launch {
     public boolean holdingNote = false;
     private double targetWidth;
     private double nowX, previousX;
-    public double offset = 11.520975112915039;
+    public double offset = 0;
     public static final double pullback = 12;
     public static final double loopsToLaunch = 5;
 
     /** Encoder-based positions for launcher to go to */
     public class pos {
-        public static double min = -21;
-        public static double max = 152;
+        public static double min = -41;
+        public static double max = 132;
         /** Intake position */
-        public static double intake = 20;
+        public static double intake = 0;
         /** Position for scoring in amp */
-        public static double amp = 88;
+        public static double amp = 68;
         /** Position for scoring in speaker while pressed up against subwoofer */
-        public static double closeup = 15;
+        public static double closeup = -10;
         /** Position to go to before climbing */
-        public static double climbPrep = 95;
+        public static double climbPrep = 75;
         /** Position to go to to climb (when chain is under launcher) */
-        public static double climb = 55;
+        public static double climb = -38;
 
         private static double smartPosVal;
         private static double previousLimelightY;
@@ -40,9 +40,9 @@ public class Launch {
         /** Function to calculate necessary aim encoder position based on Limelight camera input */
         public static double smartAim(double limelightY, boolean moving) {
             if (moving) { // Use previous position to predict future
-                smartPosVal = 31 - Math.pow(limelightY + loopsToLaunch*(limelightY - previousLimelightY), 2)/34 - smartAim_offset;
+                smartPosVal = 10 - Math.pow(limelightY + loopsToLaunch*(limelightY - previousLimelightY), 2)/34 - smartAim_offset;
             } else {
-                smartPosVal = 31 - Math.pow(limelightY, 2)/34 - smartAim_offset;
+                smartPosVal = 10 - Math.pow(limelightY, 2)/34 - smartAim_offset;
             }
             previousLimelightY = limelightY;
             return smartPosVal;
@@ -56,7 +56,8 @@ public class Launch {
         feed = FeedMotor;
         aimMotor = AimMotor;
         aimCoder = new CANcoder(aimCoderID);
-        aimMotor.setEnc((aimCoder.getAbsolutePosition().getValue())*182);
+        //aimMotor.setEnc((aimCoder.getAbsolutePosition().getValue())*182);
+        aimMotor.setEnc(0);
         aim(pos.intake);
         feed.pwr = 1.87;
         cam = Cam;
