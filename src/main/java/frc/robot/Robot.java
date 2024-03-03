@@ -315,7 +315,7 @@ public class Robot extends TimedRobot {
                 while (newAngle < dir - 180) { newAngle += 360; }
                 dir = newAngle;
             } else if (c1.active() || c2.active()) { // Manual Rotation
-                dir += 3 * keepInRange(Math.pow(c1.stick(4) + c2.stick(4), sensitivity), -1, 1);
+                dir += 3 * Math.pow(c1.stick(4) + c2.stick(4), sensitivity);
             }
             if (c1.left_stick() || c2.left_stick()) { // Turbo mode
                 go.speed = go.default_speed;
@@ -325,7 +325,7 @@ public class Robot extends TimedRobot {
             go.swerve( // Drive with Headless Mode
                 Math.pow(c1.stick(1) + c2.stick(1), sensitivity),
                 Math.pow(c1.stick(0) + c2.stick(0), sensitivity),
-                keepInRange(-0.03*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1), -1, 1),
+                keepInRange(-0.04*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1), -1, 1),
                 navx.yaw() + 180
             );
             launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), sensitivity));
@@ -392,7 +392,7 @@ public class Robot extends TimedRobot {
                 while (newAngle < dir - 180) { newAngle += 360; }
                 dir = newAngle;
             } else if (c1.active() || c2.active()) { // Manual Rotation
-                dir += 3 * keepInRange(Math.pow(c1.stick(4) + c2.stick(4), sensitivity), -1, 1);
+                dir += 3 * Math.pow(c1.stick(4) + c2.stick(4), sensitivity);
             }
             if (c1.left_stick() || c2.left_stick()) { // Turbo mode
                 go.speed = go.default_speed;
@@ -402,7 +402,7 @@ public class Robot extends TimedRobot {
             go.swerve( // Drive with Headless Mode
                 Math.pow(c1.stick(1) + c2.stick(1), sensitivity),
                 Math.pow(c1.stick(0) + c2.stick(0), sensitivity),
-                keepInRange(-0.03*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1), -1, 1),
+                keepInRange(-0.04*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1), -1, 1),
                 navx.yaw() + 180
             );
             if (c1.onPress(Controls.X) || c2.onPress(Controls.X)) { // Toggle Consciousness
