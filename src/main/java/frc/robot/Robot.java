@@ -412,6 +412,10 @@ public class Robot extends TimedRobot {
             if ((c1.right_stick() && c1.start()) || (c2.right_stick() && c2.start())) { // NavX Calibration
                 navx.zeroYaw();
                 dir = 0;
+            } else if (c1.onRelease(Controls.LEFT) || c2.onRelease(Controls.LEFT)) {
+                if (launcher.holdingNote) {
+                    launcher.aim(Launch.pos.closeup);
+                }
             } else if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) { // LAUNCH
                 launcher.LAUNCH();
             } else if (conscious && !c1.y() && !c2.y() && launcher.prepping && speaker.pipelineActivated() && speaker.valid()) { // Automatic LAUNCH
