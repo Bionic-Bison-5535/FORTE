@@ -288,6 +288,14 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
 
+        if (c1.start() || c2.start()) { // Mode Change
+            mode = "smart";
+            dir = navx.yaw();
+        } else if (c1.back() || c2.back()) {
+            mode = "raw";
+            dir = navx.yaw();
+        }
+
         // RAW MODE PERIODIC:
         if (mode == "raw") {
             if (c1.pov() != -1) { // Controller 1 POV
@@ -314,10 +322,6 @@ public class Robot extends TimedRobot {
                 keepInRange(-0.03*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1), -1, 1),
                 navx.yaw() + 180
             );
-            if (c1.start() || c2.start()) { // Mode Change
-                mode = "smart";
-                dir = navx.yaw();
-            }
             launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), sensitivity));
             if (c1.x() || c2.x()) {
                 launcher.aim(Launch.pos.closeup);
@@ -395,9 +399,6 @@ public class Robot extends TimedRobot {
                 keepInRange(-0.03*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1), -1, 1),
                 navx.yaw() + 180
             );
-            if (c1.back() || c2.back()) { // Change Mode
-                mode = "raw";
-            }
             if (c1.onPress(Controls.X) || c2.onPress(Controls.X)) { // Toggle Consciousness
                 conscious = !conscious;
                 SmartDashboard.putBoolean("Consciousness", conscious);
