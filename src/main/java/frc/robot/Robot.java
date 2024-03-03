@@ -14,7 +14,7 @@ public class Robot extends TimedRobot {
      * Mode for robot during teleop.
      * Can be "raw" or "smart".
      */
-    String mode = "smart";
+    String mode = "raw";
     boolean intaking = false;
     boolean actualMatch = false;
     double dir = 0;
