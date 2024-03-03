@@ -24,10 +24,10 @@ public class Wesswerve {
 	private boolean negation;
 	public boolean SmartAngle = true;
 	public double theta = 0;
-	public double default_speed = 1.2;
+	public double default_speed = 1;
 	public double speed = default_speed;
 	public double steeringAmplifier = 0.5;
-	private final double wheelAngleErrorRange = 1;
+	private final double wheelAngleErrorRange = 0;
 	private final double dist = 0.5;
 	public double x;
 	public double y;
@@ -145,7 +145,11 @@ public class Wesswerve {
 		}
 		if (move) {
 			if (kraken) {
-				Output.set(-0.012*(Input.getPosition().getValue()*360 - newAngle));
+				if (Math.abs(Input.getPosition().getValue()*360-newAngle) > wheelAngleErrorRange) {
+					Output.set(-0.012*(Input.getPosition().getValue()*360 - newAngle));
+				} else {
+					Output.set(0);
+				}
 				if (!smartAngle) { negation = true; }
 			} else {
 				if (Math.round(Input.getPosition().getValue()*360-wheelAngleErrorRange) > newAngle) {
