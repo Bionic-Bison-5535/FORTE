@@ -422,6 +422,17 @@ public class Robot extends TimedRobot {
                 launcher.prepClimb();
             } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
                 launcher.climb();
+            } else if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) { // Turn in direction to launch in amp
+                if (leds.blueAlliance) {
+                    newAngle = 90;
+                } else {
+                    newAngle = -90;
+                }
+                while (newAngle > dir + 180) { newAngle -= 360; }
+                while (newAngle < dir - 180) { newAngle += 360; }
+                dir = newAngle;
+            } else if (c1.onRelease(Controls.Y) || c2.onRelease(Controls.Y)) { // Launch Into Amp
+                launcher.amp();
             }
             if (c1.onPress(Controls.B) || c2.onPress(Controls.B)) { // Cancel Any Launcher Activity
                 intaking = false;
@@ -440,17 +451,6 @@ public class Robot extends TimedRobot {
                     launcher.LAUNCHstart();
                 } else if (c1.onPress(Controls.RIGHT) || c2.onPress(Controls.RIGHT)) { // Prepare to Launch (Hold Button Down)
                     launcher.LAUNCHprep();
-                } else if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) { // Turn in direction to launch in amp
-                    if (leds.blueAlliance) {
-                        newAngle = 90;
-                    } else {
-                        newAngle = -90;
-                    }
-                    while (newAngle > dir + 180) { newAngle -= 360; }
-                    while (newAngle < dir - 180) { newAngle += 360; }
-                    dir = newAngle;
-                } else if (c1.onRelease(Controls.Y) || c2.onRelease(Controls.Y)) { // Launch Into Amp
-                    launcher.amp();
                 }
             }
         }
