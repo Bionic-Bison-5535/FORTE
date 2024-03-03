@@ -170,8 +170,7 @@ public class Robot extends TimedRobot {
                 intaking = true;
                 Alec.reset();
             } else if (Alec.get() > 3500) {
-                go.swerve(0, 0, 0, 0);
-                autoStage = 9;
+                autoStage = 8;
             }
         }
         if (autoStage == 3) {
@@ -186,8 +185,7 @@ public class Robot extends TimedRobot {
         if (autoStage == 4) {
             go.swerve(-0.1, 0, speaker.X()/40, 0);
             if (!launcher.holdingNote) {
-                go.swerve(0, 0, 0, 0);
-                autoStage = 9;
+                autoStage = 8;
             }
         }
         /* Auto Stages to use later:
@@ -247,13 +245,14 @@ public class Robot extends TimedRobot {
                 launcher.aimAndLAUNCH();
             }
         }
+        */
         if (autoStage == 8) {
             go.swerve(0, 0, 0, 0);
+            intaking = false;
             autoStage = 9;
         }
-        */
         if (autoStage == 9) {
-            intaking = false;
+            //Do nothing
         }
         launcher.update();
         go.update();
