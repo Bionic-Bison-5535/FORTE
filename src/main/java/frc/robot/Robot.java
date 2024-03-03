@@ -168,6 +168,7 @@ public class Robot extends TimedRobot {
                 autoStage = 3;
                 launcher.intake();
                 intaking = true;
+                Alec.reset();
             } else if (Alec.get() > 3500) {
                 go.swerve(0, 0, 0, 0);
                 autoStage = 9;
@@ -178,6 +179,8 @@ public class Robot extends TimedRobot {
             if (launcher.holdingNote) {
                 launcher.aimAndLAUNCH();
                 autoStage = 4;
+            } else if (Alec.get() > 3500) {
+                autoStage = 8;
             }
         }
         if (autoStage == 4) {
