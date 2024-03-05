@@ -74,7 +74,7 @@ public class Robot extends TimedRobot {
         launcher = new Launch(leftThruster, rightThruster, feedMotor, aimMotor, 25, 1, speaker);
         noteDropdown.setDefaultOption("Center", "2");
         noteDropdown.addOption("Left", "1");
-        noteDropdown.addOption("None", "0");
+        noteDropdown.addOption("None-Left", "0");
         noteDropdown.addOption("Right", "3");
         SmartDashboard.putData("Which Note To Get?", noteDropdown);
         getMoreDropdown.setDefaultOption("No", "n");
@@ -123,7 +123,7 @@ public class Robot extends TimedRobot {
         noteToGet = noteDropdown.getSelected();
         getMoreNotes = getMoreDropdown.getSelected();
         matchTimer.reset();
-        if (noteToGet == "1") {
+        if (noteToGet == "1" || noteToGet == "0") {
             navx.yaw_Offset += 60;
         } else if (noteToGet == "3") {
             navx.yaw_Offset -= 60;
@@ -160,9 +160,9 @@ public class Robot extends TimedRobot {
             if (noteToGet == "2") {
                 go.swerve(0.2, 0, 0, 0);
             } else if (noteToGet == "1") {
-                go.swerve(0.3*5.5/9, -0.3, 0, 0);
+                go.swerve(0.3*0.65, -0.3, 0, 0);
             } else if (noteToGet == "3") {
-                go.swerve(0.3*5.5/9, 0.3, 0, 0);
+                go.swerve(0.3*0.65, 0.3, 0, 0);
             }
             if (!iseenote.get()) {
                 autoStage = 3;
@@ -174,7 +174,7 @@ public class Robot extends TimedRobot {
             }
         }
         if (autoStage == 3) {
-            go.swerve(0.1, 0, speaker.X()/40, 0);
+            go.swerve(0.12, 0, speaker.X()/20, 0);
             if (launcher.holdingNote) {
                 launcher.aimAndLAUNCH();
                 autoStage = 4;
