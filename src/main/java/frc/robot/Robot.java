@@ -352,6 +352,7 @@ public class Robot extends TimedRobot {
                 go.update();
                 launcher.LAUNCHstart();
             } else if (c1.onPress(Controls.RIGHT) || c2.onPress(Controls.RIGHT)) { // Launch Preparation (Hold right button down)
+                launcher.aim(Launch.pos.closeup);
                 launcher.LAUNCHprep_noCam();
             } else if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) { // Turn in direction to launch in amp
                 if (leds.blueAlliance) {
