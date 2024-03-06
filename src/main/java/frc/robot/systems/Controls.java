@@ -6,7 +6,10 @@ public class Controls {
 
     public Joystick in;
     public double inputStickDeadband;
-    
+    private double[] rr0 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    private double[] rr1 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    private double add0, add1;
+
     public static final int A = 1;
     public static final int B = 2;
     public static final int X = 3;
@@ -30,15 +33,47 @@ public class Controls {
 			return num_input;
 		}
 	}
-    
+
     public double stick(int axisNumber) {
         return deadband(in.getRawAxis(axisNumber), inputStickDeadband);
     }
-    
+
+    public double stickWithRamp(int axisNumber) {
+        if (axisNumber == 0) {
+            return shift0();
+        } else if (axisNumber == 1) {
+            return shift1();
+        } else {
+            return stick(axisNumber);
+        }
+    }
+
+    public double shift0() {
+        add0 = 0;
+        for (int i = 0; i < rr0.length - 1; i++) {
+            rr0[i] = rr0[i+1];
+            add0 += rr0[i];
+        }
+        rr0[rr0.length - 1] = stick(0);
+        add0 += stick(1);
+        return add0/rr0.length;
+    }
+
+    public double shift1() {
+        add1 = 0;
+        for (int i = 0; i < rr1.length - 1; i++) {
+            rr1[i] = rr1[i+1];
+            add1 += rr1[i];
+        }
+        rr1[rr1.length - 1] = stick(1);
+        add1 += stick(1);
+        return add1/rr1.length;
+    }
+
     public int pov() {
         return in.getPOV();
     }
-    
+
     public boolean active() {
         return (stick(0) != 0 || stick(1) != 0 || stick(4) != 0 || stick(5) != 0 || pov() != -1);
     }
