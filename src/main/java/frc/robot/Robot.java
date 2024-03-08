@@ -30,8 +30,8 @@ public class Robot extends TimedRobot {
     String noteToGet, getMoreNotes;
 
     Wesswerve go = new Wesswerve(14, 15, 16, 17, 20, 21, 22, 23, 10, 11, 12, 13, 358, 225, 159, 250);
-    Controls c1 = new Controls(0, 0.1);
-    Controls c2 = new Controls(1, 0.1);
+    Controls c1 = new Controls(0, 0.02);
+    Controls c2 = new Controls(1, 0.02);
     Tim matchTimer, Alec;
     Navx navx = new Navx();
     Lights leds = new Lights(30);
