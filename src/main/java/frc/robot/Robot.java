@@ -32,8 +32,7 @@ public class Robot extends TimedRobot {
     Wesswerve go = new Wesswerve(14, 15, 16, 17, 20, 21, 22, 23, 10, 11, 12, 13, 358, 225, 159, 250);
     Controls c1 = new Controls(0, 0.1);
     Controls c2 = new Controls(1, 0.1);
-    Tim matchTimer = new Tim();
-    Tim Alec = new Tim();
+    Tim matchTimer, Alec;
     Navx navx = new Navx();
     Lights leds = new Lights(30);
     Motor in = new Motor(5, true, true, 1);
@@ -59,6 +58,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
+        matchTimer = new Tim();
+        Alec = new Tim();
         if (leds.blueAlliance) {
             speaker = new Limelight(3);
             speaker2 = new Limelight(5);
