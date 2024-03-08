@@ -316,12 +316,12 @@ public class Robot extends TimedRobot {
                 while (newAngle < dir - 180) { newAngle += 360; }
                 dir = newAngle;
             } else if (c1.active() || c2.active()) { // Manual Rotation
-                dir += 3 * Math.pow(c1.stick(4) + c2.stick(4), sensitivity);
+                dir += 1.7 * Math.pow(c1.stick(4), sensitivity);
             }
             if (c1.left_stick() || c2.left_stick()) { // Turbo mode
                 go.speed = go.default_speed;
             } else {
-                go.speed = 0.35*go.default_speed;
+                go.speed = 0.7*go.default_speed;
             }
             go.swerve( // Drive with Headless Mode
                 Math.pow(c1.stick(1) + c2.stick(1), sensitivity),
