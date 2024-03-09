@@ -352,8 +352,9 @@ public class Robot extends TimedRobot {
             keepInRange(-0.04 * deadband(navx.yaw()-dir, 5), -5, 5),
             navx.yaw() + 180
         );
-        launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), sensitivity));
-        if (c2.x()) {
+        if (c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3) != 0) {
+            launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), sensitivity));
+        } else if (c2.x()) {
             launcher.aim(Launch.pos.closeup);
         } else if (c2.stick(5) < -0.95) {
             launcher.prepClimb();
