@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
+import frc.robot.systems.Tim;
 import frc.robot.systems.Controls;
 import frc.robot.systems.Launch;
 import frc.robot.systems.Lights;
@@ -13,7 +14,6 @@ import frc.robot.systems.Limelight;
 import frc.robot.systems.Motor;
 import frc.robot.systems.Navx;
 import frc.robot.systems.POF;
-import frc.robot.systems.Tim;
 import frc.robot.systems.Wesswerve;
 
 public class Robot extends TimedRobot {
@@ -372,7 +372,7 @@ public class Robot extends TimedRobot {
             go.speed = 0.7*go.default_speed;
         }
         go.swerve(
-            Math.pow(c1.magnitude(), sensitivity),
+            c1.magnitudeWithRamp(),
             c1.direction(),
             keepInRange(-0.04 * deadband(navx.yaw()-dir, 5), -5, 5),
             navx.yaw() + 180
