@@ -319,7 +319,11 @@ public class Robot extends TimedRobot {
             dir = navx.yaw();
         }
 
-        if (c1.pov() != -1) { // Controller 1 POV
+        if (c2.right() && conscious) {
+            if (speaker.valid()) {
+                dir = navx.yaw() + speaker.X()*0.4;
+            }
+        } else if (c1.pov() != -1) { // Controller 1 POV
             newAngle = (double)(c1.pov());
             while (newAngle > dir + 180) { newAngle -= 360; }
             while (newAngle < dir - 180) { newAngle += 360; }
