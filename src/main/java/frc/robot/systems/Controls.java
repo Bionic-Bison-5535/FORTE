@@ -6,9 +6,10 @@ public class Controls {
 
     public Joystick in;
     public double inputStickDeadband;
-    private double[] rr0 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    private double[] rr1 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    private double add0, add1;
+    private double[] rr0 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    private double[] rr1 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    private double[] rrM = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    private double add0, add1, addM;
 
     public static final int A = 1;
     public static final int B = 2;
@@ -70,6 +71,17 @@ public class Controls {
         return add1/rr1.length;
     }
 
+    public double shiftM() {
+        addM = 0;
+        for (int i = 0; i < rrM.length - 1; i++) {
+            rrM[i] = rrM[i+1];
+            addM += rrM[i];
+        }
+        rrM[rrM.length - 1] = magnitude();
+        addM += rrM[rrM.length - 1];
+        return addM/rrM.length;
+    }
+
     public int pov() {
         return in.getPOV();
     }
@@ -84,6 +96,10 @@ public class Controls {
 
     public double magnitude() {
         return in.getMagnitude();
+    }
+
+    public double magnitudeWithRamp() {
+        return shiftM();
     }
     
     /**
