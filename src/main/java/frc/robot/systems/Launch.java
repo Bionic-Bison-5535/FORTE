@@ -17,7 +17,7 @@ public class Launch {
     private double nowX, previousX;
     public double offset = 0;
     public static final double pullback = 12;
-    public static final double loopsToLaunch = 5;
+    public static final double loopsToLaunch = 25;
 
     /** Encoder-based positions for launcher to go to */
     public class pos {
@@ -28,7 +28,7 @@ public class Launch {
         /** Position for scoring in amp */
         public static double amp = 68;
         /** Position for scoring in speaker while pressed up against subwoofer */
-        public static double closeup = -10;
+        public static double closeup = -8;
         /** Position to go to before climbing */
         public static double climbPrep = 75;
         /** Position to go to to climb (when chain is under launcher) */
@@ -36,7 +36,7 @@ public class Launch {
 
         private static double smartPosVal;
         private static double previousLimelightY;
-        public static double smartAim_offset = 0;
+        public static double smartAim_offset = -5;
         /** Function to calculate necessary aim encoder position based on Limelight camera input */
         public static double smartAim(double limelightY, boolean moving) {
             if (moving) { // Use previous position to predict future

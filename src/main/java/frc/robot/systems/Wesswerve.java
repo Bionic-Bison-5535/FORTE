@@ -1,4 +1,3 @@
-
 package frc.robot.systems;
 
 import java.lang.Math;
@@ -8,12 +7,11 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 /**  Wesswerve for Square Swerve Robot with CANcoder Angle Detection and Either Talon FX or CANSparkMax motor controllers.
 	Program written by Wesley McGinn {wesleymcginn1@gmail.com} for Team 5535 (The Bionic Bison, New Buffalo, Michigan)
-	@version 4.7 Beta
+	@version 4.8 Beta
 */
 public class Wesswerve {
 
 	private boolean usingTalons = true; // Set to false to use CANSparkMaxs, set to true to use Talons.
-	private boolean kraken = true; // Set to true if you are using the "Kraken" Talon FX motors.
 	
 	public TalonFX frontLeftSteer, frontRightSteer, backRightSteer, backLeftSteer, frontLeftDrive, frontRightDrive, backRightDrive, backLeftDrive;
 	public CANSparkMax frontLeftSteer_sm, frontRightSteer_sm, backRightSteer_sm, backLeftSteer_sm, frontLeftDrive_sm, frontRightDrive_sm, backRightDrive_sm, backLeftDrive_sm;
@@ -27,13 +25,14 @@ public class Wesswerve {
 	public double default_speed = 1;
 	public double speed = default_speed;
 	public double steeringAmplifier = 0.5;
-	private final double wheelAngleErrorRange = 0;
+	private final double wheelAngleErrorRange = 0.5;
 	private final double dist = 0.5;
 	public double x;
 	public double y;
 	public double a, b, c, d;
 	public boolean move = true;
 	public double A_offset, B_offset, C_offset, D_offset;
+	private double horizontalInput, verticalInput;
 
 	public Wesswerve(int front_left_steer_canID, int front_right_steer_canID, int back_right_steer_canID, int back_left_steer_canID, int front_left_drive_canID, int front_right_drive_canID, int back_right_drive_canID, int back_left_drive_canID, int front_left_canCoder_canID, int front_right_canCoder_canID, int back_right_canCoder_canID, int back_left_canCoder_canID, int front_left_angle_offset, int front_right_angle_offset, int back_right_angle_offset, int back_left_angle_offset) {
 		if (usingTalons) {
@@ -144,25 +143,12 @@ public class Wesswerve {
 			if (newAngle > Input.getPosition().getValue()*360+90) { newAngle -= 180; negation = true; }
 		}
 		if (move) {
-			if (kraken) {
-				if (Math.abs(Input.getPosition().getValue()*360-newAngle) > wheelAngleErrorRange) {
-					Output.set(-0.012*(Input.getPosition().getValue()*360 - newAngle));
-				} else {
-					Output.set(0);
-				}
-				if (!smartAngle) { negation = true; }
+			if (Math.abs(Input.getPosition().getValue()*360-newAngle) > wheelAngleErrorRange) {
+				Output.set(-0.012*(Input.getPosition().getValue()*360 - newAngle));
 			} else {
-				if (Math.round(Input.getPosition().getValue()*360-wheelAngleErrorRange) > newAngle) {
-					Output.set(-0.007*(Input.getPosition().getValue()*360 - newAngle) - 0.05);
-				} else {
-					if (Math.round(Input.getPosition().getValue()*360+wheelAngleErrorRange) < newAngle) {
-						Output.set(-0.007*(Input.getPosition().getValue()*360 - newAngle) + 0.05);
-					} else {
-						Output.set(0);
-						if (!smartAngle) { negation = true; }
-					}
-				}
+				Output.set(0);
 			}
+			if (!smartAngle) { negation = true; }
 		} else {
 			Output.set(0);
 		}
@@ -227,12 +213,19 @@ public class Wesswerve {
 		}
 	}
 
-	public void swerve(double verticalInput, double horizontalInput, double rotationalInput, double frontAngle) { // Main function - Does all swerve math
+	public void swerve(double MAG, double DIR, double rotationalInput, double frontAngle) { // Main function - Does all swerve math
+		if (MAG == 0) {
+			horizontalInput = 0;
+			verticalInput = 0;
+		} else {
+			horizontalInput = MAG*sine(DIR);
+			verticalInput = MAG*cosine(DIR);
+		}
 		if (horizontalInput == 0 && verticalInput == 0 && rotationalInput == 0) {
 			setVelocities(0, 0, 0, 0);
 		} else {
-			theta = arctan(-horizontalInput,verticalInput)+frontAngle;
-			y = Math.sqrt(horizontalInput*horizontalInput+verticalInput*verticalInput);
+			theta = frontAngle-DIR;
+			y = -MAG*(1+Math.sqrt(2)*Math.abs(rotationalInput)*0.5);
 			x = (speed*y)/(steeringAmplifier*rotationalInput);
 			if (rotationalInput == 0) {
 				setAngles(theta, theta, theta, theta);
@@ -246,10 +239,11 @@ public class Wesswerve {
 				if (Math.abs(x) < 0.4) {
 					setAngles(-45, 45, -45, 45);
 					a = 2;
+
 					b = -2;
 					c = -2;
 					d = 2;
-					setVelocities(a*(y+0.4*(-rotationalInput))*speed, -b*(y+0.4*(-rotationalInput))*speed, -c*(y+0.4*(-rotationalInput))*speed, -d*(y+0.4*(-rotationalInput))*speed);
+					setVelocities(a*(y+0.5535*(-rotationalInput))*speed, -b*(y+0.5535*(-rotationalInput))*speed, -c*(y+0.5535*(-rotationalInput))*speed, -d*(y+0.5535*(-rotationalInput))*speed);
 				} else {
 					if (x < 0) {
 						angle0 = -arctan((dist*sine(-theta + 135)),(2*x-dist*cosine(-theta + 135)))+theta+180;
@@ -266,7 +260,7 @@ public class Wesswerve {
 					b = Math.abs(Math.sqrt((x*x)+(x*dist*cosine(-theta + 45))+(0.5))/x);
 					c = Math.abs(Math.sqrt((x*x)+(x*dist*cosine(-theta - 45))+(0.5))/x);
 					d = Math.abs(Math.sqrt((x*x)+(x*dist*cosine(-theta - 135))+(0.5))/x);
-					setVelocities(a*(y+0.4*Math.abs(rotationalInput))*speed, -b*(y+0.4*Math.abs(rotationalInput))*speed, -c*(y+0.4*Math.abs(rotationalInput))*speed, -d*(y+0.4*Math.abs(rotationalInput))*speed);
+					setVelocities(a*(y+0.5535*Math.abs(rotationalInput))*speed, -b*(y+0.5535*Math.abs(rotationalInput))*speed, -c*(y+0.5535*Math.abs(rotationalInput))*speed, -d*(y+0.5535*Math.abs(rotationalInput))*speed);
 				}
 			}
 		}
