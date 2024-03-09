@@ -315,6 +315,11 @@ public class Robot extends TimedRobot {
                 while (newAngle > dir + 180) { newAngle -= 360; }
                 while (newAngle < dir - 180) { newAngle += 360; }
                 dir = newAngle;
+            } else if (c1.y()) {
+                newAngle = 0;
+                while (newAngle > dir + 180) { newAngle -= 360; }
+                while (newAngle < dir - 180) { newAngle += 360; }
+                dir = newAngle;
             } else if (c1.active() || c2.active()) { // Manual Rotation
                 dir += 1.7 * Math.pow(c1.stick(4), sensitivity);
             }
