@@ -1,4 +1,3 @@
-
 package frc.robot.systems;
 
 import java.lang.Math;
@@ -226,7 +225,7 @@ public class Wesswerve {
 			setVelocities(0, 0, 0, 0);
 		} else {
 			theta = frontAngle-DIR;
-			y = -MAG;
+			y = -MAG*(1+Math.sqrt(2)*Math.abs(rotationalInput)*0.5);
 			x = (speed*y)/(steeringAmplifier*rotationalInput);
 			if (rotationalInput == 0) {
 				setAngles(theta, theta, theta, theta);
@@ -240,10 +239,11 @@ public class Wesswerve {
 				if (Math.abs(x) < 0.4) {
 					setAngles(-45, 45, -45, 45);
 					a = 2;
+
 					b = -2;
 					c = -2;
 					d = 2;
-					setVelocities(a*(y+0.4*(-rotationalInput))*speed, -b*(y+0.4*(-rotationalInput))*speed, -c*(y+0.4*(-rotationalInput))*speed, -d*(y+0.4*(-rotationalInput))*speed);
+					setVelocities(a*(y+0.5535*(-rotationalInput))*speed, -b*(y+0.5535*(-rotationalInput))*speed, -c*(y+0.5535*(-rotationalInput))*speed, -d*(y+0.5535*(-rotationalInput))*speed);
 				} else {
 					if (x < 0) {
 						angle0 = -arctan((dist*sine(-theta + 135)),(2*x-dist*cosine(-theta + 135)))+theta+180;
@@ -260,7 +260,7 @@ public class Wesswerve {
 					b = Math.abs(Math.sqrt((x*x)+(x*dist*cosine(-theta + 45))+(0.5))/x);
 					c = Math.abs(Math.sqrt((x*x)+(x*dist*cosine(-theta - 45))+(0.5))/x);
 					d = Math.abs(Math.sqrt((x*x)+(x*dist*cosine(-theta - 135))+(0.5))/x);
-					setVelocities(a*(y+0.4*Math.abs(rotationalInput))*speed, -b*(y+0.4*Math.abs(rotationalInput))*speed, -c*(y+0.4*Math.abs(rotationalInput))*speed, -d*(y+0.4*Math.abs(rotationalInput))*speed);
+					setVelocities(a*(y+0.5535*Math.abs(rotationalInput))*speed, -b*(y+0.5535*Math.abs(rotationalInput))*speed, -c*(y+0.5535*Math.abs(rotationalInput))*speed, -d*(y+0.5535*Math.abs(rotationalInput))*speed);
 				}
 			}
 		}
