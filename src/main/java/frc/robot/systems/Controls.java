@@ -10,6 +10,7 @@ public class Controls {
     private double[] rr1 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     private double[] rrM = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     private double add0, add1, addM;
+    private double previousDir;
 
     public static final int A = 1;
     public static final int B = 2;
@@ -25,6 +26,7 @@ public class Controls {
     public Controls(int inputNumber, double InputStickDeadband) {
         in = new Joystick(inputNumber);
         inputStickDeadband = InputStickDeadband;
+        previousDir = in.getDirectionDegrees();
     }
 
     private double deadband(double num_input, double db) {
@@ -91,7 +93,10 @@ public class Controls {
     }
 
     public double direction() {
-        return in.getDirectionDegrees();
+        if (in.getMagnitude() > 0.07) {
+            previousDir = in.getDirectionDegrees();
+        }
+        return previousDir;
     }
 
     public double magnitude() {
