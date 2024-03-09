@@ -56,6 +56,14 @@ public class Robot extends TimedRobot {
         }
     }
 
+    private double deadband(double num_input, double db) {
+		if (Math.abs(num_input) < db) {
+			return 0;
+		} else {
+			return num_input;
+		}
+	}
+
     @Override
     public void robotInit() {
         matchTimer = new Tim();
@@ -328,10 +336,10 @@ public class Robot extends TimedRobot {
             } else {
                 go.speed = 0.7*go.default_speed;
             }
-            go.swerve( // Drive with Headless Mode
-                Math.pow(c1.stick(1) + c2.stick(1), sensitivity),
-                Math.pow(c1.stick(0) + c2.stick(0), sensitivity),
-                keepInRange(-0.04*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1), -1.5, 1.5),
+            go.swerve(
+                Math.pow(c1.magnitude(), sensitivity),
+                c1.direction(),
+                keepInRange(-0.04 * deadband(navx.yaw()-dir, 5), -5, 5),
                 navx.yaw() + 180
             );
             launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), sensitivity));
