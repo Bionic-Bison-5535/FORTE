@@ -343,32 +343,32 @@ public class Robot extends TimedRobot {
                 navx.yaw() + 180
             );
             launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), sensitivity));
-            if (c1.x() || c2.x()) {
+            if (c2.x()) {
                 launcher.aim(Launch.pos.closeup);
-            } else if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) {
+            } else if (c2.stick(5) < -0.95) {
                 launcher.prepClimb();
-            } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
+            } else if (c2.stick(5) > 0.95) {
                 launcher.climb();
             }
-            if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) { // LAUNCH (Release held down right button)
+            if (c2.onRelease(Controls.RIGHT)) { // LAUNCH (Release held down right button)
                 launcher.LAUNCH();
             }
-            if (c1.b() || c2.b()) { // Cancel Any Launcher Activity
+            if (c2.b()) { // Cancel Any Launcher Activity
                 intaking = false;
                 launcher.stop();
             } else if (launcher.stage == 0) { // If Launcher Not Doing Anything
                 intaking = false;
             }
-            if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) { // Intake
+            if (c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) { // Intake
                 intaking = true;
                 launcher.intake();
-            } else if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) { // Launch Sequence
+            } else if (c2.onPress(Controls.LEFT)) { // Launch Sequence
                 go.update();
                 launcher.LAUNCHstart();
-            } else if (c1.onPress(Controls.RIGHT) || c2.onPress(Controls.RIGHT)) { // Launch Preparation (Hold right button down)
+            } else if (c2.onPress(Controls.RIGHT)) { // Launch Preparation (Hold right button down)
                 launcher.aim(Launch.pos.closeup);
                 launcher.LAUNCHprep_noCam();
-            } else if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) { // Turn in direction to launch in amp
+            } else if (c2.onPress(Controls.Y)) { // Turn in direction to launch in amp
                 if (leds.blueAlliance) {
                     newAngle = 90;
                 } else {
@@ -377,10 +377,10 @@ public class Robot extends TimedRobot {
                 while (newAngle > dir + 180) { newAngle -= 360; }
                 while (newAngle < dir - 180) { newAngle += 360; }
                 dir = newAngle;
-            } else if (c1.onRelease(Controls.Y) || c2.onRelease(Controls.Y)) { // Launch Into Amp
+            } else if (c2.onRelease(Controls.Y)) { // Launch Into Amp
                 launcher.amp();
             }
-            if ((c1.right_stick() && c1.start()) || (c2.right_stick() && c2.start())) { // NavX Calibration
+            if (c2.right_stick() && c2.start()) { // NavX Calibration
                 navx.zeroYaw();
                 dir = 0;
             }
