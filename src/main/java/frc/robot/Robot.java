@@ -311,80 +311,78 @@ public class Robot extends TimedRobot {
             dir = navx.yaw();
         }
 
-        // RAW MODE PERIODIC:
-        if (mode == "raw") {
-            if (c1.pov() != -1) { // Controller 1 POV
-                newAngle = (double)(c1.pov());
-                while (newAngle > dir + 180) { newAngle -= 360; }
-                while (newAngle < dir - 180) { newAngle += 360; }
-                dir = newAngle;
-            } else if (c2.pov() != -1) { // Controller 2 POV
-                newAngle = (double)(c2.pov());
-                while (newAngle > dir + 180) { newAngle -= 360; }
-                while (newAngle < dir - 180) { newAngle += 360; }
-                dir = newAngle;
-            } else if (c1.y()) {
-                newAngle = 0;
-                while (newAngle > dir + 180) { newAngle -= 360; }
-                while (newAngle < dir - 180) { newAngle += 360; }
-                dir = newAngle;
-            } else if (c1.active() || c2.active()) { // Manual Rotation
-                dir += 1.7 * Math.pow(c1.stick(4), sensitivity);
-            }
-            if (c1.left_stick() || c2.left_stick()) { // Turbo mode
-                go.speed = go.default_speed;
+        if (c1.pov() != -1) { // Controller 1 POV
+            newAngle = (double)(c1.pov());
+            while (newAngle > dir + 180) { newAngle -= 360; }
+            while (newAngle < dir - 180) { newAngle += 360; }
+            dir = newAngle;
+        } else if (c2.pov() != -1) { // Controller 2 POV
+            newAngle = (double)(c2.pov());
+            while (newAngle > dir + 180) { newAngle -= 360; }
+            while (newAngle < dir - 180) { newAngle += 360; }
+            dir = newAngle;
+        } else if (c1.y()) {
+            newAngle = 0;
+            while (newAngle > dir + 180) { newAngle -= 360; }
+            while (newAngle < dir - 180) { newAngle += 360; }
+            dir = newAngle;
+        } else if (c1.active() || c2.active()) { // Manual Rotation
+            dir += 1.7 * Math.pow(c1.stick(4), sensitivity);
+        }
+        if (c1.left_stick() || c2.left_stick()) { // Turbo mode
+            go.speed = go.default_speed;
+        } else {
+            go.speed = 0.7*go.default_speed;
+        }
+        go.swerve(
+            Math.pow(c1.magnitude(), sensitivity),
+            c1.direction(),
+            keepInRange(-0.04 * deadband(navx.yaw()-dir, 5), -5, 5),
+            navx.yaw() + 180
+        );
+        launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), sensitivity));
+        if (c2.x()) {
+            launcher.aim(Launch.pos.closeup);
+        } else if (c2.stick(5) < -0.95) {
+            launcher.prepClimb();
+        } else if (c2.stick(5) > 0.95) {
+            launcher.climb();
+        }
+        if (c2.onRelease(Controls.RIGHT)) { // LAUNCH (Release held down right button)
+            launcher.LAUNCH();
+        }
+        if (c2.b()) { // Cancel Any Launcher Activity
+            intaking = false;
+            launcher.stop();
+        } else if (launcher.stage == 0) { // If Launcher Not Doing Anything
+            intaking = false;
+        }
+        if (c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) { // Intake
+            intaking = true;
+            launcher.intake();
+        } else if (c2.onPress(Controls.LEFT)) { // Launch Sequence
+            go.update();
+            launcher.LAUNCHstart();
+        } else if (c2.onPress(Controls.RIGHT)) { // Launch Preparation (Hold right button down)
+            launcher.aim(Launch.pos.closeup);
+            launcher.LAUNCHprep_noCam();
+        } else if (c2.onPress(Controls.Y)) { // Turn in direction to launch in amp
+            if (leds.blueAlliance) {
+                newAngle = 90;
             } else {
-                go.speed = 0.7*go.default_speed;
+                newAngle = -90;
             }
-            go.swerve(
-                Math.pow(c1.magnitude(), sensitivity),
-                c1.direction(),
-                keepInRange(-0.04 * deadband(navx.yaw()-dir, 5), -5, 5),
-                navx.yaw() + 180
-            );
-            launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), sensitivity));
-            if (c2.x()) {
-                launcher.aim(Launch.pos.closeup);
-            } else if (c2.stick(5) < -0.95) {
-                launcher.prepClimb();
-            } else if (c2.stick(5) > 0.95) {
-                launcher.climb();
-            }
-            if (c2.onRelease(Controls.RIGHT)) { // LAUNCH (Release held down right button)
-                launcher.LAUNCH();
-            }
-            if (c2.b()) { // Cancel Any Launcher Activity
-                intaking = false;
-                launcher.stop();
-            } else if (launcher.stage == 0) { // If Launcher Not Doing Anything
-                intaking = false;
-            }
-            if (c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) { // Intake
-                intaking = true;
-                launcher.intake();
-            } else if (c2.onPress(Controls.LEFT)) { // Launch Sequence
-                go.update();
-                launcher.LAUNCHstart();
-            } else if (c2.onPress(Controls.RIGHT)) { // Launch Preparation (Hold right button down)
-                launcher.aim(Launch.pos.closeup);
-                launcher.LAUNCHprep_noCam();
-            } else if (c2.onPress(Controls.Y)) { // Turn in direction to launch in amp
-                if (leds.blueAlliance) {
-                    newAngle = 90;
-                } else {
-                    newAngle = -90;
-                }
-                while (newAngle > dir + 180) { newAngle -= 360; }
-                while (newAngle < dir - 180) { newAngle += 360; }
-                dir = newAngle;
-            } else if (c2.onRelease(Controls.Y)) { // Launch Into Amp
-                launcher.amp();
-            }
-            if (c2.right_stick() && c2.start()) { // NavX Calibration
-                navx.zeroYaw();
-                dir = 0;
-            }
-
+            while (newAngle > dir + 180) { newAngle -= 360; }
+            while (newAngle < dir - 180) { newAngle += 360; }
+            dir = newAngle;
+        } else if (c2.onRelease(Controls.Y)) { // Launch Into Amp
+            launcher.amp();
+        }
+        if (c2.right_stick() && c2.start()) { // NavX Calibration
+            navx.zeroYaw();
+            dir = 0;
+        }
+/*
         // SMART MODE PERIODIC:
         } else if (mode == "smart") {
             if (conscious && launcher.holdingNote && !c1.y() && !c2.y()) {
@@ -473,7 +471,7 @@ public class Robot extends TimedRobot {
                 }
             }
         }
-
+*/
         // LED Strip Color:
         if (actualMatch && matchTimer.get() >= 130000) { // Final Countdown!
             leds.turquoise();
