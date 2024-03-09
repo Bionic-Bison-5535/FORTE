@@ -13,7 +13,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 public class Wesswerve {
 
 	private boolean usingTalons = true; // Set to false to use CANSparkMaxs, set to true to use Talons.
-	private boolean kraken = false; // Set to true if you are using the "Kraken" Talon FX motors for steering.
 	
 	public TalonFX frontLeftSteer, frontRightSteer, backRightSteer, backLeftSteer, frontLeftDrive, frontRightDrive, backRightDrive, backLeftDrive;
 	public CANSparkMax frontLeftSteer_sm, frontRightSteer_sm, backRightSteer_sm, backLeftSteer_sm, frontLeftDrive_sm, frontRightDrive_sm, backRightDrive_sm, backLeftDrive_sm;
@@ -145,23 +144,12 @@ public class Wesswerve {
 			if (newAngle > Input.getPosition().getValue()*360+90) { newAngle -= 180; negation = true; }
 		}
 		if (move) {
-			if (kraken) {
-				if (Math.abs(Input.getPosition().getValue()*360-newAngle) > wheelAngleErrorRange) {
-					Output.set(-0.012*(Input.getPosition().getValue()*360 - newAngle));
-				} else {
-					Output.set(0);
-				}
-				if (!smartAngle) { negation = true; }
+			if (Math.abs(Input.getPosition().getValue()*360-newAngle) > wheelAngleErrorRange) {
+				Output.set(-0.012*(Input.getPosition().getValue()*360 - newAngle));
 			} else {
-				if (Math.round(Input.getPosition().getValue()*360-wheelAngleErrorRange) > newAngle) {
-					Output.set(-0.007*(Input.getPosition().getValue()*360 - newAngle) - 0.05);
-				} else if (Math.round(Input.getPosition().getValue()*360+wheelAngleErrorRange) < newAngle) {
-					Output.set(-0.007*(Input.getPosition().getValue()*360 - newAngle) + 0.05);
-				} else {
-					Output.set(0);
-					if (!smartAngle) { negation = true; }
-				}
+				Output.set(0);
 			}
+			if (!smartAngle) { negation = true; }
 		} else {
 			Output.set(0);
 		}
