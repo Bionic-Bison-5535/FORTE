@@ -437,8 +437,8 @@ public class Robot extends TimedRobot {
         // Update Systems:
         go.update();
         launcher.update();
-        if (mode == "smart" && c1.stick(2) + c2.stick(2) >= 0.1) {
-            in.set(-c1.stick(2) - c2.stick(2));
+        if (c2.right_stick()) {
+            in.set(-1);
         } else if (intaking) {
             in.set(0.5);
         } else {
