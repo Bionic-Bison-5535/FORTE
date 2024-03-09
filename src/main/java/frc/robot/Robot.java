@@ -361,7 +361,7 @@ public class Robot extends TimedRobot {
         } else if (c2.stick(5) > 0.95) {
             launcher.climb();
         }
-        if (c2.onRelease(Controls.RIGHT)) { // LAUNCH (Release held down right button)
+        if (c2.onRelease(Controls.LEFT) || c2.onRelease(Controls.RIGHT)) { // LAUNCH (Release held down button)
             launcher.LAUNCH();
         }
         if (c2.b()) { // Cancel Any Launcher Activity
@@ -373,12 +373,15 @@ public class Robot extends TimedRobot {
         if (c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) { // Intake
             intaking = true;
             launcher.intake();
-        } else if (c2.onPress(Controls.LEFT)) { // Launch Sequence
-            go.update();
-            launcher.LAUNCHstart();
-        } else if (c2.onPress(Controls.RIGHT)) { // Launch Preparation (Hold right button down)
-            launcher.aim(Launch.pos.closeup);
+        } else if (c2.onPress(Controls.LEFT)) { // Basic Launch Preparation
             launcher.LAUNCHprep_noCam();
+        } else if (c2.onPress(Controls.RIGHT)) { // Advanced Launch Preparation (Hold right button down)
+            if (mode == "raw") {
+                launcher.aim(Launch.pos.closeup);
+                launcher.LAUNCHprep_noCam();
+            } else {
+                launcher.LAUNCHprep();
+            }
         } else if (c2.onPress(Controls.Y)) { // Turn in direction to launch in amp
             if (leds.blueAlliance) {
                 newAngle = 90;
@@ -395,97 +398,7 @@ public class Robot extends TimedRobot {
             navx.zeroYaw();
             dir = 0;
         }
-/*
-        // SMART MODE PERIODIC:
-        } else if (mode == "smart") {
-            if (conscious && launcher.holdingNote && !c1.y() && !c2.y()) {
-                if (speaker.valid()) {
-                    dir = navx.yaw() + speaker.X()*0.4;
-                } else if (navx.coterminalYaw() < -45 || navx.coterminalYaw() > 45) {
-                    newAngle = 0;
-                    while (newAngle > dir + 180) { newAngle -= 360; }
-                    while (newAngle < dir - 180) { newAngle += 360; }
-                    dir = newAngle;
-                }
-            } else if (c1.pov() != -1) { // Controller 1 POV
-                newAngle = (double)(c1.pov());
-                while (newAngle > dir + 180) { newAngle -= 360; }
-                while (newAngle < dir - 180) { newAngle += 360; }
-                dir = newAngle;
-            } else if (c2.pov() != -1) { // Controller 2 POV
-                newAngle = (double)(c2.pov());
-                while (newAngle > dir + 180) { newAngle -= 360; }
-                while (newAngle < dir - 180) { newAngle += 360; }
-                dir = newAngle;
-            } else if (c1.active() || c2.active()) { // Manual Rotation
-                dir += 3 * Math.pow(c1.stick(4) + c2.stick(4), sensitivity);
-            }
-            if (c1.left_stick() || c2.left_stick()) { // Turbo mode
-                go.speed = go.default_speed;
-            } else {
-                go.speed = 0.35*go.default_speed;
-            }
-            go.swerve( // Drive with Headless Mode
-                Math.pow(c1.stick(1) + c2.stick(1), sensitivity),
-                Math.pow(c1.stick(0) + c2.stick(0), sensitivity),
-                keepInRange(-0.04*(navx.yaw()-dir)*(2*Math.abs(c1.magnitude()+c2.magnitude())+1), -1.5, 1.5),
-                navx.yaw() + 180
-            );
-            if (c1.onPress(Controls.X) || c2.onPress(Controls.X)) { // Toggle Consciousness
-                conscious = !conscious;
-                SmartDashboard.putBoolean("Consciousness", conscious);
-            }
-            if ((c1.right_stick() && c1.start()) || (c2.right_stick() && c2.start())) { // NavX Calibration
-                navx.zeroYaw();
-                dir = 0;
-            } else if (c1.onRelease(Controls.LEFT) || c2.onRelease(Controls.LEFT)) {
-                if (launcher.holdingNote) {
-                    launcher.aim(Launch.pos.closeup);
-                }
-            } else if (c1.onRelease(Controls.RIGHT) || c2.onRelease(Controls.RIGHT)) { // LAUNCH
-                launcher.LAUNCH();
-            } else if (conscious && !c1.y() && !c2.y() && launcher.prepping && speaker.pipelineActivated() && speaker.valid()) { // Automatic LAUNCH
-                if (speaker.Y() >= launchOver) {
-                    launcher.LAUNCH();
-                }
-            } else if (c1.stick(5) < -0.95 || c2.stick(5) < -0.95) { // Climbing System
-                launcher.prepClimb();
-            } else if (c1.stick(5) > 0.95 || c2.stick(5) > 0.95) {
-                launcher.climb();
-            } else if (c1.onPress(Controls.Y) || c2.onPress(Controls.Y)) { // Turn in direction to launch in amp
-                if (leds.blueAlliance) {
-                    newAngle = 90;
-                } else {
-                    newAngle = -90;
-                }
-                while (newAngle > dir + 180) { newAngle -= 360; }
-                while (newAngle < dir - 180) { newAngle += 360; }
-                dir = newAngle;
-            } else if (c1.onRelease(Controls.Y) || c2.onRelease(Controls.Y)) { // Launch Into Amp
-                launcher.amp();
-            }
-            if (c1.onPress(Controls.B) || c2.onPress(Controls.B)) { // Cancel Any Launcher Activity
-                intaking = false;
-                launcher.stop();
-                conscious = false;
-                SmartDashboard.putBoolean("Consciousness", conscious);
-            } else if (launcher.stage == 0) { // If Launcher Not Doing Anything
-                intaking = false;
-                if (conscious && launcher.holdingNote && speaker.valid() && c1.stick(1) == 0 && c2.stick(1) == 0) { // Automatic Launch Prep
-                    launcher.LAUNCHprep();
-                } else if (c1.onPress(Controls.A) || c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) { // Intake
-                    intaking = true;
-                    launcher.intake();
-                } else if (c1.onPress(Controls.LEFT) || c2.onPress(Controls.LEFT)) { // Automatic Launch Sequence
-                    go.update();
-                    launcher.LAUNCHstart();
-                } else if (c1.onPress(Controls.RIGHT) || c2.onPress(Controls.RIGHT)) { // Prepare to Launch (Hold Button Down)
-                    launcher.LAUNCHprep();
-                }
-            }
-        }
-*/
-        // LED Strip Color:
+
         if (actualMatch && matchTimer.get() >= 130000) { // Final Countdown!
             leds.turquoise();
         } else if (launcher.holdingNote) { // Holding Note
