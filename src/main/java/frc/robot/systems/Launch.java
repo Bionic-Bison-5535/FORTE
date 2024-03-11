@@ -32,7 +32,7 @@ public class Launch {
         /** Position to go to before climbing */
         public static double climbPrep = 75;
         /** Position to go to to climb (when chain is under launcher) */
-        public static double climb = -38;
+        public static double climb = 7;
 
         private static double smartPosVal;
         private static double previousLimelightY;
@@ -86,6 +86,7 @@ public class Launch {
     }
 
     public void climb() {
+        aimMotor.maxSpeed = 0.5;
         aim(pos.climb);
     }
 
@@ -95,6 +96,7 @@ public class Launch {
 
     public void intake() {
         stage = 1;
+        aimMotor.maxSpeed = 1;
         aim(pos.intake);
     }
 
