@@ -254,7 +254,7 @@ public class Robot extends TimedRobot {
             dir = navx.yaw();
         }
 
-        if (c2.onPress(Controls.Y)) { // Turn in direction to launch in amp
+        if (c2.y()) { // Turn in direction to launch in amp
             if (leds.blueAlliance) {
                 newAngle = 90;
             } else {
@@ -266,6 +266,11 @@ public class Robot extends TimedRobot {
         } else if (c2.right() && conscious) {
             if (speaker.valid()) {
                 dir = navx.yaw() + speaker.X()*0.7;
+            } else {
+                newAngle = 0;
+                while (newAngle > dir + 180) { newAngle -= 360; }
+                while (newAngle < dir - 180) { newAngle += 360; }
+                dir = newAngle;
             }
         } else if (c1.pov() != -1) { // Controller 1 POV
             newAngle = (double)(c1.pov());
