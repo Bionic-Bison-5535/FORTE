@@ -37,8 +37,8 @@ public class Robot extends TimedRobot {
     String noteToGet, getMoreNotes;
 
     Wesswerve go = new Wesswerve(14, 15, 16, 17, 20, 21, 22, 23, 10, 11, 12, 13, 358, 225, 159, 250);
-    Controls c1 = new Controls(0, 0.02);
-    Controls c2 = new Controls(1, 0.02);
+    Controls c1 = new Controls(0, 0.05);
+    Controls c2 = new Controls(1, 0.05);
     Tim matchTimer, Alec;
     Navx navx = new Navx();
     Lights leds = new Lights(30);
@@ -240,6 +240,7 @@ public class Robot extends TimedRobot {
         if (!actualMatch) {
             dir = navx.yaw();
         }
+        speaker.activate();
     }
 
     @Override
@@ -307,7 +308,7 @@ public class Robot extends TimedRobot {
             while (newAngle < dir - 180) { newAngle += 360; }
             dir = newAngle;
         } else if (c1.active() || c2.active()) { // Manual Rotation
-            dir += 1.7 * Math.pow(c1.stick(4) + c2.stick(4), sensitivity);
+            dir += 1.7 * (c1.stick(4) + c2.stick(4));
         }
         if (c1.left_stick() || c2.left_stick()) { // Turbo mode
             go.speed = go.default_speed;
