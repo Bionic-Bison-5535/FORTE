@@ -47,7 +47,7 @@ public class Robot extends TimedRobot {
     Motor rightThruster = new Motor(7, false, false, 1);
     Motor leftThruster = new Motor(8, false, true, 1);
     Motor feedMotor = new Motor(9, false, false, 1);
-    DigitalInput iseenote = new DigitalInput(2);
+    DigitalInput iseenote = new DigitalInput(4);
     Launch launcher;
     Limelight speaker, speaker2, ampCam;
     Limelight posCam = new Limelight(1);
