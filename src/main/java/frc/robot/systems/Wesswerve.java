@@ -239,7 +239,6 @@ public class Wesswerve {
 				if (Math.abs(x) < 0.4) {
 					setAngles(-45, 45, -45, 45);
 					a = 2;
-
 					b = -2;
 					c = -2;
 					d = 2;
@@ -260,7 +259,7 @@ public class Wesswerve {
 					b = Math.abs(Math.sqrt((x*x)+(x*dist*cosine(-theta + 45))+(0.5))/x);
 					c = Math.abs(Math.sqrt((x*x)+(x*dist*cosine(-theta - 45))+(0.5))/x);
 					d = Math.abs(Math.sqrt((x*x)+(x*dist*cosine(-theta - 135))+(0.5))/x);
-					setVelocities(a*(y+0.5535*Math.abs(rotationalInput))*speed, -b*(y+0.5535*Math.abs(rotationalInput))*speed, -c*(y+0.5535*Math.abs(rotationalInput))*speed, -d*(y+0.5535*Math.abs(rotationalInput))*speed);
+					setVelocities((a*y+0.5535*Math.abs(rotationalInput))*speed, (-b*y+0.5535*Math.abs(rotationalInput))*speed, (-c*y+0.5535*Math.abs(rotationalInput))*speed, (-d*y+0.5535*Math.abs(rotationalInput))*speed);
 				}
 			}
 		}
