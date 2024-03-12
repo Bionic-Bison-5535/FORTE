@@ -387,6 +387,7 @@ public class Robot extends TimedRobot {
         launcher.update();
         if (c2.right_stick()) {
             in.set(-1);
+            launcher.spitItOut();
         } else if (intaking) {
             in.set(0.5);
         } else {

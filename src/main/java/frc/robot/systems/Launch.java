@@ -90,6 +90,10 @@ public class Launch {
         aim(pos.climb);
     }
 
+    public void spitItOut() {
+        feed.set(-0.5);
+    }
+
     public boolean iseenote() {
         return !note.get();
     }
