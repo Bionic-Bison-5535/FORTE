@@ -267,7 +267,7 @@ public class Robot extends TimedRobot {
             while (newAngle > dir + 180) { newAngle -= 360; }
             while (newAngle < dir - 180) { newAngle += 360; }
             dir = newAngle;
-        } else if (c2.right() && conscious) {
+        } else if (c2.right() && conscious && mode == "smart") {
             if (speaker.valid()) {
                 dir = navx.yaw() + speaker.X()*0.7;
             } else {
