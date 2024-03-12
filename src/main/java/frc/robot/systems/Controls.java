@@ -79,7 +79,7 @@ public class Controls {
             rrM[i] = rrM[i+1];
             addM += rrM[i];
         }
-        rrM[rrM.length - 1] = magnitude();
+        rrM[rrM.length - 1] = deadband(magnitude(), inputStickDeadband);
         addM += rrM[rrM.length - 1];
         return addM/rrM.length;
     }
