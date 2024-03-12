@@ -352,7 +352,7 @@ public class Robot extends TimedRobot {
             if (c2.onPress(Controls.LEFT)) { // Basic Launch Preparation
                 launcher.LAUNCHprep_noCam();
             } else if (c2.onPress(Controls.RIGHT)) { // Advanced Launch Preparation (Hold right button down)
-                if (mode == "raw" || !speaker.valid()) {
+                if (mode == "raw") {
                     launcher.aim(Launch.pos.closeup);
                     launcher.LAUNCHprep_noCam();
                 } else {
