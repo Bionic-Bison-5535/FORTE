@@ -28,7 +28,7 @@ public class Launch {
         /** Position for scoring in amp */
         public static double amp = 68;
         /** Position for scoring in speaker while pressed up against subwoofer */
-        public static double closeup = -8;
+        public static double closeup = -4.7;
         /** Position to go to before climbing */
         public static double climbPrep = 75;
         /** Position to go to to climb (when chain is under launcher) */
