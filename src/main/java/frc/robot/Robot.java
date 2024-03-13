@@ -379,7 +379,9 @@ public class Robot extends TimedRobot {
             launcher.stop();
         }
 
-        if (actualMatch && matchTimer.get() >= 140000) { // Final Countdown!
+        if (c2.stick(1) < -0.95) { // Signal Human Player to Amplify
+            leds.white();
+        } else if (actualMatch && matchTimer.get() >= 140000) { // Final Countdown!
             leds.turquoise();
         } else if (launcher.holdingNote) { // Holding Note
             leds.yellow();
