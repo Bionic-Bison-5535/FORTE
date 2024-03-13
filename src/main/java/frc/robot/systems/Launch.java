@@ -90,7 +90,7 @@ public class Launch {
         aim(pos.climb);
     }
 
-    public void spitItOut() {
+    public void sneeze() {
         feed.set(0.1);
         leftThruster.set(0.1);
         rightThruster.set(0.1);
