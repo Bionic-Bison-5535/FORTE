@@ -320,7 +320,7 @@ public class Robot extends TimedRobot {
         } else if (c1.active() || c2.active()) { // Manual Rotation
             dir += 1.7 * (c1.stick(4) + c2.stick(4));
         }
-        if (c1.left_stick() || c2.left_stick()) { // Turbo mode
+        if (c1.left_stick()) { // Turbo mode
             go.speed = go.default_speed;
         } else {
             go.speed = 0.7*go.default_speed;
