@@ -17,7 +17,7 @@ public class Launch {
     private double nowX, previousX;
     public double offset = 0;
     public static final double pullback = 12;
-    public static final double loopsToLaunch = 25;
+    public static final double loopsToLaunch = 12;
 
     /** Encoder-based positions for launcher to go to */
     public class pos {
@@ -40,9 +40,9 @@ public class Launch {
         /** Function to calculate necessary aim encoder position based on Limelight camera input */
         public static double smartAim(double limelightY, boolean moving) {
             if (moving) { // Use previous position to predict future
-                smartPosVal = 14.7 - Math.pow(limelightY + loopsToLaunch*(limelightY - previousLimelightY), 2)/34 - smartAim_offset;
+                smartPosVal = 14 - Math.pow(limelightY + loopsToLaunch*(limelightY - previousLimelightY), 2)/34 - smartAim_offset;
             } else {
-                smartPosVal = 14.7 - Math.pow(limelightY, 2)/34 - smartAim_offset;
+                smartPosVal = 14 - Math.pow(limelightY, 2)/34 - smartAim_offset;
             }
             previousLimelightY = limelightY;
             return smartPosVal;
