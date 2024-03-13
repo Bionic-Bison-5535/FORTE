@@ -183,7 +183,7 @@ public class Robot extends TimedRobot {
             }
         }
         if (autoStage == 3) {
-            go.swerve(0.12, 0, 0, 0);
+            go.swerve(-0.12, 0, 0, 0);
             if (launcher.holdingNote) {
                 launcher.aimAndLAUNCH();
                 autoStage = 4;
@@ -194,11 +194,11 @@ public class Robot extends TimedRobot {
         }
         if (autoStage == 4) {
             if (noteToGet == "2" || speaker.valid()) {
-                go.swerve(0.15, 0, speaker.X()/40, 0);
+                go.swerve(0.1, 0, speaker.X()/40, 0);
             } else if (noteToGet == "1") {
-                go.swerve(0.15, 0, speaker.X()/40, 0);
+                go.swerve(0.1, 0, speaker.X()/40, 0);
             } else if (noteToGet == "3") {
-                go.swerve(0.15, 0, speaker.X()/40, 0);
+                go.swerve(0.1, 0, speaker.X()/40, 0);
             }
             if (!launcher.holdingNote) {
                 autoStage = 8;
