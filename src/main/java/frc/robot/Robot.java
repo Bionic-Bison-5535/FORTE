@@ -169,21 +169,21 @@ public class Robot extends TimedRobot {
             if (noteToGet == "2") {
                 go.swerve(0.4, -speaker.X()/20, 0, navx.yaw() + 180);
             } else if (noteToGet == "1") {
-                go.swerve(0.3*0.65, -0.3, 0, 0);
+                go.swerve(0.4, -30, speaker.X()/40, navx.yaw() + 180);
             } else if (noteToGet == "3") {
-                go.swerve(0.3*0.65, 0.3, 0, 0);
+                go.swerve(0.4, 30, speaker.X()/40, navx.yaw() + 180);
             }
             if (!iseenote.get()) {
                 autoStage = 3;
                 launcher.intake();
                 intaking = true;
                 Alec.reset();
-            } else if (Alec.get() > 1700) {
+            } else if (Alec.get() > 2500) {
                 autoStage = 8;
             }
         }
         if (autoStage == 3) {
-            go.swerve(-0.12, 0, 0, 0);
+            go.swerve(0.12, 0, 0, 0);
             if (launcher.holdingNote) {
                 launcher.aimAndLAUNCH();
                 autoStage = 4;
@@ -196,9 +196,9 @@ public class Robot extends TimedRobot {
             if (noteToGet == "2" || speaker.valid()) {
                 go.swerve(0.15, 0, speaker.X()/40, 0);
             } else if (noteToGet == "1") {
-                go.swerve(-0.1, 0, 0.2, 0);
+                go.swerve(0.15, 0, speaker.X()/40, 0);
             } else if (noteToGet == "3") {
-                go.swerve(-0.1, 0, -0.2, 0);
+                go.swerve(0.15, 0, speaker.X()/40, 0);
             }
             if (!launcher.holdingNote) {
                 autoStage = 8;
@@ -215,6 +215,7 @@ public class Robot extends TimedRobot {
         if (autoStage == 9) {
             //Do nothing
         }
+        // Update Systems:
         launcher.update();
         go.update();
         launcher.update();
