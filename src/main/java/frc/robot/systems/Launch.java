@@ -32,7 +32,7 @@ public class Launch {
         /** Position to go to before climbing */
         public static double climbPrep = 75;
         /** Position to go to to climb (when chain is under launcher) */
-        public static double climb = 7;
+        public static double climb = 5;
 
         private static double smartPosVal;
         private static double previousLimelightY;
