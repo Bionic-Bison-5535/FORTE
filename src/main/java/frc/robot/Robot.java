@@ -373,8 +373,10 @@ public class Robot extends TimedRobot {
             dir = 0;
         }
 
-        if (c2.left_stick()) {
+        if (c2.left_stick()) { // Sneeze (Low power launch for storing notes in corner before amplification)
             launcher.sneeze();
+        } else if (c2.onRelease(Controls.LEFT_STICK) || c2.onRelease(Controls.RIGHT_STICK)) {
+            launcher.stop();
         }
 
         if (actualMatch && matchTimer.get() >= 140000) { // Final Countdown!
