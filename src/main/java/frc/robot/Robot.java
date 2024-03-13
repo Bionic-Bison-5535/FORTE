@@ -374,7 +374,7 @@ public class Robot extends TimedRobot {
         }
 
         if (c2.left_stick()) {
-            launcher.spitItOut();
+            launcher.sneeze();
         }
 
         if (actualMatch && matchTimer.get() >= 130000) { // Final Countdown!
