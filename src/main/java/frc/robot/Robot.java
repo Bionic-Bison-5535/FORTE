@@ -149,7 +149,7 @@ public class Robot extends TimedRobot {
     public void autonomousPeriodic() {
         if (autoStage == 0) {
             speaker.activate();
-            if (Alec.get() > 1000) {
+            if (Alec.get() > 2000) {
                 autoStage = 1;
                 launcher.aim(Launch.pos.closeup);
                 launcher.LAUNCHstart();
