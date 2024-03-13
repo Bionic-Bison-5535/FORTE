@@ -372,6 +372,10 @@ public class Robot extends TimedRobot {
             dir = 0;
         }
 
+        if (c2.left_stick()) {
+            launcher.spitItOut();
+        }
+
         if (actualMatch && matchTimer.get() >= 130000) { // Final Countdown!
             leds.turquoise();
         } else if (launcher.holdingNote) { // Holding Note
@@ -387,7 +391,6 @@ public class Robot extends TimedRobot {
         launcher.update();
         if (c2.right_stick()) {
             in.set(-1);
-            launcher.spitItOut();
         } else if (intaking) {
             in.set(0.5);
         } else {

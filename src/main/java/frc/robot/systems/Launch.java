@@ -91,7 +91,10 @@ public class Launch {
     }
 
     public void spitItOut() {
-        feed.set(-0.5);
+        feed.set(0.1);
+        leftThruster.set(0.1);
+        rightThruster.set(0.1);
+        holdingNote = false;
     }
 
     public boolean iseenote() {
