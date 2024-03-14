@@ -169,9 +169,9 @@ public class Robot extends TimedRobot {
             if (noteToGet == "2") {
                 go.swerve(0.4, -speaker.X()/20, 0, navx.yaw() + 180);
             } else if (noteToGet == "1") {
-                go.swerve(0.4, -30, speaker.X()/40, navx.yaw() + 180);
+                go.swerve(0.4, 0, speaker.X()/40, navx.yaw() + 180);
             } else if (noteToGet == "3") {
-                go.swerve(0.4, 30, speaker.X()/40, navx.yaw() + 180);
+                go.swerve(0.4, 0, speaker.X()/40, navx.yaw() + 180);
             }
             if (!iseenote.get()) {
                 autoStage = 3;
