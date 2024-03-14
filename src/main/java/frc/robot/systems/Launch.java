@@ -1,12 +1,10 @@
 package frc.robot.systems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import com.ctre.phoenix6.hardware.*;
 
 public class Launch {
 
     private Motor leftThruster, rightThruster, feed, aimMotor;
-    public CANcoder aimCoder;
     private DigitalInput note;
     private Tim launchTimer = new Tim();
     private Limelight cam;
@@ -49,14 +47,12 @@ public class Launch {
         }
     }
 
-	public Launch(Motor LaunchLeftMotor, Motor LaunchRightMotor, Motor FeedMotor, Motor AimMotor, int aimCoderID, int sensorPin, Limelight Cam) {
+	public Launch(Motor LaunchLeftMotor, Motor LaunchRightMotor, Motor FeedMotor, Motor AimMotor, int sensorPin, Limelight Cam) {
         note = new DigitalInput(sensorPin);
 		leftThruster = LaunchLeftMotor;
         rightThruster = LaunchRightMotor;
         feed = FeedMotor;
         aimMotor = AimMotor;
-        aimCoder = new CANcoder(aimCoderID);
-        //aimMotor.setEnc((aimCoder.getAbsolutePosition().getValue())*182);
         aimMotor.setEnc(0);
         aim(pos.intake);
         feed.pwr = 1.87;

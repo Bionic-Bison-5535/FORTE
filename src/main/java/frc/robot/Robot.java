@@ -76,7 +76,7 @@ public class Robot extends TimedRobot {
             speaker2 = new Limelight(6);
             ampCam = new Limelight(8);
         }
-        launcher = new Launch(leftThruster, rightThruster, feedMotor, aimMotor, 25, 1, speaker);
+        launcher = new Launch(leftThruster, rightThruster, feedMotor, aimMotor, 1, speaker);
         SmartDashboard.putBoolean("Alliance", leds.blueAlliance);
         SmartDashboard.putString("Event", DriverStation.getEventName());
         SmartDashboard.putNumber("Match", DriverStation.getMatchNumber());
