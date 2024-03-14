@@ -322,6 +322,8 @@ public class Robot extends TimedRobot {
         }
         if (c1.left_stick()) { // Turbo mode
             go.speed = go.default_speed;
+        } else if (intaking) { // Slow down for intaking note
+            go.speed = 0.2;
         } else {
             go.speed = 0.7*go.default_speed;
         }
