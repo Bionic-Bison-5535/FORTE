@@ -300,7 +300,7 @@ public class Robot extends TimedRobot {
         go.swerve(
             c1.magnitudeWithRamp(),
             c1.direction(),
-            keepInRange(-0.02 * (navx.yaw()-dir), -5, 5),
+            keepInRange(-0.02 * (navx.yaw()-dir), -4, 4),
             navx.yaw() + 180
         );
 
