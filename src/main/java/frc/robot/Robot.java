@@ -343,13 +343,11 @@ public class Robot extends TimedRobot {
         if (c2.b()) { // Cancel Any Launcher Activity
             intaking = false;
             launcher.stop();
-        } else if (launcher.stage == 0) { // If Launcher Not Doing Anything
-            intaking = false;
-        }
-        if (c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) { // Intake
+        } else if (c2.onPress(Controls.A) || (!iseenote.get() && !launcher.holdingNote)) { // Intake
             intaking = true;
             launcher.intake();
-        } else if (launcher.holdingNote) {
+        } else if (launcher.stage == 0) { // If Launcher Not Doing Anything
+            intaking = false;
             if (c2.onPress(Controls.LEFT)) { // Basic Launch Preparation
                 launcher.LAUNCHprep_noCam();
             } else if (c2.onPress(Controls.RIGHT)) { // Advanced Launch Preparation (Hold right button down)
@@ -359,8 +357,10 @@ public class Robot extends TimedRobot {
                 } else {
                     launcher.LAUNCHprep();
                 }
+            } else if (c2.onPress(Controls.Y)) { // Prepare to Launch Into Amp
+                launcher.ampPrep();
             } else if (c2.onRelease(Controls.Y)) { // Launch Into Amp
-                launcher.amp();
+                launcher.LAUNCH();
             }
         }
 

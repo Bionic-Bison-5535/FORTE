@@ -125,7 +125,7 @@ public class Launch {
         prepping = true;
     }
 
-    /** LAUNCH (officially) after "LAUNCHprep" or "LAUNCHprep_noCam" function called */
+    /** LAUNCH (officially) after "LAUNCHprep", "ampPrep", or "LAUNCHprep_noCam" function called */
     public void LAUNCH() {
         prepping = false;
     }
@@ -144,9 +144,16 @@ public class Launch {
         prepping = false;
     }
 
+    /** Prepare to launch at downward angle perfect for scoring in amp */
+    public void ampPrep() {
+        stage = 21;
+        prepping = true;
+    }
+
     /** Launch at downward angle perfect for scoring in amp */
     public void amp() {
         stage = 21;
+        prepping = false;
     }
 
     /** Call periodically to run this system */
