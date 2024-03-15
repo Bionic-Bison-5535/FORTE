@@ -268,7 +268,7 @@ public class Robot extends TimedRobot {
             dir = navx.yaw();
         }
 
-        if (c2.y()) { // Turn in direction to launch in amp
+        if (c2.y() && conscious) { // Turn in direction to launch in amp
             if (leds.blueAlliance) {
                 toAngle(90);
             } else {
