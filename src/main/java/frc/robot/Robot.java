@@ -88,7 +88,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Match", DriverStation.getMatchNumber());
         noteDropdown.setDefaultOption("Center", "2");
         noteDropdown.addOption("Left", "1");
-        noteDropdown.addOption("None-Left", "0");
+        noteDropdown.addOption("None-Left", "0L");
+        noteDropdown.addOption("None-Right", "0R");
         noteDropdown.addOption("Right", "3");
         SmartDashboard.putData("Which Note To Get?", noteDropdown);
         getMoreDropdown.setDefaultOption("No", "n");
@@ -139,9 +140,9 @@ public class Robot extends TimedRobot {
         noteToGet = noteDropdown.getSelected();
         getMoreNotes = getMoreDropdown.getSelected();
         matchTimer.reset();
-        if (noteToGet == "1" || noteToGet == "0") {
+        if (noteToGet == "1" || noteToGet == "0L") {
             navx.yaw_Offset += 60;
-        } else if (noteToGet == "3") {
+        } else if (noteToGet == "3" || noteToGet == "0R") {
             navx.yaw_Offset -= 60;
         }
         dir = navx.yaw();
@@ -163,7 +164,7 @@ public class Robot extends TimedRobot {
         }
         if (autoStage == 1) {
             if (launcher.holdingNote == false) {
-                if (noteToGet == "0") {
+                if (noteToGet == "0L" || noteToGet == "0R") {
                     autoStage = 8;
                 } else {
                     autoStage = 2;
