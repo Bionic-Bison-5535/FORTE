@@ -63,6 +63,13 @@ public class Robot extends TimedRobot {
         }
     }
 
+    void toAngle(double a) {
+        newAngle = a;
+        while (newAngle > dir + 180) { newAngle -= 360; }
+        while (newAngle < dir - 180) { newAngle += 360; }
+        dir = newAngle;
+    }
+
     @Override
     public void robotInit() {
         matchTimer = new Tim();
@@ -255,62 +262,32 @@ public class Robot extends TimedRobot {
 
         if (c2.y()) { // Turn in direction to launch in amp
             if (leds.blueAlliance) {
-                newAngle = 90;
+                toAngle(90);
             } else {
-                newAngle = -90;
+                toAngle(-90);
             }
-            while (newAngle > dir + 180) { newAngle -= 360; }
-            while (newAngle < dir - 180) { newAngle += 360; }
-            dir = newAngle;
         } else if (c2.right() && conscious && mode == "smart") {
             if (speaker.valid() && speaker.pipelineActivated()) {
                 dir = navx.yaw() + speaker.X()*0.7;
             } else {
-                newAngle = 0;
-                while (newAngle > dir + 180) { newAngle -= 360; }
-                while (newAngle < dir - 180) { newAngle += 360; }
-                dir = newAngle;
+                toAngle(0);
             }
         } else if (c1.pov() != -1) { // Controller 1 POV
-            newAngle = (double)(c1.pov());
-            while (newAngle > dir + 180) { newAngle -= 360; }
-            while (newAngle < dir - 180) { newAngle += 360; }
-            dir = newAngle;
+            toAngle((double)(c1.pov()));
         } else if (c2.pov() != -1) { // Controller 2 POV
-            newAngle = (double)(c2.pov());
-            while (newAngle > dir + 180) { newAngle -= 360; }
-            while (newAngle < dir - 180) { newAngle += 360; }
-            dir = newAngle;
+            toAngle((double)(c2.pov()));
         } else if (c1.y()) {
-            newAngle = 0;
-            while (newAngle > dir + 180) { newAngle -= 360; }
-            while (newAngle < dir - 180) { newAngle += 360; }
-            dir = newAngle;
+            toAngle(0);
         } else if (c1.x()) {
-            newAngle = 270;
-            while (newAngle > dir + 180) { newAngle -= 360; }
-            while (newAngle < dir - 180) { newAngle += 360; }
-            dir = newAngle;
+            toAngle(270);
         } else if (c1.b()) {
-            newAngle = 90;
-            while (newAngle > dir + 180) { newAngle -= 360; }
-            while (newAngle < dir - 180) { newAngle += 360; }
-            dir = newAngle;
+            toAngle(90);
         } else if (c1.a()) {
-            newAngle = 180;
-            while (newAngle > dir + 180) { newAngle -= 360; }
-            while (newAngle < dir - 180) { newAngle += 360; }
-            dir = newAngle;
+            toAngle(180);
         } else if (c1.left()) {
-            newAngle = -60;
-            while (newAngle > dir + 180) { newAngle -= 360; }
-            while (newAngle < dir - 180) { newAngle += 360; }
-            dir = newAngle;
+            toAngle(-60);
         } else if (c1.right()) {
-            newAngle = 60;
-            while (newAngle > dir + 180) { newAngle -= 360; }
-            while (newAngle < dir - 180) { newAngle += 360; }
-            dir = newAngle;
+            toAngle(60);
         } else if (c1.active() || c2.active()) { // Manual Rotation
             dir += 1.7 * (c1.stick(4) + c2.stick(4));
         }
