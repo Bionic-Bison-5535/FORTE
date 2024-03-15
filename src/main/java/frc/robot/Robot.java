@@ -30,7 +30,6 @@ public class Robot extends TimedRobot {
     int autoStage = 0;
     boolean conscious = true;
     boolean wasDisabled = false;
-    double sensitivity = 5;
 
     private final SendableChooser<String> noteDropdown = new SendableChooser<>();
     private final SendableChooser<String> getMoreDropdown = new SendableChooser<>();
@@ -305,8 +304,8 @@ public class Robot extends TimedRobot {
             navx.yaw() + 180
         );
 
-        if (c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3) != 0) {
-            launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), sensitivity));
+        if (c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3) > 0.1) {
+            launcher.changeAim(3*Math.pow(c1.stick(2) - c1.stick(3) + c2.stick(2) - c2.stick(3), 3));
         } else if (c2.x()) {
             launcher.aim(Launch.pos.closeup);
         } else if (c2.stick(5) < -0.95) {
