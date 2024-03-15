@@ -369,7 +369,7 @@ public class Robot extends TimedRobot {
         if (c2.right_stick()) {
             in.set(-0.7);
         } else if (intaking) {
-            in.set(0.5);
+            in.set(0.5+0.5*c2.stick(1));
         } else {
             in.set(0);
         }
