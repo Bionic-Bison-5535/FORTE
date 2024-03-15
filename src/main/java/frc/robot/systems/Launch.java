@@ -222,9 +222,8 @@ public class Launch {
         // Amp Launch:
         if (stage == 21) { // Angle to amp score position
             aim(pos.amp);
-            if (aimMotor.almost()) {
+            if (aimMotor.almost() && !prepping) {
                 stage = 11;
-                launchTimer.reset();
             }
         }
 

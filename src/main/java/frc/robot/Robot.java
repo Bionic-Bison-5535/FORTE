@@ -322,7 +322,7 @@ public class Robot extends TimedRobot {
         } else if (c2.stick(5) > 0.95) {
             launcher.climb();
         }
-        if (c2.onRelease(Controls.LEFT) || c2.onRelease(Controls.RIGHT)) { // LAUNCH (Release held down button)
+        if (c2.onRelease(Controls.LEFT) || c2.onRelease(Controls.RIGHT) || c2.onRelease(Controls.Y)) { // LAUNCH (Release held down button)
             launcher.LAUNCH();
         }
         if (c2.b()) { // Cancel Any Launcher Activity
@@ -344,8 +344,6 @@ public class Robot extends TimedRobot {
                 }
             } else if (c2.onPress(Controls.Y)) { // Prepare to Launch Into Amp
                 launcher.ampPrep();
-            } else if (c2.onRelease(Controls.Y)) { // Launch Into Amp
-                launcher.LAUNCH();
             }
         }
 
