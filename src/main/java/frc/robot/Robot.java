@@ -177,15 +177,15 @@ public class Robot extends TimedRobot {
                 go.swerve(0.4, -speaker.X()/20, 0, navx.yaw() + 180);
             } else if (noteToGet == "1") {
                 if (speaker.valid()) {
-                    go.swerve(0.4, 0, speaker.X()/40, navx.yaw() + 180);
+                    go.swerve(0.3, -12, speaker.X()/40, navx.yaw() + 180);
                 } else {
-                    go.swerve(0.4, 0, keepInRange(-0.02 * navx.yaw(), -4, 4), navx.yaw() + 180);
+                    go.swerve(0.3, -12, keepInRange(-0.02 * navx.yaw(), -4, 4), navx.yaw() + 180);
                 }
             } else if (noteToGet == "3") {
                 if (speaker.valid()) {
-                    go.swerve(0.4, 0, speaker.X()/40, navx.yaw() + 180);
+                    go.swerve(0.3, 12, speaker.X()/40, navx.yaw() + 180);
                 } else {
-                    go.swerve(0.4, 0, keepInRange(-0.02 * navx.yaw(), -4, 4), navx.yaw() + 180);
+                    go.swerve(0.3, 12, keepInRange(-0.02 * navx.yaw(), -4, 4), navx.yaw() + 180);
                 }
             }
             if (!iseenote.get()) {
@@ -203,12 +203,18 @@ public class Robot extends TimedRobot {
                 launcher.aimAndLAUNCH();
                 autoStage = 4;
                 Alec.reset();
-            } else if (Alec.get() > 1700) {
+            } else if (Alec.get() > 2500) {
                 autoStage = 8;
             }
         }
         if (autoStage == 4) {
-            go.swerve(0.1, 0, speaker.X()/40, 0);
+            go.swerve(0, 0, speaker.X()/20, 0);
+            if (Math.abs(speaker.X()) < 7) {
+                autoStage = 5;
+            }
+        }
+        if (autoStage == 5) {
+            go.swerve(0.1, 0, 0, 0);
             if (!launcher.holdingNote) {
                 autoStage = 8;
             } else if (Alec.get() > 3000) {
