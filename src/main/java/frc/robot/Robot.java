@@ -360,7 +360,7 @@ public class Robot extends TimedRobot {
 
         if (c2.left_stick()) { // Sneeze (Low power launch for storing notes in corner before amplification)
             launcher.sneeze();
-        } else if (c2.onRelease(Controls.LEFT_STICK) || c2.onRelease(Controls.RIGHT_STICK)) {
+        } else if (c2.onRelease(Controls.LEFT_STICK)) {
             launcher.stop();
         }
 
