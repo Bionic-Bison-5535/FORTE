@@ -83,9 +83,6 @@ public class Robot extends TimedRobot {
             ampCam = new Limelight(8);
         }
         launcher = new Launch(leftThruster, rightThruster, feedMotor, aimMotor, 1, speaker);
-        SmartDashboard.putBoolean("Alliance", leds.blueAlliance);
-        SmartDashboard.putString("Event", DriverStation.getEventName());
-        SmartDashboard.putNumber("Match", DriverStation.getMatchNumber());
         noteDropdown.setDefaultOption("Center", "2");
         noteDropdown.addOption("Left", "1");
         noteDropdown.addOption("None-Left", "0L");

@@ -82,11 +82,7 @@ public class Lights {
     }
 
     public void checkAlliance() {
-        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-            blueAlliance = true;
-        } else {
-            blueAlliance = false;
-        }
+        blueAlliance = (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue);
     }
 
 }
